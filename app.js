@@ -7,6 +7,8 @@ var validator = require('express-validator');
 var cors = require('cors');
 var responseHelper = require('./helper/response');
 var mongoose = require('mongoose');
+var config = require('./config/dev');
+
 
 
 
@@ -19,6 +21,10 @@ var generateErrorObject = (param, msg, value, location) => {
 
 var app = express();
 
+mongoose.Promise = global.Promise;
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true }).then(() => {
+    console.log('DB connection successful');
+}).catch((err) => console.error(err));
 
 app.responseHelper = responseHelper;
 
