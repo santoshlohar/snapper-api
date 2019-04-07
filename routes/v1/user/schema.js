@@ -21,8 +21,13 @@ var schema = new Schema({
     role: {
         type: String
     },
-    is_active: {
-        type: Boolean
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
