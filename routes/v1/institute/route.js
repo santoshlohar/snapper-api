@@ -23,6 +23,7 @@ router.post('/register', function(req, res) {
         });
         
     }).catch((result) => {
+        console.log(result);
         var errors = [{
             msg: "Something went wrong!"
         }];
