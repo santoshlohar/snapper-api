@@ -11,6 +11,8 @@ router.post('/register', function(req, res) {
 
     validationPromise.then((result) => {
         var body = req.body;
+        var instituteAdmin = body.instituteAdmin;
+        delete body.instituteAdmin;
         model.create(body, (err, institute) => {
             if(err) {
                 var errors = [{

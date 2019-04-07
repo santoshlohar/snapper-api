@@ -31,6 +31,12 @@ var register = (req) => {
             req.checkBody('doe', "Date is not valid").optional().custom(isValidDate);
             req.checkBody('requlatory.body', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
 
+            req.checkBody('instituteAdmin.name', 'Intitute Admin is required').notEmpty();
+            req.checkBody('instituteAdmin.email', 'Intitute Admin is required').notEmpty();
+            req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
+            req.checkBody('instituteAdmin.phone', 'Intitute Admin Phone Number is required').notEmpty();
+            // TODO: Need to validate phone number
+
             req.getValidationResult().then(function(result) {
                 if(!result.isEmpty()) {
                     reject(result);
