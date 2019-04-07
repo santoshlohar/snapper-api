@@ -2,6 +2,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 
+var generatePassword = () => {
+    //Need to logic to generate secured hash
+    return new mongoose.Types.ObjectId;
+};
+
 var schema = new Schema({
     email: {
         type: String,
@@ -13,7 +18,8 @@ var schema = new Schema({
         type: String,
     },
     password: {
-        type: String
+        type: String,
+        default: generatePassword()
     },
     phoneNumber: {
         type: String
