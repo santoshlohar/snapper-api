@@ -8,7 +8,7 @@ var userModel = require('../user/model');
 
 router.post('/register', function(req, res) {
 
-    var validationPromise = validator.register(req);
+    var errors = validator.register(req);
 
     var onError = (errors, statusCode) => {
         if (!(Array.isArray(errors) && errors.length)) {
@@ -18,6 +18,11 @@ router.post('/register', function(req, res) {
         }
         req.app.responseHelper.send(res, false, {}, errors, statusCode);
     };
+
+    if(errors && errors.length) {
+        onError(errors, 400);
+        return true;
+    }
 
     var createAdmin = (user, institute) => {
         userModel.create(user).then((data) => {
@@ -31,31 +36,19 @@ router.post('/register', function(req, res) {
         });
     };
 
-    validationPromise.then((result) => {
-        var body = req.body;
-        var user = body.instituteAdmin;
-        delete body.instituteAdmin;
+    var body = req.body;
+    var user = body.instituteAdmin;
+    delete body.instituteAdmin;
 
-        model.create(body).then((data) => {
-            if(data.error) {
-                onError({}, 500);
-            } else {
-                // create Admin
-                createAdmin(user, data.institute);
-            }
-        }).catch((err) => {
-            onError([], 500);
-        });
-        
-    }).catch((result) => {
-        console.log(result);
-        var errors = [];
-        if(result && result.array) {
-            var errors = result.array({
-                onlyFirstError: true
-            });
+    model.create(body).then((data) => {
+        if(data.error) {
+            onError({}, 500);
+        } else {
+            // create Admin
+            createAdmin(user, data.institute);
         }
-        onError(errors, 400);
+    }).catch((err) => {
+        onError([], 500);
     });
 
 });

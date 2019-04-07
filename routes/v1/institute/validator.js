@@ -17,40 +17,31 @@ var isValidDate = (date) => {
 };
 
 var register = (req) => {
+    
+    try {
+        
+        req.checkBody("type", "Institute type cannot be blank").notEmpty();
+        req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
+        req.checkBody("type", "Institute type is not valid").isIn(types);
+        req.checkBody("name", "Institute name cannot be blank").notEmpty();
+        req.checkBody("address.state", "State name cannot be blank").notEmpty();
+        req.checkBody("address.city", "City name cannot be blank").notEmpty();
+        req.checkBody('doe', "Date is not valid").optional().custom(isValidDate);
+        req.checkBody('requlatory.body', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
 
-    var promise = new Promise((resolve, reject) => {
+        req.checkBody('instituteAdmin.name', 'Intitute Admin is required').notEmpty();
+        req.checkBody('instituteAdmin.email', 'Intitute Admin is required').notEmpty();
+        req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
+        req.checkBody('instituteAdmin.phone', 'Intitute Admin Phone Number is required').notEmpty();
+        // TODO Need to validate phone number
 
-        try {
-            
-            req.checkBody("type", "Institute type cannot be blank").notEmpty();
-            req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
-            req.checkBody("type", "Institute type is not valid").isIn(types);
-            req.checkBody("name", "Institute name cannot be blank").notEmpty();
-            req.checkBody("address.state", "State name cannot be blank").notEmpty();
-            req.checkBody("address.city", "City name cannot be blank").notEmpty();
-            req.checkBody('doe', "Date is not valid").optional().custom(isValidDate);
-            req.checkBody('requlatory.body', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
+        var errors = req.validationErrors();
+        
+    } catch(e) {
+        var errors = [{msg: "Something went wrong!"}];
+    }
 
-            req.checkBody('instituteAdmin.name', 'Intitute Admin is required').notEmpty();
-            req.checkBody('instituteAdmin.email', 'Intitute Admin is required').notEmpty();
-            req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
-            req.checkBody('instituteAdmin.phone', 'Intitute Admin Phone Number is required').notEmpty();
-            // TODO Need to validate phone number
-
-            req.getValidationResult().then(function(result) {
-                if(!result.isEmpty()) {
-                    reject(result);
-                } else {
-                    resolve(result);
-                }
-            });
-        } catch(e) {
-            reject({});
-        }
-    });
-
-    return promise;
-
+    return errors;
 };
 
 
