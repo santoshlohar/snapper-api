@@ -35,7 +35,7 @@ var register = (req) => {
             req.checkBody('instituteAdmin.email', 'Intitute Admin is required').notEmpty();
             req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
             req.checkBody('instituteAdmin.phone', 'Intitute Admin Phone Number is required').notEmpty();
-            // TODO: Need to validate phone number
+            // TODO Need to validate phone number
 
             req.getValidationResult().then(function(result) {
                 if(!result.isEmpty()) {

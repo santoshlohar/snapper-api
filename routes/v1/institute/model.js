@@ -1,12 +1,20 @@
 var schema = require('./schema');
 
-var create = (institute, cb) => {
-    var document = new schema(institute);
-    document.save().then(function(result) {
-        cb(null, result);
-    }).catch(function(err) {
-        cb(err, null);
+var create = (institute) => {
+
+    var promise = new Promise((resolve, reject) => {
+        var document = new schema(institute);
+        document.save().then(function(result) {
+            var response = {error: null, institute: result};
+            resolve(response);
+        }).catch(function(err) {
+            var response = {error: err, institute: {}};
+            resolve(response);
+        });
     });
+
+    return promise;
+    
 };
 
 module.exports = {
