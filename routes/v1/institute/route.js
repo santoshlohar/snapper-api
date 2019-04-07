@@ -27,12 +27,12 @@ router.post('/register', function(req, res) {
     var createAdmin = (user, institute) => {
         userModel.create(user).then((data) => {
             if(data.error) {
-                onError({}, 500);
+                onError([], 500);
             } else {
                 req.app.responseHelper.send(res, true, institute, [], 200);
             }
         }).catch((err) => {
-            onError({}, 500);
+            onError([], 500);
         });
     };
 
@@ -42,7 +42,7 @@ router.post('/register', function(req, res) {
 
     model.create(body).then((data) => {
         if(data.error) {
-            onError({}, 500);
+            onError([], 500);
         } else {
             // create Admin
             createAdmin(user, data.institute);
