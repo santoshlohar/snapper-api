@@ -12,7 +12,7 @@ var schema = new Schema({
         type: String,
     },
     doe: {
-        type: String
+        type: Date
     },
     address: {
         address_line_1: {
@@ -66,6 +66,9 @@ var schema = new Schema({
         body: {
             type: String
         }
+    },
+    is_active: {
+        type: Boolean
     }
 }, {
     timestamps: true

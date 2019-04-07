@@ -20,6 +20,9 @@ var schema = new Schema({
     },
     role: {
         type: String
+    },
+    is_active: {
+        type: Boolean
     }
 }, {
     timestamps: true
