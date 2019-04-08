@@ -56,7 +56,7 @@ var register = (req) => {
         
     } catch(e) {
         var errors = [{msg: "Something went wrong!"}];
-        console.log(e);
+     
     }
 
     return errors;
