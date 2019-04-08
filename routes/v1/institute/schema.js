@@ -2,6 +2,16 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var schema = new Schema({
+    requester:{
+        name :{
+            type:String,},
+        emailid :{
+            type:String,},
+        phoneno :{
+            type:String,}
+    },
+    
+    
     type: {
         type: String,
     },
@@ -11,10 +21,14 @@ var schema = new Schema({
     name: {
         type: String,
     },
+    regid: {
+        type: String,
+    },
+   
     doe: {
         type: Date
     },
-    address: {
+        address: {
         address_line_1: {
             type: String
         },
@@ -50,13 +64,23 @@ var schema = new Schema({
             type: String
         }
     },
-    boardLineNumber: {
+    boardlinenumber: {
         type: String
     },
     location: {
         type: String
     },
     website: {
+        type: String
+    },
+    institution: {
+       name: {
+        type: String
+    },
+    type: {
+        type: String
+    }},
+    approvedby: {
         type: String
     },
     requlatory: {
@@ -73,8 +97,11 @@ var schema = new Schema({
     status: {
         type: String,
         default: "pending"
-    }
-}, {
+    },
+    
+}, 
+
+{
     timestamps: true
 });
 

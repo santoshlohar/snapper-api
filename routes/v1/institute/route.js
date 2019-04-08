@@ -11,7 +11,7 @@ router.post('/register', function(req, res) {
     var errors = validator.register(req);
 
     var onError = (errors, statusCode) => {
-        if (!(Array.isArray(errors) && errors.length)) {
+        if ((Array.isArray(errors) && errors.length)) {
             errors = [{
                 "msg": "Failed to create institute. Please try again."
             }];
