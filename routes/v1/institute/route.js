@@ -25,6 +25,10 @@ router.post('/register', function(req, res) {
     }
 
     var createAdmin = (user, institute) => {
+
+        user.instituteId = institute._id;
+        user.role = 'institute_admin';
+
         userModel.create(user).then((data) => {
             if(data.error) {
                 onError([], 500);

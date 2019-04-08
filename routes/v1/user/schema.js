@@ -2,9 +2,13 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 
-var generatePassword = () => {
-    //Need to logic to generate secured hash
-    return new mongoose.Types.ObjectId;
+var generatePassword = (text) => {
+
+    if(!text) {
+        text = new mongoose.Types.ObjectId;
+    }
+    //TODO: Need to logic to generate secured hash using bcrypt
+    return text;
 };
 
 var schema = new Schema({
@@ -34,6 +38,9 @@ var schema = new Schema({
     isVerified: {
         type: Boolean,
         default: false
+    },
+    instituteId: {
+        type: mongoose.Types.ObjectId
     }
 }, {
     timestamps: true

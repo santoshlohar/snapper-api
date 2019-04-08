@@ -3,6 +3,7 @@ var router = express.Router();
 
 router.get('/:id', function(req, res) {
 
+    req.checkQuery("id", "Not Integer").toInt();
     req.checkQuery("limit", "Limit cannot be blank").exists();
     req.checkQuery("offset", "Offset cannot be blank").exists();
 

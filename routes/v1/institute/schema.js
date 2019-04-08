@@ -67,8 +67,12 @@ var schema = new Schema({
             type: String
         }
     },
-    is_active: {
+    isActive: {
         type: Boolean
+    },
+    status: {
+        type: String,
+        default: "pending"
     }
 }, {
     timestamps: true

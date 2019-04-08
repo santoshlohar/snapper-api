@@ -21,8 +21,8 @@ var register = (req) => {
     try {
         
         req.checkBody("type", "Institute type cannot be blank").notEmpty();
-        req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
         req.checkBody("type", "Institute type is not valid").isIn(types);
+        req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
         req.checkBody("name", "Institute name cannot be blank").notEmpty();
         req.checkBody("address.state", "State name cannot be blank").notEmpty();
         req.checkBody("address.city", "City name cannot be blank").notEmpty();
