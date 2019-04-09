@@ -30,10 +30,16 @@ var register = (req) => {
         req.checkBody('requlatory.body', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
 
         req.checkBody('instituteAdmin.name', 'Intitute Admin is required').notEmpty();
-        req.checkBody('instituteAdmin.email', 'Intitute Admin is required').notEmpty();
+        req.checkBody('instituteAdmin.email', 'Intitute Admin Email ID required').notEmpty();
         req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
-        req.checkBody('instituteAdmin.phone', 'Intitute Admin Phone Number is required').notEmpty();
+        req.checkBody('instituteAdmin.phone', 'Please Enter valid Institute Admin Phone No').isMobilePhone('en-IN');
         // TODO Need to validate phone number
+        //Phone No, Email and URL Validation Completed....
+
+        req.checkBody('head.email', 'Intitute Head Email is invalid').isEmail().normalizeEmail();
+        req.checkBody('head.phoneNumber', 'Please Enter a Valid Head Contact No').optional().isMobilePhone('en-IN');
+        req.checkBody('boardLineNumber', 'Please Enter Valid Board Line No').optional().isNumeric();
+        req.checkBody('website', 'Please Enter Valid web site').optional().isURL();
 
         var errors = req.validationErrors();
         
