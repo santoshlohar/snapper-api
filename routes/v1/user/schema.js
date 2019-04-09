@@ -1,16 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-
-var generatePassword = (text) => {
-
-    if(!text) {
-        text = new mongoose.Types.ObjectId;
-    }
-    //TODO: Need to logic to generate secured hash using bcrypt
-    return text;
-};
-
 var schema = new Schema({
     email: {
         type: String,
@@ -23,7 +13,6 @@ var schema = new Schema({
     },
     password: {
         type: String,
-        default: generatePassword()
     },
     phoneNumber: {
         type: String
