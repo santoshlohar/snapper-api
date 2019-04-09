@@ -59,11 +59,28 @@ var schema = new Schema({
     website: {
         type: String
     },
-    requlatory: {
+    requester: {
         name: {
             type: String
         },
-        body: {
+        email: {
+            type: String
+        },
+        phoneNumber: {
+            type: String
+        }
+    },
+    affiliateInstitute: {
+        name: {
+            type: String
+        },
+        type: {
+            type: String
+        },
+        approvedBy: {
+            type: String
+        },
+        requlatoryBody: {
             type: String
         }
     },
