@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 var generatePassword = (text ) => {
     var salt = bcrypt.genSaltSync(10);
-    text="santosh"
+   
     var hash;
     if(!text ) {
         hash = new mongoose.Types.ObjectId;
