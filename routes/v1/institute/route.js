@@ -25,11 +25,11 @@ router.post('/register', function(req, res) {
     }
 
     var createAdmin = (user, institute) => {
-
         user.instituteId = institute._id;
         user.role = 'institute_admin';
 
         userModel.create(user).then((data) => {
+        
             if(data.error) {
                 onError([], 500);
             } else {
@@ -45,6 +45,7 @@ router.post('/register', function(req, res) {
     delete body.instituteAdmin;
 
     model.create(body).then((data) => {
+        
         if(data.error) {
             onError([], 500);
         } else {

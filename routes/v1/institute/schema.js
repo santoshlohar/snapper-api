@@ -89,7 +89,7 @@ var schema = new Schema({
     },
     status: {
         type: String,
-        default: "pending"
+        default: "new"
     }
 }, {
     timestamps: true
