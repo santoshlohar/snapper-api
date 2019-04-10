@@ -35,11 +35,29 @@ var register = (req) => {
         req.checkBody('instituteAdmin.phone', 'Please Enter valid Institute Admin Phone No').isMobilePhone('en-IN');
         // TODO Need to validate phone number
         //Phone No, Email and URL Validation Completed....
-
+        req.checkBody('head.name', 'Intitute Head Name is invalid').optional().contains();
         req.checkBody('head.email', 'Intitute Head Email is invalid').isEmail().normalizeEmail();
         req.checkBody('head.phoneNumber', 'Please Enter a Valid Head Contact No').optional().isMobilePhone('en-IN');
         req.checkBody('boardLineNumber', 'Please Enter Valid Board Line No').optional().isNumeric();
         req.checkBody('website', 'Please Enter Valid web site').optional().isURL();
+        req.checkBody('address.address_line_1','Please Enter Valid address').optional().contains();
+        req.checkBody('address.address_line_2','Please Enter Valid address').optional().contains();
+
+        req.checkBody('admin.name','Please Enger Valid Admin Name').optional().contains();
+        req.checkBody('admin.email','Please Enger Valid Admin Name').optional().isEmail().normalizeEmail();
+        req.checkBody('admin.phoneNumber','Please Enter Valid Admin phone number').optional().isMobilePhone('en-IN');
+        
+        req.checkBody('location','Please Enter Valid Location').optional().contains();
+
+        req.checkBody('requester.name','Please Enter Valid Requester Name').optional().contains();
+        req.checkBody('requester.email','Please Enter Valid Requester Email').optional().contains();
+        req.checkBody('requester.phoneNumber','Please Enter Valid Requester Phone Number').optional().contains();
+
+        req.checkBody('affiliateInstitute.name','Please Enter Valid Affiliate Institute Name').optional().contains();
+        req.checkBody('affiliateInstitute.type','Please Enter Valid Affiliate Institute Type').optional().contains();
+        req.checkBody('affiliateInstitute.approvedBy','Please Enter Valid Affiliate Institute ApprovedBy').optional().contains();
+        
+        
 
         var errors = req.validationErrors();
         
