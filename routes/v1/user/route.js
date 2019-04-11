@@ -34,6 +34,7 @@ router.get('/:id', function(req, res) {
 
 router.post("/forgotpassword", (req, res) => {
 
+
     var errors = validator.forgotPassword(req);
 
     if(errors && errors.length) {
@@ -41,14 +42,12 @@ router.post("/forgotpassword", (req, res) => {
     }
 
     var email = req.body.email;
-    model.findByEmail(email).then((data) => {
+        model.findByEmail(email).then((data) => {
         if(data.error) {
             onError(req, res, errors, 500);
         } else {
             var user = data.user;
-
             if(user && user._id) {
-
                 var data = {
                     email: user.email,
                     userId: user._id
@@ -72,9 +71,59 @@ router.post("/forgotpassword", (req, res) => {
 });
 
 router.post("/resetpassword", (req, res) => {
-    var data = {abcd: 5678};
-    req.app.responseHelper.send(res, true, data, [], 200);
-});
+// Require fields
+// emaild , otp. ==+> check this in to OTP Collection if both records are found and 
+//valied time is between current time then start password reset process. or send error message...
+            var email = req.body.email;
+            model.findOtpDetails(email).then((data) => {
+            if(data.error) {
+                onError(req, res, errors, 500);
+            } else {
+                var user = data.user;
+                if(user && user._id) {
+                    var data = {
+                        email: user.email,
+                        userId: user.userId,
+                        password:req.body.password
+                    };
+                var expiryDate = new Date(user.expiry);
+                if (Date.now() > expiryDate)
+                {
+                    //res.send(data);
+
+                    //res.send("OTP is expired Please Create New OTP");
+                }
+                else{
+                    if(req.body.password == req.body.confirmPassword  && req.body.code == user.code )
+                    {
+
+                        model.resetNewPassword(data);
+                                res.send(data);
+
+                        //res.send("Success ");
+
+
+                    }
+                   else {
+console.log("COnfirm Password - " + req.body.confirmPassword);
+console.log("Password - " + req.body.password);
+
+console.log("Code - " + req.body.code);
+console.log("Code From DB - " + user.code);
+
+                    console.log("Something went wrong");
+                    }
+
+
+                
+
+                    }
+
+                
+                }}
+
+    
+})});
 
 
 module.exports = router;
