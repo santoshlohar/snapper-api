@@ -73,6 +73,14 @@ router.post("/forgotpassword", (req, res) => {
 });
 
 router.post("/resetpassword", (req, res) => {
+
+    var errors = validator.resetPassword(req);
+    
+    if(errors && errors.length) {
+        onError(req, res, errors, 400);
+    }
+
+
         // Require fields
         // emaild , otp. ==+> check this in to OTP Collection if both records are found and 
         //valied time is between current time then start password reset process. or send error message...
