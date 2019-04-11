@@ -3,12 +3,12 @@ var bcrypt = require('bcrypt');
 var otpSchema = require('./otpSchema');
 var otpGenerator = require('otp-generator');
 var sendMail = require('node-email-sender');
- 
+var mongo = require('mongoose'); 
 var generatePassword = (text) => {
     var promise = new Promise((resolve, reject) => {
         bcrypt.hash(text, 10, function(err, hash) {
-            console.log(err);
-            console.log(text + " ==== hash is === "+hash);
+        //  console.log(err);
+        //  console.log(text + " ==== hash is === "+hash);
             if(!err) {
                 resolve(hash);
             } else {
@@ -16,11 +16,8 @@ var generatePassword = (text) => {
             }
         });
     });
-    
     return promise;
 };
-
-
 var create = (user) => {
     var promise = new Promise((resolve, reject) => {
         var text = Date.now() + Math.random();
@@ -74,10 +71,12 @@ var findByEmail = (email) => {
 var findOtpDetails = (email) => {
 
     var promise = new Promise((resolve, reject) => {
-
+        
         var data = {
-            email: email
+            email: email.email,
+            code:email.code
         };
+        
         otpSchema.findOne(data, (err, user) => {
        //    console.log ("Find OTP By EMail -"+ user);
             if(!err) {
@@ -90,30 +89,21 @@ var findOtpDetails = (email) => {
         });
     });
 
-    return promise;
+    return promise; 
 };
 
 
-var resetNewPassword = (userid) => {
-
-    var promise = new Promise((resolve, reject) => {
-
-        // var data = {
-        //     _id: _id,
-        //     password: password
-        // };
-        // console.log(resolve);
-       console.log(userid);
-        console.log("User ID" + userid.userId);
-        console.log("User Password" + userid.password);
-
-        schema.findOneAndUpdate({"_id":ObjectId(userid.userId)},{$set:{"password":userid.password}});
-    });
-
-    return promise;
+var setNewPassword =   (userid) => {
+        // console.log(userid);
+        // console.log("User ID" + userid.userId);
+        // console.log("User Password" + userid.password);
+        var newPassword ="";
+        generatePassword(userid.password).then((hash) => {
+            newPassword=hash;
+            });
+       
+        schema.findOneAndUpdate({"_id": userid.userId},{$set:{"password":newPassword}});
 };
-
-
 var createOtp = (data) => {
     var promise = new Promise((resolve, reject) => {
         data.expiry = Date.now() + (15 * 60 * 1000);
@@ -168,5 +158,5 @@ module.exports = {
     findByEmail,
     createOtp,
     findOtpDetails,
-    resetNewPassword
+    setNewPassword
 };
