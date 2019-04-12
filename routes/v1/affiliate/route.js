@@ -21,8 +21,10 @@ router.get("/:id", (req, res) => {
 
 	model.findById(id).then((data) => {
 		if(data.error) {
-			var error = data.error;
-			onError(req, res, error, 500);
+			var errors = [{
+				"msg": "Failed to get Affiliated Institute!"
+			}];
+			onError(req, res, errors, 500);
 		} else {
 			var affiliate = data.affiliate;
 			req.app.responseHelper.send(res, true, affiliate, [], 200);
