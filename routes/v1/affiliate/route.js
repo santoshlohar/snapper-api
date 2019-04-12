@@ -43,7 +43,6 @@ router.post("/create", (req, res) => {
 	};
 
 	model.create(affiliate).then((data) => {
-		console.log(data);
 		if(data.error) {
 			onError([], 500);
 		} else {
@@ -53,7 +52,6 @@ router.post("/create", (req, res) => {
 		onError([], 500);
 	});
 });
-
 
 // Active/Inactive affiliate
 router.put("/:id/changeStatus", (req, res) => {
