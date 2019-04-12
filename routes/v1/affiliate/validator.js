@@ -17,6 +17,14 @@ var affiliate = (req) => {
 
 }
 
+var checkId = (req) => {
+
+	req.checkParams("id", "Not Integer" ).toInt();
+	req.checkQuery("limit", "Limit cannot be blank").exists();
+    req.checkQuery("offset", "Offset cannot be blank").exists();
+}
+
 module.exports = {
-    affiliate
+	affiliate,
+	checkId
 }

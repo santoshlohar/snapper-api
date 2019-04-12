@@ -17,6 +17,17 @@ var onError = (req, res, errors, statusCode) => {
 // Get affiliate
 router.get("/:id", (req, res) => {
 
+	var id = req.params.id;
+
+	model.findById(id).then((data) => {
+		if(data.error) {
+			var error = data.error;
+			onError(req, res, error, 500);
+		} else {
+			var affiliate = data.affiliate;
+			req.app.responseHelper.send(res, true, affiliate, [], 200);
+		}
+	});
 });
 
 // List affiliate
