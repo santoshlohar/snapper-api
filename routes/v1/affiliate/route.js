@@ -15,20 +15,20 @@ var onError = (req, res, errors, statusCode) => {
 };
 
 // call update model
-var update = (data) => {
+// var update = (data) => {
 
-	model.update(data).then((data) => {
-		if(data.error) {
-			var errors = [{
-				"msg": "Failed to update Affiliated Institute!"
-			}];
-			onError(req, res, errors, 500);
-		} else {
-			var affiliate = data.affiliate;
-			req.app.responseHelper.send(res, true, affiliate, [], 200);
-		}
-	});
-};
+// 	model.update(data).then((data) => {
+// 		if(data.error) {
+// 			var errors = [{
+// 				"msg": "Failed to update Affiliated Institute!"
+// 			}];
+// 			onError(req, res, errors, 500);
+// 		} else {
+// 			var affiliate = data.affiliate;
+// 			req.app.responseHelper.send(res, true, affiliate, [], 200);
+// 		}
+// 	});
+// };
 
 // Get affiliate
 router.get("/:id", (req, res) => {
