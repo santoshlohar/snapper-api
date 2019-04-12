@@ -14,6 +14,22 @@ var onError = (req, res, errors, statusCode) => {
     req.app.responseHelper.send(res, false, {}, errors, statusCode);
 };
 
+// call update model
+var update = (data) => {
+
+	model.update(data).then((data) => {
+		if(data.error) {
+			var errors = [{
+				"msg": "Failed to update Affiliated Institute!"
+			}];
+			onError(req, res, errors, 500);
+		} else {
+			var affiliate = data.affiliate;
+			req.app.responseHelper.send(res, true, affiliate, [], 200);
+		}
+	});
+};
+
 // Get affiliate
 router.get("/:id", (req, res) => {
 
@@ -60,7 +76,46 @@ router.put("/:id/changeStatus", (req, res) => {
 
 // Update affiliate
 router.put("/:id", (req, res) => {
-    
+	
+	var id = req.params.id;
+
+	model.findById(id).then((data) => {
+		if(data.error) {
+			var errors = [{
+				"msg": "Failed to get Affiliated Institute!"
+			}];
+			onError(req, res, errors, 500);
+		} else {
+			var affiliate = data.affiliate;
+			if(req.body.name) {
+				affiliate.name = req.body.name;
+			}
+			if(req.body.departmentId) {
+				affiliate.departmentId = req.body.departmentId;
+			}
+			if(req.body.address) {
+				affiliate.address = req.body.address;
+			}
+
+			var errors = validator.affiliate(req);
+ 
+			if(errors && errors.length) {
+				onError(req, res, errors, 400);    
+			} else {
+				model.update(affiliate).then((data) => {
+					if(data.error) {
+						var errors = [{
+							"msg": "Failed to update Affiliated Institute!"
+						}];
+						onError(req, res, errors, 500);
+					} else {
+						var affiliate = data.affiliate;
+						req.app.responseHelper.send(res, true, affiliate, [], 200);
+					}
+				});
+			}
+		}
+	});
 });
 
 // Delete affiliate
