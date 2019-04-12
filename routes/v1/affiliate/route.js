@@ -55,7 +55,33 @@ router.post("/create", (req, res) => {
 
 // Active/Inactive affiliate
 router.put("/:id/changeStatus", (req, res) => {
-    
+	var id = req.params.id;
+	
+	model.findById(id).then((data) => {
+		if(data.error) {
+			var errors = [{
+				"msg": "Failed to get Affiliated Institute!"
+			}];
+			onError(req, res, errors, 500);
+		} else {
+			var affiliate = data.affiliate;
+			if(req.body.isDeleted) {
+				affiliate.isDeleted = req.body.isDeleted;
+			}
+
+			model.update(affiliate).then((data) => {
+				if(data.error) {
+					var errors = [{
+						"msg": "Failed to update Affiliated Institute!"
+					}];
+					onError(req, res, errors, 500);
+				} else {
+					var affiliate = data.affiliate;
+					req.app.responseHelper.send(res, true, affiliate, [], 200);
+				}
+			});
+		}
+	});
 });
 
 // Update affiliate
