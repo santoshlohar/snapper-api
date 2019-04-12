@@ -15,6 +15,25 @@ var create = (affiliate) => {
 	return promise;
 }
 
+var getList = (data) => {
+	var promise = new Promise((resolve, reject) => {
+		console.log("2222")
+		schema.find().then((result) => {
+			console.log("113")
+			console.log(result);
+			var response = {error: null, affiliates: result};
+			resolve(response);
+		}).catch((err) => {
+			console.log("2223")
+			var response = {error: err, data: []};
+			resolve(response);
+		});
+	});
+
+	return promise;
+}
+
 module.exports = {
-	create
+	create,
+	getList
 }

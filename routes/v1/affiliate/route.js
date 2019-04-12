@@ -15,18 +15,36 @@ var onError = (req, res, errors, statusCode) => {
 };
 
 // Get affiliate
-router.get("/:id", (req, res) => {
+// router.get("/:id", (req, res) => {
 
-});
+// });
 
 // List affiliate
 router.get("/list", (req, res) => {
+	console.log("sush");
+	var offset = req.query.offset === undefined ? 0 : req.query.offset;
+	var limit = req.query.limit === undefined ? 0 : req.query.limit;
 
+	var obj = {
+		offset: offset,
+		limit: limit
+	}
+
+	model.getList(obj).then((data) => {
+		if(data.error) {
+			console.log("abc")
+			console.log(data);
+			onError([], 500);
+		} else {
+			console.log(data);
+			req.app.responseHelper.send(res, true, data.affiliates, [], 200);
+		}
+	});
 });
 
 //create affiliate
 router.post("/create", (req, res) => {
-
+	console.log("sush2")
 	var errors = validator.affiliate(req);
 
 	if(errors && errors.length) {
