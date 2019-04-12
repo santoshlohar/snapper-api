@@ -39,7 +39,7 @@ var schema = new Schema({
             type: String
         }
     },
-    admin: {
+    instituteAdmin: {
         name: {
             type: String
         },

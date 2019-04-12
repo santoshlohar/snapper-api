@@ -4,6 +4,16 @@ var schema = require('./schema');
 var model = require('./model');
 var validator = require('./validator');
 
+// On Error 
+var onError = (req, res, errors, statusCode) => {
+    if (!(Array.isArray(errors) && errors.length)) {
+        errors = [{
+            "msg": "Something went wrong!"
+        }];
+    }
+    req.app.responseHelper.send(res, false, {}, errors, statusCode);
+};
+
 // Get affiliate
 router.get("/:id", (req, res) => {
 
@@ -17,6 +27,31 @@ router.get("/list", (req, res) => {
 //create affiliate
 router.post("/create", (req, res) => {
 
+	var errors = validator.affiliate(req);
+
+	if(errors && errors.length) {
+        onError(req, res, errors, 400);
+    }
+
+	var affiliate = {
+		name: req.body.name,
+		instituteId: req.body.instituteId,
+		departmentId: req.body.departmentId,
+		address: req.body.address,
+		isActive: req.body.isActive,
+		isDeleted: req.body.isDeleted
+	};
+
+	model.create(affiliate).then((data) => {
+		console.log(data);
+		if(data.error) {
+			onError([], 500);
+		} else {
+			req.app.responseHelper.send(res, true, data.affiliate, [], 200);
+		}
+	}).catch((err) => {
+		onError([], 500);
+	});
 });
 
 

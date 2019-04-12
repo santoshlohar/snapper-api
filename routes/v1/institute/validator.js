@@ -32,7 +32,7 @@ var register = (req) => {
         req.checkBody('instituteAdmin.name', 'Intitute Admin is required').notEmpty();
         req.checkBody('instituteAdmin.email', 'Intitute Admin is required').notEmpty();
         req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
-        req.checkBody('instituteAdmin.phone', 'Intitute Admin Phone Number is required').notEmpty();
+        req.checkBody('instituteAdmin.phoneNumber', 'Intitute Admin Phone Number is required').notEmpty();
         // TODO Need to validate phone number
 
         var errors = req.validationErrors();
