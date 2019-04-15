@@ -65,10 +65,7 @@ router.put("/:id/changeStatus", (req, res) => {
 			onError(req, res, errors, 500);
 		} else {
 			var affiliate = data.affiliate;
-			if(req.body.isDeleted) {
-				affiliate.isDeleted = req.body.isDeleted;
-			}
-
+			affiliate.isActive = req.body.isActive;
 			model.update(affiliate).then((data) => {
 				if(data.error) {
 					var errors = [{
