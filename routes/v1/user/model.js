@@ -1,12 +1,14 @@
 var schema = require('./schema');
 var bcrypt = require('bcrypt');
 var otpSchema = require('./otpSchema');
-
+var otpGenerator = require('otp-generator');
+var sendMail = require('node-email-sender');
+var mongo = require('mongoose'); 
 var generatePassword = (text) => {
     var promise = new Promise((resolve, reject) => {
         bcrypt.hash(text, 10, function(err, hash) {
-            console.log(err);
-            console.log(text + " ==== hash is === "+hash);
+        //  console.log(err);
+        //  console.log(text + " ==== hash is === "+hash);
             if(!err) {
                 resolve(hash);
             } else {
@@ -14,18 +16,13 @@ var generatePassword = (text) => {
             }
         });
     });
-    
     return promise;
 };
-
-
 var create = (user) => {
     var promise = new Promise((resolve, reject) => {
-
         var text = Date.now() + Math.random();
         text = text.toString();
-
-        generatePassword(text).then((hash) => {
+           generatePassword(text).then((hash) => {
             user.password = hash;
             var document = new schema(user);
             document.save().then(function(result) {
@@ -52,12 +49,13 @@ var findByEmail = (email) => {
         var data = {
             email: email
         };
-        console.log(data);
+       
 
         schema.findOne(data, (err, user) => {
-            console.log(err);
-            console.log(user);
+           // console.log( "Email Finding Error   " + err);
+          //  console.log(user);
             if(!err) {
+             
                 var response = {error: false, user: user};
                 resolve(response);
             } else {
@@ -70,24 +68,59 @@ var findByEmail = (email) => {
     return promise;
 };
 
-var createOtp = (data) => {
+var findOtpDetails = (email) => {
 
     var promise = new Promise((resolve, reject) => {
         
+        var data = {
+            email: email.email,
+            code:email.code
+        };
+        
+        otpSchema.findOne(data, (err, user) => {
+       //    console.log ("Find OTP By EMail -"+ user);
+            if(!err) {
+                var response = {error: false, user: user};
+                resolve(response);
+            } else {
+                var response = {error: true, user: {}};
+                resolve(response);
+            }
+        });
+    });
 
+    return promise; 
+};
+
+
+var setNewPassword =   (userid) => {
+        // console.log(userid);
+        // console.log("User ID" + userid.userId);
+        // console.log("User Password" + userid.password);
+        var newPassword ="";
+        generatePassword(userid.password).then((hash) => {
+            newPassword=hash;
+            });
+       
+        schema.findOneAndUpdate({"_id": userid.userId},{$set:{"password":newPassword}});
+};
+var createOtp = (data) => {
+    var promise = new Promise((resolve, reject) => {
         data.expiry = Date.now() + (15 * 60 * 1000);
-        //generateOtp
-        otp.code = "";
-
+                //generateOtp
+                data.code =otpGenerator.generate(8, { upperCase: true, specialChars: false });
+                //console.log(otpGenerator.generate(6, { upperCase: true, specialChars: false }));
         var document = new otpSchema(data);
         document.save().then((otp) => {
             if(otp._id) {
+                
                 //send email
-                sendEmail();
+                sendEmail(otp);
+                
                 resolve({error: false, otp: otp});
             }
         }).catch((err) => {
-            console.log(err);
+          //  console.log( "Error in Create OTP" + err);
             resolve({error: true, otp: {}});
         });
 
@@ -97,12 +130,33 @@ var createOtp = (data) => {
     return promise;
 };
 
-var sendEmail = () => {
+var sendEmail = (data) => {
 
+    let emailConfig = {
+        emailFrom: 'santosh.lohar@snapperfuturetech.com',
+        transporterConfig: {
+            service: 'gmail',
+            auth: {
+                user: 'santosh.lohar@snapperfuturetech.com',
+                pass: 'Soham@2015'
+            }
+        }
+    }
+    var response = sendMail.sendMail({
+        emailConfig: emailConfig,
+        to: "santosh.lohar@snapperfuturetech.com",
+        subject: 'OTP For reset password',
+        content: 'Please Check following OTP for Reset Password requees.' + data.code,
+    });
+     
+                    //  console.log(response);
+                    //console.log("Get Email and OTP Details :- " + data._id + "  "+ data.code)  
 };
 
 module.exports = {
     create,
     findByEmail,
-    createOtp
+    createOtp,
+    findOtpDetails,
+    setNewPassword
 };
