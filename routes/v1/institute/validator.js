@@ -2,8 +2,8 @@
 var moment = require('moment');
 
 const types = [
-    'Central University', 'State University', 'Deemed University', 
-    'Private University', 'CBSE', 'ICSE', 'State Board', 
+    'Central University', 'State University', 'Deemed University',
+    'Private University', 'CBSE', 'ICSE', 'State Board',
     'International Board', 'Private Institute'
 ];
 
@@ -17,31 +17,58 @@ var isValidDate = (date) => {
 };
 
 var register = (req) => {
-    
+
     try {
-        
+
+        // Institute Admin validato
+        req.checkBody("instituteAdmin.name", "instituteAdmin name cannot be blank").notEmpty();
+        req.checkBody("instituteAdmin.email", "instituteAdmin email cannot be blank").isEmail().normalizeEmail();
+        req.checkBody('instituteAdmin.phoneNumber', 'instituteAdmin Phone Number is required').notEmpty();
+
+        //Requester Details
+        req.checkBody("requester.name", "Requester name cannot be blank").notEmpty();
+        req.checkBody("requester.email", "Requester emailID cannot be blank").isEmail().normalizeEmail();
+        req.checkBody('requester.phoneNumber', 'Requester Phone Number is required').notEmpty();
+
+        //Insititute Details
         req.checkBody("type", "Institute type cannot be blank").notEmpty();
         req.checkBody("type", "Institute type is not valid").isIn(types);
         req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
         req.checkBody("name", "Institute name cannot be blank").notEmpty();
-        req.checkBody("address.state", "State name cannot be blank").notEmpty();
-        req.checkBody("address.city", "City name cannot be blank").notEmpty();
-        req.checkBody('doe', "Date is not valid").optional().custom(isValidDate);
-        req.checkBody('requlatory.body', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
+        req.checkBody("doe", "Date is not valid").optional().custom(isValidDate);
+        
+        //address
+        req.checkBody("address.address_line_1", "Address1 can not be blank").optional().notEmpty();
+        req.checkBody("address.address_line_2", "Address2 can not be blank").optional().notEmpty();
+        req.checkBody("address.state", "State name cannot be blank").optional().notEmpty();
+        req.checkBody("address.city", "City name cannot be blank").optional().notEmpty();
 
-        req.checkBody('instituteAdmin.name', 'Intitute Admin is required').notEmpty();
-        req.checkBody('instituteAdmin.email', 'Intitute Admin is required').notEmpty();
-        req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
-        req.checkBody('instituteAdmin.phone', 'Intitute Admin Phone Number is required').notEmpty();
+        req.checkBody("head.name", "Head name cannot be blank").optional().notEmpty();
+        req.checkBody("head.email", "Head EmailId cannot be blank").optional().notEmpty();
+        req.checkBody("head.phoneNumber", "Head phone number cannot be blank").optional().notEmpty();
+
+        req.checkBody('administrator.name', 'Intitute Admin is required').optional().notEmpty();
+        req.checkBody('administrator.email', 'Intitute Admin is required').optional().notEmpty();
+        req.checkBody('administrator.email', 'Intitute Admin Email is invalid').optional().isEmail().normalizeEmail();
+        req.checkBody('administrator.phoneNumber', 'Intitute Admin Phone Number is required').optional().notEmpty(); // phone number validation
+        req.checkBody("administrator.landineNumber", "Board Line Number can not be blank").optional().notEmpty();
+
+        req.checkBody("location", "location can not be blank").optional().notEmpty();
+        req.checkBody("website", "website in proper format").optional().isFQDN()
+
+        req.checkBody('affiliateInstitute.requlatoryBody', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
+
         // TODO Need to validate phone number
 
         var errors = req.validationErrors();
-        
-    } catch(e) {
-        var errors = [{msg: "Something went wrong!"}];
+
+    } catch (e) {
+        var errors = [{ msg: "Something went wrong!" }];
+
     }
 
     return errors;
+
 };
 
 

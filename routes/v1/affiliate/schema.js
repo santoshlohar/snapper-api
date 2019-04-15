@@ -6,10 +6,10 @@ var schema = new Schema({
         type: String,
     },
     instituteId: {
-        type: mongoose.object.TypeId
+        type: mongoose.Types.ObjectId
     },
     departmentId: {
-        type: mongoose.object.TypeId
+        type: mongoose.Types.ObjectId
     },
     address: {
         type: String

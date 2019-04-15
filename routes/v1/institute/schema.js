@@ -28,6 +28,17 @@ var schema = new Schema({
             type: String
         }
     },
+    requester: {
+        name: {
+            type: String,
+        },
+        email: {
+            type: String,
+        },
+        phoneNumber: {
+            type: String,
+        }
+    },
     head: {
         name: {
             type: String
@@ -39,7 +50,7 @@ var schema = new Schema({
             type: String
         }
     },
-    admin: {
+    administrator: {
         name: {
             type: String
         },
@@ -48,27 +59,16 @@ var schema = new Schema({
         },
         phoneNumber: {
             type: String
+        },
+        landineNumber: {
+            type: String
         }
-    },
-    boardLineNumber: {
-        type: String
     },
     location: {
         type: String
     },
     website: {
         type: String
-    },
-    requester: {
-        name: {
-            type: String
-        },
-        email: {
-            type: String
-        },
-        phoneNumber: {
-            type: String
-        }
     },
     affiliateInstitute: {
         name: {
@@ -92,7 +92,7 @@ var schema = new Schema({
         default: "new"
     }
 }, {
-    timestamps: true
-});
+        timestamps: true
+    });
 
 module.exports = mongoose.model('institutes', schema);
