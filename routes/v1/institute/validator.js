@@ -2,8 +2,8 @@
 var moment = require('moment');
 
 const types = [
-    'Central University', 'State University', 'Deemed University', 
-    'Private University', 'CBSE', 'ICSE', 'State Board', 
+    'Central University', 'State University', 'Deemed University',
+    'Private University', 'CBSE', 'ICSE', 'State Board',
     'International Board', 'Private Institute'
 ];
 
@@ -17,13 +17,13 @@ var isValidDate = (date) => {
 };
 
 var register = (req) => {
-    
+
     try {
         //Requester Details
-        req.checkBody("requester.name","Requester name cannot be blank").notEmpty();
-        req.checkBody("requester.emailid","Requester emailID cannot be blank").isEmail().normalizeEmail();
+        req.checkBody("requester.name", "Requester name cannot be blank").notEmpty();
+        req.checkBody("requester.emailid", "Requester emailID cannot be blank").isEmail().normalizeEmail();
         req.checkBody('requester.phoneno', 'Requester Phone Number is required').notEmpty();
-//Insititute Details
+        //Insititute Details
 
         req.checkBody("type", "Institute type cannot be blank").notEmpty();
         req.checkBody("type", "Institute type is not valid").isIn(types);
@@ -31,7 +31,7 @@ var register = (req) => {
         req.checkBody("name", "Institute name cannot be blank").notEmpty();
         req.checkBody("regid", "Institute regid cannot be blank").notEmpty();
         //req.checkBody("doe", "Date is not valid").optional().custom(isValidDate);
-         req.checkBody("boardlinenumber", "boardlinenumber can not be blank").notEmpty();
+        req.checkBody("boardlinenumber", "boardlinenumber can not be blank").notEmpty();
         req.checkBody("location", "location can not be blank").notEmpty();
         req.checkBody("website", "website in proper format").isFQDN();
         req.checkBody("institution", "institution can not be blank").notEmpty();
@@ -50,17 +50,17 @@ var register = (req) => {
         req.checkBody('admin.email', 'Intitute Admin is required').notEmpty();
         req.checkBody('admin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
         req.checkBody('admin.phoneNumber', 'Intitute Admin Phone Number is required').notEmpty();
-                // TODO Need to validate phone number
+        // TODO Need to validate phone number
 
         var errors = req.validationErrors();
-        
-    } catch(e) {
-        var errors = [{msg: "Something went wrong!"}];
-     
+
+    } catch (e) {
+        var errors = [{ msg: "Something went wrong!" }];
+
     }
 
     return errors;
-    
+
 };
 
 
