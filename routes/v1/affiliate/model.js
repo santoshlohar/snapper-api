@@ -16,15 +16,11 @@ var create = (affiliate) => {
 }
 
 var getList = (data) => {
-	var promise = new Promise((resolve, reject) => {
-		console.log("2222")
-		schema.find().then((result) => {
-			console.log("113")
-			console.log(result);
+	var promise = new Promise((resolve, reject) => {		
+		schema.find({instituteId: data.instituteId}).then((result) => {
 			var response = {error: null, affiliates: result};
 			resolve(response);
 		}).catch((err) => {
-			console.log("2223")
 			var response = {error: err, data: []};
 			resolve(response);
 		});
