@@ -43,8 +43,8 @@ router.post('/register', function (req, res) {
     };
 
     var body = req.body;
-    var user = body.admin;
-    delete body.admin;
+    var user = body.instituteAdmin;
+    delete body.instituteAdmin;
 
     model.create(body).then((data) => {
 

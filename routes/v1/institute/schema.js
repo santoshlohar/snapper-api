@@ -2,17 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var schema = new Schema({
-    requester: {
-        name: {
-            type: String,
-        },
-        email: {
-            type: String,
-        },
-        phoneNumber: {
-            type: String,
-        }
-    },
     type: {
         type: String,
     },
@@ -39,6 +28,17 @@ var schema = new Schema({
             type: String
         }
     },
+    requester: {
+        name: {
+            type: String,
+        },
+        email: {
+            type: String,
+        },
+        phoneNumber: {
+            type: String,
+        }
+    },
     head: {
         name: {
             type: String
@@ -50,7 +50,7 @@ var schema = new Schema({
             type: String
         }
     },
-    admin: {
+    administrator: {
         name: {
             type: String
         },
@@ -59,10 +59,10 @@ var schema = new Schema({
         },
         phoneNumber: {
             type: String
+        },
+        landineNumber: {
+            type: String
         }
-    },
-    boardlinenumber: {
-        type: String
     },
     location: {
         type: String

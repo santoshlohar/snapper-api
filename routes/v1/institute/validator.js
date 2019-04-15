@@ -19,6 +19,12 @@ var isValidDate = (date) => {
 var register = (req) => {
 
     try {
+
+        // Institute Admin validato
+        req.checkBody("instituteAdmin.name", "instituteAdmin name cannot be blank").notEmpty();
+        req.checkBody("instituteAdmin.email", "instituteAdmin email cannot be blank").isEmail().normalizeEmail();
+        req.checkBody('instituteAdmin.phoneNumber', 'instituteAdmin Phone Number is required').notEmpty();
+
         //Requester Details
         req.checkBody("requester.name", "Requester name cannot be blank").notEmpty();
         req.checkBody("requester.email", "Requester emailID cannot be blank").isEmail().normalizeEmail();
@@ -30,25 +36,28 @@ var register = (req) => {
         req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
         req.checkBody("name", "Institute name cannot be blank").notEmpty();
         req.checkBody("doe", "Date is not valid").optional().custom(isValidDate);
-        req.checkBody("boardlinenumber", "boardlinenumber can not be blank").optional().notEmpty();
-        req.checkBody("location", "location can not be blank").notEmpty();
-        req.checkBody("website", "website in proper format").isFQDN();
-        req.checkBody("institution", "institution can not be blank").notEmpty();
-        req.checkBody("type", "institution type can not be blank").notEmpty();
-        req.checkBody("approvedby", "approvedby can not be blank").notEmpty();
+        
         //address
         req.checkBody("address.address_line_1", "Address1 can not be blank").optional().notEmpty();
         req.checkBody("address.address_line_2", "Address2 can not be blank").optional().notEmpty();
         req.checkBody("address.state", "State name cannot be blank").optional().notEmpty();
         req.checkBody("address.city", "City name cannot be blank").optional().notEmpty();
+
         req.checkBody("head.name", "Head name cannot be blank").optional().notEmpty();
         req.checkBody("head.email", "Head EmailId cannot be blank").optional().notEmpty();
         req.checkBody("head.phoneNumber", "Head phone number cannot be blank").optional().notEmpty();
-        req.checkBody('requlatory.body', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
-        req.checkBody('admin.name', 'Intitute Admin is required').optional().notEmpty();
-        req.checkBody('admin.email', 'Intitute Admin is required').optional().notEmpty();
-        req.checkBody('admin.email', 'Intitute Admin Email is invalid').optional().isEmail().normalizeEmail();
-        req.checkBody('admin.phoneNumber', 'Intitute Admin Phone Number is required').optional().notEmpty(); // phone number validation
+
+        req.checkBody('administrator.name', 'Intitute Admin is required').optional().notEmpty();
+        req.checkBody('administrator.email', 'Intitute Admin is required').optional().notEmpty();
+        req.checkBody('administrator.email', 'Intitute Admin Email is invalid').optional().isEmail().normalizeEmail();
+        req.checkBody('administrator.phoneNumber', 'Intitute Admin Phone Number is required').optional().notEmpty(); // phone number validation
+        req.checkBody("administrator.landineNumber", "Board Line Number can not be blank").optional().notEmpty();
+
+        req.checkBody("location", "location can not be blank").optional().notEmpty();
+        req.checkBody("website", "website in proper format").optional().isFQDN()
+
+        req.checkBody('affiliateInstitute.requlatoryBody', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
+
         // TODO Need to validate phone number
 
         var errors = req.validationErrors();
