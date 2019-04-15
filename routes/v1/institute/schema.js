@@ -2,16 +2,17 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var schema = new Schema({
-    requester:{
-        name :{
-            type:String,},
-        emailid :{
-            type:String,},
-        phoneno :{
-            type:String,}
+    requester: {
+        name: {
+            type: String,
+        },
+        emailid: {
+            type: String,
+        },
+        phoneno: {
+            type: String,
+        }
     },
-    
-    
     type: {
         type: String,
     },
@@ -24,11 +25,11 @@ var schema = new Schema({
     regid: {
         type: String,
     },
-   
+
     doe: {
         type: Date
     },
-        address: {
+    address: {
         address_line_1: {
             type: String
         },
@@ -106,7 +107,7 @@ var schema = new Schema({
         default: "new"
     }
 }, {
-    timestamps: true
-});
+        timestamps: true
+    });
 
 module.exports = mongoose.model('institutes', schema);

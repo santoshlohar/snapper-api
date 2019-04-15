@@ -6,7 +6,7 @@ var validator = require('./validator');
 var userModel = require('../user/model');
 
 
-router.post('/register', function(req, res) {
+router.post('/register', function (req, res) {
 
     var errors = validator.register(req);
 
@@ -19,7 +19,7 @@ router.post('/register', function(req, res) {
         req.app.responseHelper.send(res, false, {}, errors, statusCode);
     };
 
-    if(errors && errors.length) {
+    if (errors && errors.length) {
         onError(errors, 400);
         return true;
     }
@@ -27,18 +27,18 @@ router.post('/register', function(req, res) {
     var createAdmin = (user, institute) => {
         user.instituteId = institute._id;
         user.role = 'institute_admin';
-        user.firstName =user.name;
+        user.firstName = user.name;
 
         userModel.create(user).then((data) => {
-        
-            if(data.error) {
+
+            if (data.error) {
                 onError([], 500);
             } else {
                 req.app.responseHelper.send(res, true, institute, [], 200);
             }
         }).catch((err) => {
             onError([], 500);
-            
+
         });
     };
 
@@ -47,10 +47,10 @@ router.post('/register', function(req, res) {
     delete body.admin;
 
     model.create(body).then((data) => {
-        
-        if(data.error) {
+
+        if (data.error) {
             onError([], 500);
-            
+
         } else {
             // create Admin
             createAdmin(user, data.institute);
