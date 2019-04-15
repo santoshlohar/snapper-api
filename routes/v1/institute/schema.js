@@ -6,10 +6,10 @@ var schema = new Schema({
         name: {
             type: String,
         },
-        emailid: {
+        email: {
             type: String,
         },
-        phoneno: {
+        phoneNumber: {
             type: String,
         }
     },
@@ -22,10 +22,6 @@ var schema = new Schema({
     name: {
         type: String,
     },
-    regid: {
-        type: String,
-    },
-
     doe: {
         type: Date
     },
@@ -73,17 +69,6 @@ var schema = new Schema({
     },
     website: {
         type: String
-    },
-    requester: {
-        name: {
-            type: String
-        },
-        email: {
-            type: String
-        },
-        phoneNumber: {
-            type: String
-        }
     },
     affiliateInstitute: {
         name: {
