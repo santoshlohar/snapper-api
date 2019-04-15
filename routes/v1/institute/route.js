@@ -29,9 +29,9 @@ router.post('/register', function(req, res) {
         user.role = 'institute_admin';
         user.firstName =user.name;
 
-        userModel.create(user).then((data) => 
-        {
-             if(data.error) {
+        userModel.create(user).then((data) => {
+        
+            if(data.error) {
                 onError([], 500);
             } else {
                 req.app.responseHelper.send(res, true, institute, [], 200);
@@ -47,6 +47,7 @@ router.post('/register', function(req, res) {
     delete body.admin;
 
     model.create(body).then((data) => {
+        
         if(data.error) {
             onError([], 500);
             

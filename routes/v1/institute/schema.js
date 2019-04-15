@@ -73,21 +73,28 @@ var schema = new Schema({
     website: {
         type: String
     },
-    institution: {
-       name: {
-        type: String
-    },
-    type: {
-        type: String
-    }},
-    approvedby: {
-        type: String
-    },
-    requlatory: {
+    requester: {
         name: {
             type: String
         },
-        body: {
+        email: {
+            type: String
+        },
+        phoneNumber: {
+            type: String
+        }
+    },
+    affiliateInstitute: {
+        name: {
+            type: String
+        },
+        type: {
+            type: String
+        },
+        approvedBy: {
+            type: String
+        },
+        requlatoryBody: {
             type: String
         }
     },
@@ -96,12 +103,9 @@ var schema = new Schema({
     },
     status: {
         type: String,
-        default: "pending"
-    },
-    
-}, 
-
-{
+        default: "new"
+    }
+}, {
     timestamps: true
 });
 

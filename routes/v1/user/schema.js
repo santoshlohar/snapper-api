@@ -29,7 +29,6 @@ var schema = new Schema({
     },
     password: {
         type: String,
-        default: generatePassword()
     },
     phoneNumber: {
         type: String
