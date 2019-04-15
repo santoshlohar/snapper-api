@@ -37,9 +37,7 @@ router.post("/create", (req, res) => {
 		name: req.body.name,
 		instituteId: req.body.instituteId,
 		departmentId: req.body.departmentId,
-		address: req.body.address,
-		isActive: req.body.isActive,
-		isDeleted: req.body.isDeleted
+		address: req.body.address
 	};
 
 	model.create(affiliate).then((data) => {
