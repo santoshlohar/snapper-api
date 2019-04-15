@@ -30,7 +30,8 @@ var userRef = (req, res, user) => {
 
     model.userDetails(obj).then((data) => {
         if(data.error) {
-            onError([], 500);
+            console.log(data.error)
+            onError(req, res, data.error, 500);
         } else {
             req.app.responseHelper.send(res, true, data.user, [], 200);
         }
@@ -122,7 +123,7 @@ router.post("/create", (req, res) => {
 
     model.create(user).then((data) => {
         if(data.error) {
-            onError([], 500);
+            onError(req, res, data.error, 500);
         } else {
             var userData = data.user;
             userRef(req, res, userData);
