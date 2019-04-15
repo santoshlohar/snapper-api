@@ -13,6 +13,32 @@ var onError = (req, res, errors, statusCode) => {
     req.app.responseHelper.send(res, false, {}, errors, statusCode);
 };
 
+var userRef = (req, res, user) => {
+    console.log(user);
+    var errors = validator.userRefIds(req);
+
+    if(errors && errors.length) {
+        onError(req, res, errors, 400);
+    }
+
+    var obj = {
+        userId: user._id,
+        instituteId: user.instituteId,
+        departmentId: req.body.departmentId,
+        affiliateId: req.body.affiliateId
+    }
+
+    model.userDetails(obj).then((data) => {
+        if(data.error) {
+            onError([], 500);
+        } else {
+            req.app.responseHelper.send(res, true, data.user, [], 200);
+        }
+    }).catch((err) => {
+		onError([], 500);
+	});
+}
+
 router.get('/:id', function(req, res) {
 
     req.checkQuery("id", "Not Integer").toInt();
@@ -76,5 +102,36 @@ router.post("/resetpassword", (req, res) => {
     req.app.responseHelper.send(res, true, data, [], 200);
 });
 
+router.post("/create", (req, res) => {
+
+    var errors = validator.user(req);
+    var errors = validator.userRefIds(req);
+
+    if(errors && errors.length) {
+        onError(req, res, errors, 400);
+    }
+
+    var user = {};
+    user.name = req.body.name;
+    user.email = req.body.email;
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    user.phoneNumber = req.body.phoneNumber;
+    user.role = req.body.role;
+    user.instituteId = req.body.instituteId;
+
+    model.create(user).then((data) => {
+        if(data.error) {
+            onError([], 500);
+        } else {
+            var userData = data.user;
+            userRef(req, res, userData);
+            //req.app.responseHelper.send(res, true, data.user, [], 200);
+        }
+    }).catch((err) => {
+		onError([], 500);
+	});
+
+});
 
 module.exports = router;

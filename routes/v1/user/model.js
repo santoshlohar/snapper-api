@@ -1,6 +1,7 @@
 var schema = require('./schema');
 var bcrypt = require('bcrypt');
 var otpSchema = require('./otpSchema');
+var userSchema = require('./userSchema');
 
 var generatePassword = (text) => {
     var promise = new Promise((resolve, reject) => {
@@ -101,8 +102,33 @@ var sendEmail = () => {
 
 };
 
+var userDetails = (user) => {
+    var promise = new Promise((resolve, reject) => {
+        var text = Date.now() + Math.random();
+        text = text.toString();
+
+        generatePassword(text).then((hash) => {
+            user.password = hash;
+            var document = new schema(userSchema);
+            document.save().then(function(result) {
+                var response = {error: null, user: result};
+                resolve(response);
+            }).catch((err) => {
+                var response = {error: err, user: {}};
+                resolve(response);
+            });
+        }).catch((err) => {
+            var response = {error: true, user: {}};
+            resolve(response);
+        });
+    });
+
+    return promise;
+}
+
 module.exports = {
     create,
     findByEmail,
-    createOtp
+    createOtp,
+    userDetails
 };
