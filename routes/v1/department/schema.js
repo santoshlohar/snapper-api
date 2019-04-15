@@ -6,7 +6,7 @@ var schema = new Schema({
         type: String,
     },
     instituteId: {
-        type: mongoose.object.TypeId
+        type: mongoose.Types.ObjectId
     },
     code: {
         type: String,
