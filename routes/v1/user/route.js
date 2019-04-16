@@ -14,13 +14,7 @@ var onError = (req, res, errors, statusCode) => {
 };
 
 var userRef = (req, res, user) => {
-    console.log(user);
-    var errors = validator.userRefIds(req);
-
-    if(errors && errors.length) {
-        onError(req, res, errors, 400);
-    }
-
+    
     var obj = {
         userId: user._id,
         instituteId: user.instituteId,
@@ -30,7 +24,6 @@ var userRef = (req, res, user) => {
 
     model.userDetails(obj).then((data) => {
         if(data.error) {
-            console.log(data.error)
             onError(req, res, data.error, 500);
         } else {
             req.app.responseHelper.send(res, true, data.user, [], 200);
@@ -106,10 +99,9 @@ router.post("/resetpassword", (req, res) => {
 router.post("/create", (req, res) => {
 
     var errors = validator.user(req);
-    var errors = validator.userRefIds(req);
-
     if(errors && errors.length) {
         onError(req, res, errors, 400);
+        return false;
     }
 
     var user = {};
@@ -120,6 +112,8 @@ router.post("/create", (req, res) => {
     user.phoneNumber = req.body.phoneNumber;
     user.role = req.body.role;
     user.instituteId = req.body.instituteId;
+    user.departmentId = req.body.departmentId;
+    user.affiliateId = req.body.affiliateId;
 
     model.create(user).then((data) => {
         if(data.error) {
@@ -127,7 +121,6 @@ router.post("/create", (req, res) => {
         } else {
             var userData = data.user;
             userRef(req, res, userData);
-            //req.app.responseHelper.send(res, true, data.user, [], 200);
         }
     }).catch((err) => {
 		onError([], 500);

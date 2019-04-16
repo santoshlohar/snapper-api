@@ -23,6 +23,15 @@ var user = (req) => {
         req.checkBody("role", "User role is required.").notEmpty();
         req.checkBody("instituteId", "Institute ID is required.").notEmpty();
 
+        var role = req.body.role;
+
+        if(role && role == ("affl_inst_data_manager" || "affl_inst_reviewer" || "aff_inst_approver")) {
+            req.checkBody("departmentId", "Department ID is required!").notEmpty();
+            req.checkBody("affiliateId", "Affiliate Institute ID is required!").notEmpty();
+        } else if( role && role == ("inst_reviewer" || "inst_certifier")) {
+            req.checkBody("departmentId", "Department ID is required!").notEmpty();
+        }
+        
         var errors = req.validationErrors();
 
     } catch(e) {
