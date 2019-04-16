@@ -42,11 +42,11 @@ router.get("/list", (req, res) => {
 
 //create affiliate
 router.post("/create", (req, res) => {
-	console.log("sush2")
 	var errors = validator.affiliate(req);
 
 	if(errors && errors.length) {
-        onError(req, res, errors, 400);
+		onError(req, res, errors, 400);
+		return false;
     }
 
 	var affiliate = {
