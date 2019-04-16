@@ -30,7 +30,8 @@ router.post("/create", (req, res) => {
 	var errors = validator.affiliate(req);
 
 	if(errors && errors.length) {
-        onError(req, res, errors, 400);
+		onError(req, res, errors, 400);
+		return false;
     }
 
 	var affiliate = {
