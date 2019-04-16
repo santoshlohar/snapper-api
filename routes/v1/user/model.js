@@ -117,9 +117,23 @@ var userDetails = (user) => {
     return promise;
 }
 
+var getList = (obj) => {
+    var promise = new Promise((resolve, reject) => {
+        schema.find(obj).then((result) => {
+            var response = {error: null, data: result};
+            resolve(response);
+        }).catch((err) => {
+            var response = {error: err, data: {}};
+            resolve(response);
+        })
+    });
+    return promise;
+}
+
 module.exports = {
     create,
     findByEmail,
     createOtp,
-    userDetails
+    userDetails,
+    getList
 };

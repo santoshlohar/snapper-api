@@ -40,10 +40,10 @@ var user = (req) => {
     return errors;
 }
 
-var userRefIds = (req) => {
+var list = (req) => {
     try {
-
-        req.checkBody("departmentId", "Department ID is required!").notEmpty();
+        
+        req.checkQuery("instituteId", "Institute ID cannot be blank").exists()
 
         var errors = req.validationErrors();
 
@@ -57,5 +57,5 @@ var userRefIds = (req) => {
 module.exports = {
     forgotPassword,
     user,
-    userRefIds
+    list
 }
