@@ -58,8 +58,6 @@ var register = (req) => {
 
         req.checkBody('affiliateInstitute.requlatoryBody', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
 
-        // TODO Need to validate phone number
-
         var errors = req.validationErrors();
 
     } catch (e) {
