@@ -2,8 +2,8 @@
 var moment = require('moment');
 
 const types = [
-    'Central University', 'State University', 'Deemed University', 
-    'Private University', 'CBSE', 'ICSE', 'State Board', 
+    'Central University', 'State University', 'Deemed University',
+    'Private University', 'CBSE', 'ICSE', 'State Board',
     'International Board', 'Private Institute'
 ];
 
@@ -17,62 +17,56 @@ var isValidDate = (date) => {
 };
 
 var register = (req) => {
-    
+
     try {
 
+        // Institute Admin validato
+        req.checkBody("instituteAdmin.name", "instituteAdmin name cannot be blank").notEmpty();
+        req.checkBody("instituteAdmin.email", "instituteAdmin email cannot be blank").isEmail().normalizeEmail();
+        req.checkBody('instituteAdmin.phoneNumber', 'instituteAdmin Phone Number is required').notEmpty();
+
+        //Requester Details
+        req.checkBody("requester.name", "Requester name cannot be blank").notEmpty();
+        req.checkBody("requester.email", "Requester emailID cannot be blank").isEmail().normalizeEmail();
+        req.checkBody('requester.phoneNumber', 'Requester Phone Number is required').notEmpty();
+
+        //Insititute Details
         req.checkBody("type", "Institute type cannot be blank").notEmpty();
         req.checkBody("type", "Institute type is not valid").isIn(types);
         req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
         req.checkBody("name", "Institute name cannot be blank").notEmpty();
-        req.checkBody("address.state", "State name cannot be blank").notEmpty();
-        req.checkBody("address.city", "City name cannot be blank").notEmpty();
-        req.checkBody('doe', "Date is not valid").optional().custom(isValidDate);
-        req.checkBody('requlatory.body', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
-        req.checkBody('instituteAdmin.name', 'Intitute Admin is required').notEmpty();
-        req.checkBody('instituteAdmin.email', 'Intitute Admin Email ID required').notEmpty();
-        req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
-        req.checkBody('instituteAdmin.phone', 'Please Enter valid Institute Admin Phone No').isMobilePhone('en-IN');
-        // TODO Need to validate phone number
-        //Phone No, Email and URL Validation Completed....
-        req.checkBody('head.name', 'Intitute Head Name is invalid').optional().contains();
-        req.checkBody('head.email', 'Intitute Head Email is invalid').isEmail().normalizeEmail();
-        req.checkBody('head.phoneNumber', 'Please Enter a Valid Head Contact No').optional().isMobilePhone('en-IN');
-        req.checkBody('boardLineNumber', 'Please Enter Valid Board Line No').optional().isNumeric();
-        req.checkBody('website', 'Please Enter Valid web site').optional().isURL();
-        req.checkBody('address.address_line_1','Please Enter Valid address').optional().contains();
-        req.checkBody('address.address_line_2','Please Enter Valid address').optional().contains();
-        req.checkBody('admin.name','Please Enger Valid Admin Name').optional().contains();
-        req.checkBody('admin.email','Please Enger Valid Admin Name').optional().isEmail().normalizeEmail();
-        req.checkBody('admin.phoneNumber','Please Enter Valid Admin phone number').optional().isMobilePhone('en-IN');
-        req.checkBody('location','Please Enter Valid Location').optional().contains();
-        req.checkBody('requester.name','Please Enter Valid Requester Name').optional().contains();
-        req.checkBody('requester.email','Please Enter Valid Requester Email').optional().contains();
-        req.checkBody('requester.phoneNumber','Please Enter Valid Requester Phone Number').optional().contains();
-        req.checkBody('affiliateInstitute.name','Please Enter Valid Affiliate Institute Name').optional().contains();
-        req.checkBody('affiliateInstitute.type','Please Enter Valid Affiliate Institute Type').optional().contains();
-        req.checkBody('affiliateInstitute.approvedBy','Please Enter Valid Affiliate Institute ApprovedBy').optional().contains();
+        req.checkBody("doe", "Date is not valid").optional().custom(isValidDate);
+        
+        //address
+        req.checkBody("address.address_line_1", "Address1 can not be blank").optional().notEmpty();
+        req.checkBody("address.address_line_2", "Address2 can not be blank").optional().notEmpty();
+        req.checkBody("address.state", "State name cannot be blank").optional().notEmpty();
+        req.checkBody("address.city", "City name cannot be blank").optional().notEmpty();
 
-        // req.checkBody("type", "Institute type cannot be blank").notEmpty();
-        // req.checkBody("type", "Institute type is not valid").isIn(types);
-        // req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
-        // req.checkBody("name", "Institute name cannot be blank").notEmpty();
-        // req.checkBody("address.state", "State name cannot be blank").notEmpty();
-        // req.checkBody("address.city", "City name cannot be blank").notEmpty();
-        // req.checkBody('doe', "Date is not valid").optional().custom(isValidDate);
-        // req.checkBody('requlatory.body', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
-        // req.checkBody('instituteAdmin.name', 'Intitute Admin is required').notEmpty();
-        // req.checkBody('instituteAdmin.email', 'Intitute Admin is required').notEmpty();
-        // req.checkBody('instituteAdmin.email', 'Intitute Admin Email is invalid').isEmail().normalizeEmail();
-        // req.checkBody('instituteAdmin.phone', 'Intitute Admin Phone Number is required').notEmpty();
-        // // TODO Need to validate phone number
+        req.checkBody("head.name", "Head name cannot be blank").optional().notEmpty();
+        req.checkBody("head.email", "Head EmailId cannot be blank").optional().notEmpty();
+        req.checkBody("head.phoneNumber", "Head phone number cannot be blank").optional().notEmpty();
+
+        req.checkBody('administrator.name', 'Intitute Admin is required').optional().notEmpty();
+        req.checkBody('administrator.email', 'Intitute Admin is required').optional().notEmpty();
+        req.checkBody('administrator.email', 'Intitute Admin Email is invalid').optional().isEmail().normalizeEmail();
+        req.checkBody('administrator.phoneNumber', 'Intitute Admin Phone Number is required').optional().notEmpty(); // phone number validation
+        req.checkBody("administrator.landineNumber", "Board Line Number can not be blank").optional().notEmpty();
+
+        req.checkBody("location", "location can not be blank").optional().notEmpty();
+        req.checkBody("website", "website in proper format").optional().isFQDN()
+
+        req.checkBody('affiliateInstitute.requlatoryBody', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
 
         var errors = req.validationErrors();
-        
-    } catch(e) {
-        var errors = [{msg: "Something went wrong!"}];
+
+    } catch (e) {
+        var errors = [{ msg: "Something went wrong!" }];
+
     }
 
     return errors;
+
 };
 
 

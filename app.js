@@ -8,9 +8,7 @@ var cors = require('cors');
 var responseHelper = require('./helper/response');
 var mongoose = require('mongoose');
 var config = require('./config/dev');
-
-
-
+var auth = require('./common/auth');
 
 var generateErrorObject = (param, msg, value, location) => {
   return {
@@ -34,6 +32,7 @@ app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(cors());
+app.use(auth.verify);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

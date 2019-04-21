@@ -1,5 +1,21 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
+
+var generatePassword = (text ) => {
+    var salt = bcrypt.genSaltSync(10);
+   
+    var hash;
+    if(!text ) {
+        hash = new mongoose.Types.ObjectId;
+    }
+    else
+    {
+         hash = bcrypt.hashSync(text, salt);
+    };
+    //TODO: Need to logic to generate secured hash using bcrypt
+    return hash;
+};
 
 var schema = new Schema({
     email: {
@@ -34,5 +50,6 @@ var schema = new Schema({
 }, {
     timestamps: true
 });
+
 
 module.exports = mongoose.model('users', schema);

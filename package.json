@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^3.0.5",
     "capitalize": "^2.0.0",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
@@ -24,6 +24,7 @@
     "otp-generator": "^1.1.0",
     "path": "^0.12.7",
     "request": "^2.88.0",
-    "uniqid": "^5.0.3"
+    "uniqid": "^5.0.3",
+    "uuid4": "^1.1.4"
   }
 }
