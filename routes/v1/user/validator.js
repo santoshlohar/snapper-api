@@ -1,4 +1,21 @@
 
+
+var signin = (req) => {
+    try {
+
+        req.checkBody('email', 'Email is required.').notEmpty();
+        req.checkBody('email', 'Email is invalid.').isEmail().normalizeEmail();
+        req.checkBody('password', 'Password is required.').notEmpty();
+        req.checkBody('password', 'Password length should be minimum 4 characters.').isLength({ min: 4 });
+        
+        var errors = req.validationErrors();
+
+    } catch(e) {
+        var errors = [{msg: "Something went wrong!"}];
+    } 
+    return errors;
+};
+
 var forgotPassword = (req) => {
     try {
 

@@ -31,6 +31,54 @@ router.get('/:id', function (req, res) {
     });
 });
 
+router.post("/signin", (req, res) => {
+    
+    var errors = validator.forgotPassword(req);
+
+    if (errors && errors.length) {
+        onError(req, res, errors, 400);
+        return true;
+    }
+
+    var errors = [{param: "login", msg: "Login Failed: Invalid Credentails"}];
+
+    var signin = (data) => {
+        model.createSession(data).then((result) => {
+            if(result.isError || !(result && result.user && result.user.id)) {
+                onError(req, res, errors, 200);
+            } else {
+                req.app.responseHelper.send(res, true, result.user, [], 200);
+            }
+        });
+    };
+
+    var verifyPassword = (user) => {
+        var password = req.body.password;
+        model.verifyPassword(user, password).then((result) => {
+            if(result.isError || !(result && result.user && result.user._id)) {
+                onError(req, res, errors, 200);
+            } else {
+                var user = result.user;
+                signin(user);
+            }
+        });
+    };
+
+    var findUserByEmail = () => {
+        var email = req.body.email;
+        model.findByEmail(email).then((result) => {
+            if (result.isError) {
+                onError(req, res, errors, 200);
+            } else {
+                var user = result.user;
+                verifyPassword(user);
+            }
+        });
+    };
+
+    findUserByEmail();
+});
+
 router.post("/forgotpassword", (req, res) => {
 
 

@@ -1,5 +1,8 @@
 var schema = require('./schema');
+var sessionSchema = require('./sessionSchema');
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var uuid4 = require('uuid4');
 var otpSchema = require('./otpSchema');
 var otpGenerator = require('otp-generator');
 var sendMail = require('node-email-sender');
@@ -53,10 +56,10 @@ var findByEmail = (email) => {
 
         schema.findOne(data, (err, user) => {
             if (!err) {
-                var response = { error: false, user: user };
+                var response = { isError: false, user: user };
                 resolve(response);
             } else {
-                var response = { error: true, user: {} };
+                var response = { isError: true, user: {} };
                 resolve(response);
             }
         });
@@ -119,6 +122,67 @@ var updatePassword = (user) => {
     return promise;
 };
 
+var genearetToken = (user, sessionId) => {
+    var jwtSecret = 'gadiaagebadikinahi';
+    var expire = Date.now() + (1 * 60 * 60 * 1000);
+    var payload = { 
+        userId: user.id, 
+        role: user.role,
+        instituteId: user.instituteId, 
+        sessionId: sessionId, 
+        expire: expire 
+    };
+    const token = jwt.sign(payload, jwtSecret);
+    return token;
+};
+
+var createSession = (user) => {
+    var promise = new Promise((resolve, reject) => {
+        user = JSON.parse(JSON.stringify(user));
+        user.id = user._id;
+        delete user._id;
+        delete user.password;
+        user.refreshToken = uuid4();
+
+        var document = new sessionSchema({
+            userId: user._id,
+            refreshToken: user.refreshToken
+        });
+        document.save(function(err, session) {
+            if(err || !(session && session._id)) {
+                var response = { isError: true, user: {} };
+                resolve(response);
+            } else {
+                var sessionId = session._id;
+                var token = genearetToken(user, sessionId);
+                user.accessToken = token;
+                var response = { isError: false, user: user };
+                resolve(response);
+            }
+        });
+    });
+
+    return promise;
+}
+
+var verifyPassword = (user, password) => {
+    var promise = new Promise((resolve, reject) => {
+
+        bcrypt.compare(password, user.password, function(isError, result) {
+
+            if (isError || !result) {
+                var response = {isError: true, user: {}};
+                resolve(response);
+            } else {
+                var response = {isError: false, user: user};
+                resolve(response);
+            }
+        });
+    });
+
+    return promise;
+}
+
 var updateOtp = (id) => {
     var promise = new Promise((resolve, reject) => {
         otpSchema.findOneAndUpdate({ "_id": id }, { $set: { "isActive": false, "isVerified": true } }, () => {
@@ -178,5 +242,7 @@ module.exports = {
     createOtp,
     findOtp,
     updatePassword,
-    updateOtp
+    updateOtp,
+    createSession,
+    verifyPassword
 };
