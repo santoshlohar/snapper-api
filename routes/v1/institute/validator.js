@@ -12,8 +12,8 @@ const regulatoryBody = [
 ];
 
 var isValidDate = (date) => {
-    var d = moment(date);
-    return d.isValid() ? true : false;
+    var d = moment(date, 'YYYY-MM-DD').isValid();
+    return (d = true) ? true : false;
 };
 
 var register = (req) => {

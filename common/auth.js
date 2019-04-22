@@ -4,7 +4,8 @@ var config = require('../config/dev');
 var excluedRoutes = [
     '/api/v1/user/signin',
     '/api/v1/user/forgotpassword',
-    '/api/v1/user/resetpassword'
+    '/api/v1/user/resetpassword',
+    '/api/v1/institute/register',
 ];
 
 var isTokenExpired = (user) => {
