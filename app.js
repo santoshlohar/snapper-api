@@ -32,14 +32,13 @@ app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(cors());
-app.use(auth.verify);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(validator());
-
+app.use(auth.verify);
 
 app.use(require("./routes"));
 

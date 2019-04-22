@@ -20,12 +20,13 @@ var verfifyAccessToken = (req, res, next) => {
     var errors = [{ msg: "Unauthorized Access"}];
 
     if (token) {
-        jwt.verify(token, config.PRIVATE_KEY, function (err, user) {
-            if (err || !(user && user.id && isTokenExpired(user))) {
+        jwt.verify(token, config.PRIVATE_KEY, function (err, decoded) {
+            
+            if (err || !(decoded && decoded.userId && !isTokenExpired(decoded))) {
                 req.isUserAuthenticated = false;
             } else {
                 req.isUserAuthenticated = true;
-                req.user = user;
+                req.user = decoded;
                 next();
             }
 
