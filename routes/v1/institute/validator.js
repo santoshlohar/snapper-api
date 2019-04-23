@@ -12,7 +12,7 @@ const regulatoryBody = [
 ];
 
 var isValidDate = (date) => {
-    var d = moment(date, 'YYYY-MM-DD').isValid();
+    var d = moment(date, 'DD-MM-YYYY').isValid();
     return (d = true) ? true : false;
 };
 
@@ -33,31 +33,9 @@ var register = (req) => {
         //Insititute Details
         req.checkBody("type", "Institute type cannot be blank").notEmpty();
         req.checkBody("type", "Institute type is not valid").isIn(types);
-        req.checkBody('code').optional().matches(/^[a-zA-Z0-9]+$/gi);
         req.checkBody("name", "Institute name cannot be blank").notEmpty();
-        req.checkBody("doe", "Date is not valid").optional().custom(isValidDate);
-        
+        req.checkBody("doe", "Date is not valid").notEmpty().custom(isValidDate); 
         //address
-        req.checkBody("address.address_line_1", "Address1 can not be blank").optional().notEmpty();
-        req.checkBody("address.address_line_2", "Address2 can not be blank").optional().notEmpty();
-        req.checkBody("address.state", "State name cannot be blank").optional().notEmpty();
-        req.checkBody("address.city", "City name cannot be blank").optional().notEmpty();
-
-        req.checkBody("head.name", "Head name cannot be blank").optional().notEmpty();
-        req.checkBody("head.email", "Head EmailId cannot be blank").optional().notEmpty();
-        req.checkBody("head.phoneNumber", "Head phone number cannot be blank").optional().notEmpty();
-
-        req.checkBody('administrator.name', 'Intitute Admin is required').optional().notEmpty();
-        req.checkBody('administrator.email', 'Intitute Admin is required').optional().notEmpty();
-        req.checkBody('administrator.email', 'Intitute Admin Email is invalid').optional().isEmail().normalizeEmail();
-        req.checkBody('administrator.phoneNumber', 'Intitute Admin Phone Number is required').optional().notEmpty(); // phone number validation
-        req.checkBody("administrator.landineNumber", "Board Line Number can not be blank").optional().notEmpty();
-
-        req.checkBody("location", "location can not be blank").optional().notEmpty();
-        req.checkBody("website", "website in proper format").optional().isFQDN()
-
-        req.checkBody('affiliateInstitute.requlatoryBody', "Regulatory Body is invalid").optional().isIn(regulatoryBody);
-
         var errors = req.validationErrors();
 
     } catch (e) {

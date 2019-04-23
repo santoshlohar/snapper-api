@@ -36,7 +36,7 @@ var resetPassword = (req) => {
         req.checkBody('email', 'Email is invalid.').isEmail().normalizeEmail();
         req.checkBody('password', 'Password is required.').notEmpty();
         req.checkBody('password', 'Password length should be minimum 4 characters.').isLength({ min: 4 });
-        req.checkBody('password', "password and confirm password should be equal").custom( password => {
+        req.checkBody('confirmPassword', "password and confirm password should be equal").custom( password => {
             if(req.body.confirmPassword && (password  === req.body.confirmPassword)) {
                 return true;
             }
