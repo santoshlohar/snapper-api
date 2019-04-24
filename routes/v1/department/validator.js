@@ -3,10 +3,10 @@ var create = req => {
     try {
         req.checkBody("name", "Department name cannot be blank").notEmpty();
         req.checkBody("instituteId", "instituteId cannot be blank").notEmpty();
-        req
-            .checkBody("code")
-            .optional()
-            .matches(/^[a-zA-Z0-9]+$/gi);
+        // req
+        //     .checkBody("code")
+        //     .optional()
+        //     .matches(/^[a-zA-Z0-9]+$/gi);
 
         var errors = req.validationErrors();
     } catch (e) {
