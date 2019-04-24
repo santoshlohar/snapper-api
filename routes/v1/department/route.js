@@ -80,7 +80,41 @@ router.get("/:id", (req, res) => {
 
 // Update deparment
 router.put("/:id", (req, res) => {
+
+    var errors = validator.create(req);
+
+	if(errors && errors.length) {
+		onError(req, res, errors, 400);
+		return false;
+    }
+	
+    var id = req.params.id;
     
+    model.findById(id).then((data) => {
+        if(data.error) {
+			var errors = [{
+				"msg": "Failed to get department!"
+			}];
+			onError(req, res, errors, 500);
+		} else {
+			var department = data.department;
+			department.name = req.body.name;
+            department.code = req.body.code;
+
+			model.update(department).then((result) => {
+				if(result.error) {
+					var errors = [{
+						"msg": "Failed to update department!"
+					}];
+					onError(req, res, errors, 500);
+				} else {
+					var department = result.department;
+
+					req.app.responseHelper.send(res, true, department, [], 200);
+				}
+			});
+		}
+    })
 });
 
 // Active/Inactive department
