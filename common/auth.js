@@ -28,7 +28,6 @@ var verfifyAccessToken = (req, res, next) => {
             } else {
                 req.isUserAuthenticated = true;
                 req.user = decoded;
-                next();
             }
 
             if(req.isUserAuthenticated) {

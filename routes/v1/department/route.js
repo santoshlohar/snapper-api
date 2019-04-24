@@ -12,13 +12,28 @@ var onError = (req, res, errors, statusCode) => {
     req.app.responseHelper.send(res, false, {}, errors, statusCode);
 };
 
-// Get department
-router.get("/:id", (req, res) => {
-
-});
-
 // List department
 router.get("/list", (req, res) => {
+    var errors = validator.list(req);
+
+    if (errors && errors.length) {
+        onError(req, res, errors, 400);
+        return true;
+    }
+
+    var data = {
+        instituteId: req.query.instituteId,
+        skip: req.query.skip,
+        limit: req.query.limit
+    };
+
+    model.list(data).then((result) => {
+        if (result.isError) {
+            onError(req, res, [], 500);
+        } else {
+            req.app.responseHelper.send(res, true, result.departments, [], 200);
+        }
+    })
 
 });
 
@@ -43,6 +58,11 @@ router.post("/create", (req, res) => {
     });
 
 
+});
+
+// Get department
+router.get("/:id", (req, res) => {
+    console.log("---- c ");
 });
 
 // Update deparment
