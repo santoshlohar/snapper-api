@@ -85,7 +85,30 @@ router.put("/:id", (req, res) => {
 
 // Active/Inactive department
 router.put("/:id/changeStatus", (req, res) => {
-    
+	var id = req.params.id;
+	
+	model.findById(id).then((data) => {
+		if(data.error) {
+			var errors = [{
+				"msg": "Failed to get department!"
+			}];
+			onError(req, res, errors, 500);
+		} else {
+			var department = data.department;
+			department.isActive = req.body.isActive;
+			model.update(department).then((data) => {
+				if(data.error) {
+					var errors = [{
+						"msg": "Failed to update department!"
+					}];
+					onError(req, res, errors, 500);
+				} else {
+					var department = data.department;
+					req.app.responseHelper.send(res, true, department, [], 200);
+				}
+			});
+		}
+	});
 });
 
 // Delete deparment

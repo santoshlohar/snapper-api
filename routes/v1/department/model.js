@@ -61,8 +61,24 @@ var findById = (id) => {
 	return promise;
 };
 
+var update = (department) => {
+
+	var promise = new Promise((resolve, reject) => {
+		department.save().then((result) => {
+			var response = {error: null, department: result};
+			resolve(response);
+		}).catch((err) => {
+			var response = {error: err, department: {}};
+			resolve(response);
+			})
+	});
+
+		return promise;
+}
+
 module.exports = {
     create,
     list,
-    findById
+    findById,
+    update
 };
