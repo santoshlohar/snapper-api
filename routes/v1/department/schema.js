@@ -12,10 +12,12 @@ var schema = new Schema({
         type: String,
     },
     isActive: {
-        type: Boolean
+        type: Boolean,
+        default: true
     },
     isDeleted: {
-        type: Boolean
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
