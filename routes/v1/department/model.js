@@ -42,7 +42,27 @@ var list = (data) => {
     return promise;
 };
 
+var findById = (id) => {
+    var promise = new Promise((resolve, reject) => {
+		var data = {
+            _id: id
+        };
+		schema.findOne(data, (err, resObj) => {
+			if(!err) {
+                var response = {error: false, department: resObj};
+                resolve(response);
+            } else {
+                var response = {error: true, department: {}};
+                resolve(response);
+            }
+		});
+	});
+
+	return promise;
+};
+
 module.exports = {
     create,
-    list
+    list,
+    findById
 };
