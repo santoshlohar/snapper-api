@@ -85,6 +85,7 @@ router.post("/forgotpassword", (req, res) => {
 
     if (errors && errors.length) {
         onError(req, res, errors, 400);
+        return true;
     }
 
     var email = req.body.email;
@@ -124,6 +125,7 @@ router.post("/resetpassword", (req, res) => {
 
     if (errors && errors.length) {
         onError(req, res, errors, 400);
+        return true;
     }
 
     var updateOtp = (id) => {
