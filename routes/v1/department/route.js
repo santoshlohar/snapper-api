@@ -62,17 +62,70 @@ router.post("/create", (req, res) => {
 
 // Get department
 router.get("/:id", (req, res) => {
-    console.log("---- c ");
+    var id = req.params.id;
+
+    model.findById(id).then((result) => {
+        if(result.isError) {
+			onError(req, res, result.errors, 500);
+		} else {
+			var department = result.department;
+			req.app.responseHelper.send(res, true, department, [], 200);
+		}
+    })
 });
 
 // Update deparment
 router.put("/:id", (req, res) => {
+
+    var errors = validator.create(req);
+
+	if(errors && errors.length) {
+		onError(req, res, errors, 400);
+		return false;
+    }
+	
+    var id = req.params.id;
     
+    model.findById(id).then((data) => {
+        if(data.isError) {
+			onError(req, res, data.errors, 500);
+		} else {
+			var department = data.department;
+			department.name = req.body.name;
+            department.code = req.body.code;
+
+			model.update(department).then((result) => {
+				if(result.isError) {
+					onError(req, res, result.errors, 500);
+				} else {
+					var department = result.department;
+					req.app.responseHelper.send(res, true, department, [], 200);
+				}
+			});
+		}
+    })
 });
 
 // Active/Inactive department
 router.put("/:id/changeStatus", (req, res) => {
-    
+	var id = req.params.id;
+	
+	model.findById(id).then((data) => {
+		if(data.isError) {
+			onError(req, res, data.errors, 500);
+		} else {
+			var department = data.department;
+			department.isActive = req.body.isActive;
+			model.update(department).then((result) => {
+				if(result.isError) {
+					onError(req, res, result.errors, 500);
+				} else {
+					var department = result.department;
+					req.app.responseHelper.send(res, true, department, [], 200);
+				}
+			});
+		}
+	});
 });
 
 // Delete deparment

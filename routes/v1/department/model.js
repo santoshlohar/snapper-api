@@ -42,7 +42,43 @@ var list = (data) => {
     return promise;
 };
 
+var findById = (id) => {
+    var promise = new Promise((resolve, reject) => {
+		var data = {
+            _id: id
+        };
+		schema.findOne(data, (err, result) => {
+			if(!err && result && result._id) {
+                var response = {isError: false, department: result, errors: []};
+                resolve(response);
+            } else {
+                var response = {isError: true, department: {}, errors: [{param: "id", msg: "Invalid department id"}]};
+                resolve(response);
+            }
+		});
+	});
+
+	return promise;
+};
+
+var update = (department) => {
+
+    var promise = new Promise((resolve, reject) => {
+        department.save().then((result) => {
+            var response = { isError: false, department: result, errors: [] };
+            resolve(response);
+        }).catch((err) => {
+            var response = { isError: false, department: {}, errors: [{"msg": "Failed to update department!"}] };
+            resolve(response);
+        })
+    });
+
+    return promise;
+};
+
 module.exports = {
     create,
-    list
+    list,
+    findById,
+    update
 };
