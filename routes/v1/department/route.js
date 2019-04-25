@@ -62,17 +62,13 @@ router.post("/create", (req, res) => {
 
 // Get department
 router.get("/:id", (req, res) => {
-    console.log("---- c ");
     var id = req.params.id;
 
-    model.findById(id).then((data) => {
-        if(data.error) {
-			var errors = [{
-				"msg": "Failed to get Department!"
-			}];
-			onError(req, res, errors, 500);
+    model.findById(id).then((result) => {
+        if(result.isError) {
+			onError(req, res, result.errors, 500);
 		} else {
-			var department = data.department;
+			var department = result.department;
 			req.app.responseHelper.send(res, true, department, [], 200);
 		}
     })
@@ -91,25 +87,18 @@ router.put("/:id", (req, res) => {
     var id = req.params.id;
     
     model.findById(id).then((data) => {
-        if(data.error) {
-			var errors = [{
-				"msg": "Failed to get department!"
-			}];
-			onError(req, res, errors, 500);
+        if(data.isError) {
+			onError(req, res, data.errors, 500);
 		} else {
 			var department = data.department;
 			department.name = req.body.name;
             department.code = req.body.code;
 
 			model.update(department).then((result) => {
-				if(result.error) {
-					var errors = [{
-						"msg": "Failed to update department!"
-					}];
-					onError(req, res, errors, 500);
+				if(result.isError) {
+					onError(req, res, result.errors, 500);
 				} else {
 					var department = result.department;
-
 					req.app.responseHelper.send(res, true, department, [], 200);
 				}
 			});
@@ -122,22 +111,16 @@ router.put("/:id/changeStatus", (req, res) => {
 	var id = req.params.id;
 	
 	model.findById(id).then((data) => {
-		if(data.error) {
-			var errors = [{
-				"msg": "Failed to get department!"
-			}];
-			onError(req, res, errors, 500);
+		if(data.isError) {
+			onError(req, res, data.errors, 500);
 		} else {
 			var department = data.department;
 			department.isActive = req.body.isActive;
-			model.update(department).then((data) => {
-				if(data.error) {
-					var errors = [{
-						"msg": "Failed to update department!"
-					}];
-					onError(req, res, errors, 500);
+			model.update(department).then((result) => {
+				if(result.isError) {
+					onError(req, res, result.errors, 500);
 				} else {
-					var department = data.department;
+					var department = result.department;
 					req.app.responseHelper.send(res, true, department, [], 200);
 				}
 			});

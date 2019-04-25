@@ -47,12 +47,12 @@ var findById = (id) => {
 		var data = {
             _id: id
         };
-		schema.findOne(data, (err, resObj) => {
-			if(!err) {
-                var response = {error: false, department: resObj};
+		schema.findOne(data, (err, result) => {
+			if(!err && result && result._id) {
+                var response = {isError: false, department: result, errors: []};
                 resolve(response);
             } else {
-                var response = {error: true, department: {}};
+                var response = {isError: true, department: {}, errors: [{param: "id", msg: "Invalid department id"}]};
                 resolve(response);
             }
 		});
@@ -63,18 +63,18 @@ var findById = (id) => {
 
 var update = (department) => {
 
-	var promise = new Promise((resolve, reject) => {
-		department.save().then((result) => {
-			var response = {error: null, department: result};
-			resolve(response);
-		}).catch((err) => {
-			var response = {error: err, department: {}};
-			resolve(response);
-			})
-	});
+    var promise = new Promise((resolve, reject) => {
+        department.save().then((result) => {
+            var response = { isError: false, department: result, errors: [] };
+            resolve(response);
+        }).catch((err) => {
+            var response = { isError: false, department: {}, errors: [{"msg": "Failed to update department!"}] };
+            resolve(response);
+        })
+    });
 
-		return promise;
-}
+    return promise;
+};
 
 module.exports = {
     create,
