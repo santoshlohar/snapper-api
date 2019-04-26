@@ -1,7 +1,6 @@
 var schema = require('./schema');
 
 var create = (affiliate) => {
-	console.log("sush")
 	var promise = new Promise((resolve, reject) => {
         var document = new schema(affiliate);
         document.save().then(function (result) {
