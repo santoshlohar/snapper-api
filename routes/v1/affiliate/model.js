@@ -37,7 +37,22 @@ var findById = (id) => {
 	return promise;
 }
 
+var getList = (data) => {
+	var promise = new Promise((resolve, reject) => {		
+		schema.find({instituteId: data.instituteId}).then((result) => {
+			var response = {isError: false, affiliates: result, errors: [] };
+			resolve(response);
+		}).catch((err) => {
+			var response = { isError: true, affiliates: {}, errors: [] };
+			resolve(response);
+		});
+	});
+
+	return promise;
+}
+
 module.exports = {
 	create,
-	findById
+	findById,
+	getList
 }

@@ -44,9 +44,24 @@ router.post("/create", (req, res) => {
 
 // List affiliate
 router.get("/list", (req, res) => {
+	var skip = req.query.skip === undefined ? 0 : req.query.skip;
+	var limit = req.query.limit === undefined ? 0 : req.query.limit;
+	var instituteId = req.query.instituteId;
 
+	var obj = {
+		skip: skip,
+		limit: limit,
+		instituteId: instituteId
+	}
+
+	model.getList(obj).then((result) => {
+		if(result.isError || !(result.affiliates)) {
+			onError([], 500);
+		} else {
+			req.app.responseHelper.send(res, true, result.affiliates, [], 200);
+		}
+	});
 });
-
 // Get affiliate
 router.get("/:id", (req, res) => {
 	
