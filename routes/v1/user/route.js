@@ -33,6 +33,34 @@ var userRef = (req, res, user) => {
 	});
 }
 
+router.get("/list", (req, res) => {
+   
+    var instituteId = req.query.instituteId;
+    var skip = req.query.skip === "" ? 0 : req.query.skip;
+    var limit = req.query.limit === "" ? 0 : req.query.limit;
+    
+    var obj = {
+        instituteId: instituteId,
+        skip: skip,
+        limit: limit
+    }
+
+    var errors = validator.list(req);
+
+    if(errors && errors.length) {
+        onError(req, res, errors, 400);
+        return false;
+    }
+
+    model.getList(obj).then((data) => {
+        if(data.error) {
+            onError(req, res, data.error, 400);
+        } else {
+            req.app.responseHelper.send(res, true, data.data, [], 200);
+        }
+    });
+});
+
 router.get('/:id', function(req, res) {
 
     req.checkQuery("id", "Not Integer").toInt();
@@ -128,33 +156,5 @@ router.post("/create", (req, res) => {
 	});
 
 });
-
-router.get("/list", (req, res) => {
-
-    var errors = validator.list(req);
-
-    if(errors && errors.length) {
-        onError(req, res, errors, 400);
-        return false;
-    }
-
-    var offset = req.query.offset === "" ? 0 : req.query.offset;
-	var limit = req.query.limit === "" ? 0 : req.query.limit;
-	var instituteId = req.query.instituteId;
-
-    var obj = {
-        offset: offset,
-        limit: limit,
-        instituteId: instituteId
-    }
-
-    model.getList(obj).then((data) => {
-        if(data.error) {
-            onError(req, res, data.error, 400);
-        } else {
-            req.app.responseHelper.send(res, true, data.data, [], 200);
-        }
-    });
-})
 
 module.exports = router;

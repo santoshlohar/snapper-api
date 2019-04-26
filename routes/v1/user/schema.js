@@ -46,6 +46,9 @@ var schema = new Schema({
     },
     instituteId: {
         type: mongoose.Types.ObjectId
+    },
+    referredBy: {
+        type: String
     }
 }, {
     timestamps: true
