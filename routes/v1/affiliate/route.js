@@ -16,7 +16,7 @@ var onError = (req, res, errors, statusCode) => {
 
 //create affiliate
 router.post("/create", (req, res) => {
-	console.log("affiliate")
+
 	var errors = validator.affiliate(req);
 
 	if(errors && errors.length) {
@@ -32,14 +32,12 @@ router.post("/create", (req, res) => {
 	};
 
 	model.create(affiliate).then((result) => {
-		console.log(result)
 		if(result.isError || !(result.affiliate && result.affiliate._id) ) {
             onError(req, res, [], 500);
         } else {
             req.app.responseHelper.send(res, true, result.affiliate, [], 200);
         }
 	}).catch((err) => {
-		console.log(err)
 		onError([], 500);
 	});
 });
@@ -51,7 +49,20 @@ router.get("/list", (req, res) => {
 
 // Get affiliate
 router.get("/:id", (req, res) => {
+	
+	var id = req.params.id;
 
+	model.findById(id).then((data) => {
+		if(data.error) {
+			var errors = [{
+				"msg": "Failed to get Affiliated Institute!"
+			}];
+			onError(req, res, errors, 500);
+		} else {
+			var affiliate = data.affiliate;
+			req.app.responseHelper.send(res, true, affiliate, [], 200);
+		}
+	});
 });
 
 // Active/Inactive affiliate
