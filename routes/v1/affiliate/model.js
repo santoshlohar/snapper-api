@@ -17,7 +17,6 @@ var create = (affiliate) => {
 	return promise;
 }
 
-
 var findById = (id) => {
 	var promise = new Promise((resolve, reject) => {
 		var data = {
@@ -28,7 +27,7 @@ var findById = (id) => {
                 var response = {error: false, affiliate: afflObj};
                 resolve(response);
             } else {
-                var response = {error: true, afflObj: {}};
+                var response = {error: true, affiliate: {}};
                 resolve(response);
             }
 		});
@@ -51,8 +50,25 @@ var getList = (data) => {
 	return promise;
 }
 
+var update = (affiliate) => {
+
+	var promise = new Promise((resolve, reject) => {
+		affiliate.save().then((result) => {
+			console.log(result);
+			var response = {error: null, affiliate: result};
+			resolve(response);
+		}).catch((err) => {
+			var response = {error: err, affiliate: {}};
+			resolve(response);
+		})
+	});
+
+	return promise;
+}
+
 module.exports = {
 	create,
 	findById,
-	getList
+	getList,
+	update
 }

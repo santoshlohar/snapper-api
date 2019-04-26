@@ -88,6 +88,41 @@ router.put("/:id/changeStatus", (req, res) => {
 // Update affiliate
 router.put("/:id", (req, res) => {
     
+	var errors = validator.affiliate(req);
+
+	if(errors && errors.length) {
+		onError(req, res, errors, 400);
+		return false;
+    }
+	
+	var id = req.params.id;
+
+	model.findById(id).then((data) => {
+		if(data.error) {
+			var errors = [{
+				"msg": "Failed to get Affiliated Institute!"
+			}];
+			onError(req, res, errors, 500);
+		} else {
+			var affiliate = data.affiliate;
+			affiliate.name = req.body.name;
+			affiliate.departmentId = req.body.departmentId;
+			affiliate.address = req.body.address;
+			
+			model.update(affiliate).then((result) => {
+				if(result.error) {
+					var errors = [{
+						"msg": "Failed to update Affiliated Institute!"
+					}];
+					onError(req, res, errors, 500);
+				} else {
+					var affiliate = result.affiliate;
+
+					req.app.responseHelper.send(res, true, affiliate, [], 200);
+				}
+			});
+		}
+	});
 });
 
 // Delete affiliate
