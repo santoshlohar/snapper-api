@@ -43,9 +43,7 @@ var user = (req) => {
 var list = (req) => {
     try {
         req.checkQuery("instituteId", "Institute ID cannot be blank").exists();
-        req.checkQuery("skip", "Skip cannot be blank").exists();
-        req.checkQuery("limit", "limit cannot be blank").exists();
-
+        
         var errors = req.validationErrors();
 
     } catch(e) {
