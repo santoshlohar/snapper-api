@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\bin",
+    "\\common",
+    "\\config",
+    "\\public\\stylesheets",
+    "\\routes",
+    "\\routes\\v1",
+    "\\routes\\v1\\department",
+    "\\routes\\v1\\institute"
+  ],
+  "SelectedNode": "\\routes\\users.js",
+  "PreviewInSolutionExplorer": false
+}

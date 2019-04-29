@@ -1,7 +1,7 @@
 var schema = require('./schema');
 
 var create = (department) => {
-
+    
     var promise = new Promise((resolve, reject) => {
         var document = new schema(department);
         document.save().then(function (result) {

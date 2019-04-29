@@ -16,8 +16,9 @@ var isTokenExpired = (user) => {
 };
 
 var verfifyAccessToken = (req, res, next) => {
-    
+   
     var token = req.headers['x-api-token'];
+    
     var errors = [{ msg: "Unauthorized Access"}];
 
     if (token) {
