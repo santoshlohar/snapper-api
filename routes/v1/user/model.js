@@ -1,7 +1,13 @@
 var schema = require('./schema');
+var sessionSchema = require('./sessionSchema');
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var uuid4 = require('uuid4');
 var otpSchema = require('./otpSchema');
-var userSchema = require('./userSchema');
+var otpGenerator = require('otp-generator');
+var sendMail = require('node-email-sender');
+var mongo = require('mongoose');
+var moment = require('moment');
 
 var generatePassword = (text) => {
     var promise = new Promise((resolve, reject) => {
