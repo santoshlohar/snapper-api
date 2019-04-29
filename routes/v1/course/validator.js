@@ -6,6 +6,14 @@ const certificateGenerate = [
     'Auto', 'Manual'
 ];
 
+const duration = [
+    'Month', 'Year'
+];
+
+const termType = [
+    'Semester', 'Trisemester', 'Annual', 'None'
+];
+
 var course = (req) => {
     try {
 
@@ -17,7 +25,8 @@ var course = (req) => {
         req.checkBody("gpaCalculated", "GPA is required!").notEmpty();
         req.checkBody("subjectCredits", "Subject Credits are required!").notEmpty();
         req.checkBody("courseDuration", "Course Duration is required!").notEmpty();
-        req.checkBody("durationUnit", "Duration Unit is required!").notEmpty();
+        req.checkBody("durationUnit", "Duration Unit is required!").notEmpty().isIn(duration);
+        req.checkBody("termType", "Term type is invalid!").optional().isIn(termType);
 
         var errors = req.validationErrors();
     } catch (error) {

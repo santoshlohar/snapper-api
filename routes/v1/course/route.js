@@ -23,52 +23,51 @@ router.post("/create", (req, res) => {
     }
 
     var course = {
-        "instituteId": req.body.instituteId,
-        "departmentId": req.body.departmentId,
-        "courseType": req.body.courseType,
-        "courseName": req.body.courseName,
-        "specialization": req.body.specialization,
-        "certificateGenerate": req.body.certificateGenerate,
-        "certificatePrint": req.body.certificatePrint,
-        "gpaCalculated": req.body.gpaCalculated,
-        "subjectCredits": req.body.subjectCredits,
-        "courseDuration": req.body.courseDuration,
-        "durationUnit": req.body.durationUnit,
-        "termType": req.body.termType,
-        "noOfTerms": req.body.noOfTerms
+        instituteId: req.body.instituteId,
+        departmentId: req.body.departmentId,
+        courseType: req.body.courseType,
+        courseName: req.body.courseName,
+        specialization: req.body.specialization,
+        certificateGenerate: req.body.certificateGenerate,
+        certificatePrint: req.body.certificatePrint,
+        gpaCalculated: req.body.gpaCalculated,
+        subjectCredits: req.body.subjectCredits,
+        courseDuration: req.body.courseDuration,
+        durationUnit: req.body.durationUnit,
+        termType: req.body.termType,
+        noOfTerms: req.body.noOfTerms
     };
 
-    model.create(course).then((data) => {
-        if (data.error) {
-            onError(req, res, data.error, 500);
+    model.create(course).then((result) => {
+        if(result.isError || !(result.course && result.course._id) ) {
+            onError(req, res, [], 500);
         } else {
-            req.app.responseHelper.send(res, true, data.course, [], 200);
+            req.app.responseHelper.send(res, true, result.course, [], 200);
         }
-    }).catch((error) => {
+    }).catch((err) => {
         onError([], 500);
     });
 });
 
 router.get("/list", (req, res) => {
-    var offset = req.body.offset === undefined ? 0 : req.query.offset;
+    var skip = req.body.skip === undefined ? 0 : req.query.skip;
     var limit = req.query.limit === undefined ? 0 : req.query.limit;
-    var instituteId = req.body.instituteId;
-    var departmentId = req.body.departmentId;
+    var instituteId = req.query.instituteId;
+    var departmentId = req.query.departmentId;
 
     var obj = {
-        offset: offset,
+        skip: skip,
         limit: limit,
         instituteId: instituteId,
         departmentId: departmentId
     }
 
-    model.getList(obj).then((data) => {
-        console.log('data: ' + JSON.stringify(data));
-        if (data.error) {
-            onError([], 500);
-        } else {
-            req.app.responseHelper.send(res, true, data.courses, [], 200);
-        }
+    model.list(obj).then((result) => {
+        if(result.isError || !(result.courses && result.courses.length)) {
+			onError([], 500);
+		} else {
+			req.app.responseHelper.send(res, true, result.courses, [], 200);
+		}
     });
 });
 
@@ -76,15 +75,13 @@ router.get("/:id", (req, res) => {
 
     var id = req.params.id;
 
-    model.findById(id).then((data) => {
-        if (data.error) {
-            var errors = [{
-                "msg": "Failed to get Course!"
-            }];
-            onError(req, res, errors, 500);
+    model.findById(id).then((result) => {
+        if (result.isError) {
+            var errors = result.errors;
+			onError(req, res, errors, 500);
         } else {
-            var response = data.course;
-            req.app.responseHelper.send(res, true, response, [], 200);
+            var course = result.course;
+            req.app.responseHelper.send(res, true, course, [], 200);
         }
     });
 });
@@ -100,17 +97,14 @@ router.put("/:id", (req, res) => {
 
     var id = req.params.id;
 
-    model.findById(id).then((data) => {
-        if (data.error) {
-            var errors = [{
-                "msg": "Failed to get Course!"
-            }];
-
-            onError(req, res, errors, 500);
+    model.findById(id).then((result) => {
+        if (result.isError) {
+            onError(req, res, result.errors, 500);
         } else {
-            var course = data.course;
+            var course = result.course;
             course.departmentId = req.body.departmentId;
             course.courseType = req.body.courseType;
+            course.code = req.body.code;
             course.courseName = req.body.courseName;
             course.specialization = req.body.specialization;
             course.certificateGenerate = req.body.certificateGenerate;
@@ -123,15 +117,10 @@ router.put("/:id", (req, res) => {
             course.noOfTerms = req.body.noOfTerms;
 
             model.update(course).then((result) => {
-                if (result.error) {
-                    var errors = [{
-                        "msg": "Failed to update Course!"
-                    }];
-
-                    onError(req, res, errors, 500);
+                if (result.isError) {
+                    onError(req, res, result.errors, 500);
                 } else {
                     var course = result.course;
-
                     req.app.responseHelper.send(res, true, course, [], 200);
                 }
             });
@@ -142,25 +131,18 @@ router.put("/:id", (req, res) => {
 router.put("/:id/changeStatus", (req, res) => {
     var id = req.params.id;
 
-    model.findById(id).then((data) => {
-        if (data.error) {
-            var errors = [{
-                "msg": "Failed to get Course!"
-            }];
-
-            onError(req, res, errors, 500);
+    model.findById(id).then((result) => {
+        if (result.isError) {
+            var errors = result.errors;
+			onError(req, res, errors, 500);
         } else {
-            var course = data.course;
+            var course = result.course;
             course.isActive = req.body.isActive;
-            model.update(course).then((data) => {
-                if (data.error) {
-                    var errors = [{
-                        "msg": "Failed to update Course!"
-                    }];
-
-                    onError(req, res, errors, 500);
+            model.update(course).then((result) => {
+                if (result.isError) {
+                    onError(req, res, result.errors, 500);
                 } else {
-                    var course = data.course;
+                    var course = result.course;
                     req.app.responseHelper.send(res, true, course, [], 200);
                 }
             });

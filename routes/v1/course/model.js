@@ -4,10 +4,10 @@ var create = (course) => {
     var promise = new Promise((resolve, reject) => {
         var document = new schema(course);
         document.save().then((result) => {
-            var response = { error: null, course: result };
+            var response = { isError: false, course: result, errors: [] };
             resolve(response);
         }).catch((error) => {
-            var response = { error: error, course: {} };
+            var response = { isError: true, course: {}, errors: [] };
             resolve(response);
         });
     });
@@ -15,13 +15,13 @@ var create = (course) => {
     return promise;
 }
 
-var getList = (data) => {
+var list = (data) => {
     var promise = new Promise((resolve, reject) => {
         schema.find({ instituteId: data.instituteId, departmentId: data.departmentId }).then((result) => {
-            var response = { error: null, courses: result };
+            var response = {isError: false, courses: result, errors: [] };
             resolve(response);
         }).catch((error) => {
-            var response = { error: error, courses: {} };
+            var response = { isError: true, courses: {}, errors: [] };
             resolve(response);
         });
     });
@@ -34,13 +34,12 @@ var findById = (id) => {
         var data = {
             _id: id
         };
-
-        schema.findOne(data, (error, courseObj) => {
-            if (!error) {
-                var response = { error: null, course: courseObj };
+        schema.findOne(data, (err, course) => {
+            if(!err && (course && course._id) ){
+                var response = {isError: false, course: course, errors: []};
                 resolve(response);
             } else {
-                var response = { error: true, course: {} };
+                var response = {isError: true, course: {}, errors: [{msg: "Invalid Course ID"}]};
                 resolve(response);
             }
         });
@@ -67,6 +66,6 @@ var update = (course) => {
 module.exports = {
     create,
     findById,
-    getList,
+    list,
     update
 }

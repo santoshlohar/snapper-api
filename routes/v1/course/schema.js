@@ -3,16 +3,16 @@ var Schema = mongoose.Schema;
 
 var schema = new Schema({
     instituteId: {
-        type: String
+        type: mongoose.Types.ObjectId
     },
     departmentId: {
-        type: String
+        type: mongoose.Types.ObjectId
     },
     courseType: {
         type: String
     },
-    courseId: {
-        type: mongoose.Types.ObjectId
+    code: {
+        type: String
     },
     courseName: {
         type: String
@@ -32,7 +32,8 @@ var schema = new Schema({
         default: true
     },
     subjectCredits: {
-        type: String
+        type: Boolean,
+        default: true
     },
     courseDuration: {
         type: Number
