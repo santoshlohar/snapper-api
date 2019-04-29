@@ -11,6 +11,9 @@ var schema = new Schema({
     departmentId: {
         type: mongoose.Types.ObjectId
     },
+    code: {
+        type: String,
+    },
     address: {
         type: String
     },

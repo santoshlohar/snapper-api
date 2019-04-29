@@ -120,6 +120,7 @@ router.put("/:id", (req, res) => {
 			affiliate.name = req.body.name;
 			affiliate.departmentId = req.body.departmentId;
 			affiliate.address = req.body.address;
+			affiliate.code = req.body.code;
 			
 			model.update(affiliate).then((result) => {
 				if(result.isError) {
