@@ -8,9 +8,7 @@ var cors = require('cors');
 var responseHelper = require('./helper/response');
 var mongoose = require('mongoose');
 var config = require('./config/dev');
-
-
-
+var auth = require('./common/auth');
 
 var generateErrorObject = (param, msg, value, location) => {
   return {
@@ -40,7 +38,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(validator());
-
+app.use(auth.verify);
 
 app.use(require("./routes"));
 

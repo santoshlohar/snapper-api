@@ -11,14 +11,19 @@ var schema = new Schema({
     departmentId: {
         type: mongoose.Types.ObjectId
     },
+    code: {
+        type: String,
+    },
     address: {
         type: String
     },
     isActive: {
-        type: Boolean
+        type: Boolean,
+        default: true
     },
     isDeleted: {
-        type: Boolean
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

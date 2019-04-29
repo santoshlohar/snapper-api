@@ -2,26 +2,21 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var schema = new Schema({
-    name: {
-        type: String,
-    },
-    instituteId: {
+    userId: {
         type: mongoose.Types.ObjectId
     },
-    code: {
-        type: String,
+    refreshToken: {
+        type: String
+    },
+    data: {
+        type: String
     },
     isActive: {
         type: Boolean,
         default: true
-    },
-    isDeleted: {
-        type: Boolean,
-        default: false
     }
 }, {
     timestamps: true
 });
 
-
-module.exports = mongoose.model('department', schema);
+module.exports = mongoose.model('session', schema);

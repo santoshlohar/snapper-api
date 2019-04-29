@@ -85,7 +85,8 @@ var schema = new Schema({
         }
     },
     isActive: {
-        type: Boolean
+        type: Boolean,
+        default: true
     },
     status: {
         type: String,
