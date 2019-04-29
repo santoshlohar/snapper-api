@@ -52,10 +52,10 @@ router.get("/list", (req, res) => {
 		skip: skip,
 		limit: limit,
 		instituteId: instituteId
-	}
+	};
 
-	model.getList(obj).then((result) => {
-		if(result.isError || !(result.affiliates)) {
+	model.list(obj).then((result) => {
+		if(result.isError || !(result.affiliates && result.affiliates.length)) {
 			onError([], 500);
 		} else {
 			req.app.responseHelper.send(res, true, result.affiliates, [], 200);
@@ -67,14 +67,12 @@ router.get("/:id", (req, res) => {
 	
 	var id = req.params.id;
 
-	model.findById(id).then((data) => {
-		if(data.error) {
-			var errors = [{
-				"msg": "Failed to get Affiliated Institute!"
-			}];
+	model.findById(id).then((result) => {
+		if(result.isError) {
+			var errros = result.errors;
 			onError(req, res, errors, 500);
 		} else {
-			var affiliate = data.affiliate;
+			var affiliate = result.affiliate;
 			req.app.responseHelper.send(res, true, affiliate, [], 200);
 		}
 	});
@@ -86,19 +84,13 @@ router.put("/:id/changeStatus", (req, res) => {
 	
 	model.findById(id).then((data) => {
 		if(data.error) {
-			var errors = [{
-				"msg": "Failed to get Affiliated Institute!"
-			}];
-			onError(req, res, errors, 500);
+			onError(req, res, data.errors, 500);
 		} else {
 			var affiliate = data.affiliate;
 			affiliate.isActive = req.body.isActive;
 			model.update(affiliate).then((data) => {
-				if(data.error) {
-					var errors = [{
-						"msg": "Failed to update Affiliated Institute!"
-					}];
-					onError(req, res, errors, 500);
+				if(data.isError) {
+					onError(req, res, data.errors, 500);
 				} else {
 					var affiliate = data.affiliate;
 					req.app.responseHelper.send(res, true, affiliate, [], 200);
@@ -121,11 +113,8 @@ router.put("/:id", (req, res) => {
 	var id = req.params.id;
 
 	model.findById(id).then((data) => {
-		if(data.error) {
-			var errors = [{
-				"msg": "Failed to get Affiliated Institute!"
-			}];
-			onError(req, res, errors, 500);
+		if(data.isError) {
+			onError(req, res, data.errors, 500);
 		} else {
 			var affiliate = data.affiliate;
 			affiliate.name = req.body.name;
@@ -133,14 +122,10 @@ router.put("/:id", (req, res) => {
 			affiliate.address = req.body.address;
 			
 			model.update(affiliate).then((result) => {
-				if(result.error) {
-					var errors = [{
-						"msg": "Failed to update Affiliated Institute!"
-					}];
-					onError(req, res, errors, 500);
+				if(result.isError) {
+					onError(req, res, data.errors, 500);
 				} else {
 					var affiliate = result.affiliate;
-
 					req.app.responseHelper.send(res, true, affiliate, [], 200);
 				}
 			});

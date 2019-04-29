@@ -21,12 +21,12 @@ var findById = (id) => {
 		var data = {
             _id: id
         };
-		schema.findOne(data, (err, afflObj) => {
-			if(!err) {
-                var response = {error: false, affiliate: afflObj};
+		schema.findOne(data, (err, affiliate) => {
+			if(!err && (affiliate && affiliate._id) ) {
+                var response = {isError: false, affiliate: affiliate, errors: []};
                 resolve(response);
             } else {
-                var response = {error: true, affiliate: {}};
+                var response = {isError: true, affiliate: {}, errors: [{msg: "Invalid Affilate ID"}]};
                 resolve(response);
             }
 		});
@@ -35,7 +35,7 @@ var findById = (id) => {
 	return promise;
 }
 
-var getList = (data) => {
+var list = (data) => {
 	var promise = new Promise((resolve, reject) => {		
 		schema.find({instituteId: data.instituteId}).then((result) => {
 			var response = {isError: false, affiliates: result, errors: [] };
@@ -54,10 +54,10 @@ var update = (affiliate) => {
 	var promise = new Promise((resolve, reject) => {
 		affiliate.save().then((result) => {
 			console.log(result);
-			var response = {error: null, affiliate: result};
+			var response = {isError: false, affiliate: result, errors: []};
 			resolve(response);
 		}).catch((err) => {
-			var response = {error: err, affiliate: {}};
+			var response = {isError: true, affiliate: {}, errors:[{msg: "Failed to Update Affilite Institute ss"}]};
 			resolve(response);
 		})
 	});
@@ -68,6 +68,6 @@ var update = (affiliate) => {
 module.exports = {
 	create,
 	findById,
-	getList,
+	list,
 	update
 }
