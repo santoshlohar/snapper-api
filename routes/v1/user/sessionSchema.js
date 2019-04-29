@@ -8,6 +8,9 @@ var schema = new Schema({
     refreshToken: {
         type: String
     },
+    data: {
+        type: String
+    },
     isActive: {
         type: Boolean,
         default: true

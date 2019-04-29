@@ -175,4 +175,18 @@ router.post("/resetpassword", (req, res) => {
 
 
 });
+
+router.post("/token", (req, res) => {
+
+    var user = req.user;
+
+    model.updateSession(user).then((result) => {
+        if(result.isError) {
+            //req.app.responseHelper();
+        } else {
+            
+        }
+    });
+
+});
 module.exports = router;

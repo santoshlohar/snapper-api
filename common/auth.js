@@ -43,6 +43,14 @@ var verfifyAccessToken = (req, res, next) => {
 };
 
 var verifyRefreshToken = (req, res, next) => {
+    var refreshToken = req.headers['refreshtoken'];
+
+
+    //find user session using refreshToken
+    // data = session.data;
+    // user = JSON.parse(data);
+    // req.user = user;
+
     next();
 };
 

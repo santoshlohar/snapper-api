@@ -143,10 +143,12 @@ var createSession = (user) => {
         delete user._id;
         delete user.password;
         user.refreshToken = uuid4();
+        var data = JSON.stringify(user);
 
         var document = new sessionSchema({
             userId: user._id,
-            refreshToken: user.refreshToken
+            refreshToken: user.refreshToken,
+            data: data
         });
         document.save(function(err, session) {
             if(err || !(session && session._id)) {
@@ -163,7 +165,10 @@ var createSession = (user) => {
     });
 
     return promise;
-}
+};
+
+var updateSession = (user) => {
+};
 
 var verifyPassword = (user, password) => {
     var promise = new Promise((resolve, reject) => {
@@ -244,5 +249,6 @@ module.exports = {
     updatePassword,
     updateOtp,
     createSession,
-    verifyPassword
+    verifyPassword,
+    updateSession
 };
