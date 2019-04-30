@@ -1,5 +1,6 @@
 var schema = require('./schema');
 var sessionSchema = require('./sessionSchema');
+var userSchema = require('./userSchema');
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var uuid4 = require('uuid4');
@@ -241,6 +242,21 @@ var sendEmail = (data) => {
 
 };
 
+var userDetails = (user) => {
+    var promise = new Promise((resolve, reject) => {
+        var document = new userSchema(user);
+        document.save().then(function(result) {
+            var response = {error: null, user: result};
+            resolve(response);
+        }).catch((err) => {
+            var response = {error: err, user: {}};
+            resolve(response);
+        });
+    });
+
+    return promise;
+}
+
 module.exports = {
     create,
     findByEmail,
@@ -250,5 +266,6 @@ module.exports = {
     updateOtp,
     createSession,
     verifyPassword,
-    updateSession
+    updateSession,
+    userDetails
 };
