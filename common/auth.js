@@ -19,7 +19,7 @@ var verfifyAccessToken = (req, res, next) => {
    
     var token = req.headers['x-api-token'];
     
-    var errors = [{ msg: "Unauthorized Access"}];
+    //var errors = [{ msg: "Unauthorized Access"}];
 
     if (token) {
         jwt.verify(token, config.PRIVATE_KEY, function (err, decoded) {

@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(validator());
-app.use(auth.verify);
+//app.use(auth.verify);
 
 app.use(require("./routes"));
 
