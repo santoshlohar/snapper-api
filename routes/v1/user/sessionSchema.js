@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var schema = new Schema({
     userId: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: 'user'
     },
     refreshToken: {
         type: String

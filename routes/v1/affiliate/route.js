@@ -69,7 +69,7 @@ router.get("/:id", (req, res) => {
 
 	model.findById(id).then((result) => {
 		if(result.isError) {
-			var errros = result.errors;
+			var errors = result.errors;
 			onError(req, res, errors, 500);
 		} else {
 			var affiliate = result.affiliate;
@@ -82,17 +82,17 @@ router.get("/:id", (req, res) => {
 router.put("/:id/changeStatus", (req, res) => {
     var id = req.params.id;
 	
-	model.findById(id).then((data) => {
-		if(data.error) {
-			onError(req, res, data.errors, 500);
+	model.findById(id).then((result) => {
+		if(result.isError) {
+			onError(req, res, result.errors, 500);
 		} else {
-			var affiliate = data.affiliate;
+			var affiliate = result.affiliate;
 			affiliate.isActive = req.body.isActive;
-			model.update(affiliate).then((data) => {
-				if(data.isError) {
-					onError(req, res, data.errors, 500);
+			model.update(affiliate).then((result) => {
+				if(result.isError) {
+					onError(req, res, result.errors, 500);
 				} else {
-					var affiliate = data.affiliate;
+					var affiliate = result.affiliate;
 					req.app.responseHelper.send(res, true, affiliate, [], 200);
 				}
 			});
@@ -112,9 +112,9 @@ router.put("/:id", (req, res) => {
 	
 	var id = req.params.id;
 
-	model.findById(id).then((data) => {
-		if(data.isError) {
-			onError(req, res, data.errors, 500);
+	model.findById(id).then((result) => {
+		if(result.isError) {
+			onError(req, res, result.errors, 500);
 		} else {
 			var affiliate = data.affiliate;
 			affiliate.name = req.body.name;
@@ -124,7 +124,7 @@ router.put("/:id", (req, res) => {
 			
 			model.update(affiliate).then((result) => {
 				if(result.isError) {
-					onError(req, res, data.errors, 500);
+					onError(req, res, result.errors, 500);
 				} else {
 					var affiliate = result.affiliate;
 					req.app.responseHelper.send(res, true, affiliate, [], 200);
