@@ -12,25 +12,6 @@ var onError = (req, res, errors, statusCode) => {
     req.app.responseHelper.send(res, false, {}, errors, statusCode);
 };
 
-var userRef = (req, res, user) => {
-    console.log("req-body ", req.body);
-    var obj = {
-        userId: user._id,
-        instituteId: user.instituteId,
-        departmentId: req.body.departmentId,
-        affiliateId: req.body.affiliateId
-    }
-
-    model.userDetails(obj).then((data) => {
-        if(data.error) {
-            onError(req, res, data.error, 500);
-        } else {
-            req.app.responseHelper.send(res, true, data.user, [], 200);
-        }
-    }).catch((err) => {
-		onError([], 500);
-	});
-}
 
 router.get('/:id', function (req, res) {
 
@@ -64,7 +45,7 @@ router.post("/signin", (req, res) => {
 
     var signin = (data) => {
         model.createSession(data).then((result) => {
-            if(result.isError || !(result && result.user && result.user.id)) {
+            if(result.isError || !(result && result.user && result.user._id)) {
                 onError(req, res, errors, 200);
             } else {
                 req.app.responseHelper.send(res, true, result.user, [], 200);
@@ -211,7 +192,7 @@ router.post("/token", (req, res) => {
 });
 
 router.post("/create", (req, res) => {
-    var errors = validator.user(req);
+    var errors = validator.create(req);
 
     if(errors && errors.length) {
         onError(req, res, errors, 400);
@@ -229,17 +210,13 @@ router.post("/create", (req, res) => {
     user.departmentId = req.body.departmentId;
     user.affiliateId = req.body.affiliateId;
 
-    model.create(user).then((data) => {
-        if(data.error) {
-            onError(req, res, data.error, 500);
+    model.create(user).then((result) => {
+        if(result.isError || !(result.user && result.user._id)) {
+            onError(req, res, [], 500);
         } else {
-            console.log(data);
-            var userData = data.user;
-            userRef(req, res, userData);
+            req.app.responseHelper.send(res, true, result.user, [], 200);
         }
-    }).catch((err) => {
-		onError([], 500);
-	});
+    });
 });
 
 module.exports = router;

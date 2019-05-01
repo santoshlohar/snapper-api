@@ -1,13 +1,13 @@
 var schema = require('./schema');
 var sessionSchema = require('./sessionSchema');
-var userSchema = require('./userSchema');
+var userRefSchema = require('./userRefSchema');
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var uuid4 = require('uuid4');
 var otpSchema = require('./otpSchema');
 var otpGenerator = require('otp-generator');
 var sendMail = require('node-email-sender');
-var mongo = require('mongoose');
+var mongoose = require('mongoose');
 var moment = require('moment');
 
 var generatePassword = (text) => {
@@ -31,8 +31,29 @@ var create = (user) => {
             user.password = hash;
             var document = new schema(user);
             document.save().then(function (result) {
-                var response = { error: null, user: result };
-                resolve(response);
+                result = JSON.parse(JSON.stringify(result));
+                result.role = user.role;
+                result.entity = user.entity;
+                result.instituteId = user.instituteId;
+
+                if(user.departmentId) {
+                    result.departmentId = user.departmentId;
+                }
+                if(user.affiliateId) {
+                    result.affiliateId = user.affiliateId;
+                }
+
+                saveUserReferences(result).then((data) => {
+                    if(data.isError || !(data.reference && data.reference._id)) {
+                        var response = { isError: true, user: {} };
+                        resolve(response);
+                    } else {
+                        result.referenceId = data.reference._id;
+                        var response = { isError: false, user: result };
+                        resolve(response);
+                    }
+                });
+               
             }).catch((err) => {
                 var response = { error: err, user: {} };
                 resolve(response);
@@ -51,11 +72,33 @@ var findByEmail = (email) => {
 
     var promise = new Promise((resolve, reject) => {
 
-        var data = {
-            email: email
-        };
+        // var filter = [];
 
-        schema.findOne(data, (err, user) => {
+        // var matchQuery = {
+        //     email: email,
+        //     isActive: true
+        // };
+
+        // filter.push({ $match: matchQuery});
+
+        // filter.push({
+        //     $lookup: {
+        //         from: "userReference",
+        //         localField: "userId",
+        //         foreignField: "_id",
+        //         as: "reference"
+        //     }
+        // });
+
+        // filter.push({
+        //     $unwind: "$refrence"
+        // });
+
+        //var query = schema.aggregate(filter);
+
+        var query = schema.findOne({email: email});
+        
+        query.exec((err, user) => {
             if (!err) {
                 var response = { isError: false, user: user };
                 resolve(response);
@@ -64,6 +107,7 @@ var findByEmail = (email) => {
                 resolve(response);
             }
         });
+
     });
 
     return promise;
@@ -123,16 +167,30 @@ var updatePassword = (user) => {
     return promise;
 };
 
-var genearetToken = (user, sessionId) => {
+var generateToken = (user, sessionId) => {
     var jwtSecret = 'gadiaagebadikinahi';
     var expire = Date.now() + (1 * 60 * 60 * 1000);
     var payload = { 
-        userId: user.id, 
+        userId: user._id, 
         role: user.role,
+        entity: user.entity,
         instituteId: user.instituteId, 
         sessionId: sessionId, 
         expire: expire 
     };
+
+    if(user.departmentId) {
+        payload.departmentId = user.departmentId;
+    }
+
+    if(user.affiliateId) {
+        payload.affiliateId = user.affiliateId;
+    }
+
+    if(user.referenceId) {
+        payload.referenceId = user.referenceId;
+    }
+
     const token = jwt.sign(payload, jwtSecret);
     return token;
 };
@@ -140,8 +198,6 @@ var genearetToken = (user, sessionId) => {
 var createSession = (user) => {
     var promise = new Promise((resolve, reject) => {
         user = JSON.parse(JSON.stringify(user));
-        user.id = user._id;
-        delete user._id;
         delete user.password;
         user.refreshToken = uuid4();
         var data = JSON.stringify(user);
@@ -157,7 +213,7 @@ var createSession = (user) => {
                 resolve(response);
             } else {
                 var sessionId = session._id;
-                var token = genearetToken(user, sessionId);
+                var token = generateToken(user, sessionId);
                 user.accessToken = token;
                 var response = { isError: false, user: user };
                 resolve(response);
@@ -172,6 +228,7 @@ var updateSession = (user) => {
 };
 
 var verifyPassword = (user, password) => {
+    console.log(password);
     var promise = new Promise((resolve, reject) => {
 
         bcrypt.compare(password, user.password, function(isError, result) {
@@ -212,6 +269,7 @@ var createOtp = (data) => {
             }
             resolve({ isError: false, otp: otp });
         }).catch((err) => {
+            console.log(err);
             resolve({ isError: true, otp: {} });
         });
 
@@ -242,20 +300,32 @@ var sendEmail = (data) => {
 
 };
 
-var userDetails = (user) => {
+var saveUserReferences = (user) => {
     var promise = new Promise((resolve, reject) => {
-        var document = new userSchema(user);
+
+        var data = {
+            userId: user._id,
+            instituteId: user.instituteId,
+            departmentId: user.departmentId,
+            affiliateId: user.affiliateId,
+            role: user.role,
+            entity: user.entity
+        };
+
+        var document = new userRefSchema(data);
         document.save().then(function(result) {
-            var response = {error: null, user: result};
+            console.log(result);
+            var response = {isError: false, reference: result};
             resolve(response);
         }).catch((err) => {
-            var response = {error: err, user: {}};
+            console.log(err);
+            var response = {isError: true, reference: {}};
             resolve(response);
         });
     });
 
     return promise;
-}
+}; 
 
 module.exports = {
     create,
@@ -266,6 +336,5 @@ module.exports = {
     updateOtp,
     createSession,
     verifyPassword,
-    updateSession,
-    userDetails
+    updateSession
 };

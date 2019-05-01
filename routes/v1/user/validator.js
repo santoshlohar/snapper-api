@@ -52,7 +52,7 @@ var resetPassword = (req) => {
     return errors;
 };
 
-var user = (req) => {
+var create = (req) => {
     try {
 
         req.checkBody("email", "Email ID is required.").notEmpty();
@@ -61,14 +61,20 @@ var user = (req) => {
         req.checkBody("lastName", "Last name is required.").notEmpty();
         req.checkBody("phoneNumber", "Phone number is required.").notEmpty();
         req.checkBody("role", "User role is required.").notEmpty();
+        req.checkBody("entity", "User entity is required.").notEmpty();
         req.checkBody("instituteId", "Institute ID is required.").notEmpty();
 
         var role = req.body.role;
+        var entity = req.body.entity;
 
-        if(role && role == ("affl_inst_data_manager" || "affl_inst_reviewer" || "aff_inst_approver")) {
+        if(entity == 'affiliate') {
+            req.checkBody("role", "User role is invalid.").isIn(['manager', 'reviewer', 'approver']);
             req.checkBody("departmentId", "Department ID is required!").notEmpty();
             req.checkBody("affiliateId", "Affiliate Institute ID is required!").notEmpty();
-        } else if( role && role == ("inst_data_manager" || "inst_reviewer" || "inst_certifier")) {
+        }
+
+        if(entity == 'institute') {
+            req.checkBody("role", "User role is invalid.").isIn(['manager', 'reviewer', 'certifier']);
             req.checkBody("departmentId", "Department ID is required!").notEmpty();
         }
         
@@ -83,5 +89,5 @@ var user = (req) => {
 module.exports = {
     forgotPassword,
     resetPassword,
-    user
+    create
 }
