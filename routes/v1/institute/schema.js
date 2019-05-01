@@ -96,4 +96,4 @@ var schema = new Schema({
         timestamps: true
     });
 
-module.exports = mongoose.model('institutes', schema);
+module.exports = mongoose.model('institute', schema);
