@@ -3,18 +3,20 @@ var Schema = mongoose.Schema;
 
 var schema = new Schema({
     instituteId: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: 'institute'
     },
     departmentId: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: 'department'
     },
-    courseType: {
+    type: {
         type: String
     },
     code: {
         type: String
     },
-    courseName: {
+    name: {
         type: String
     },
     specialization: {
@@ -32,10 +34,9 @@ var schema = new Schema({
         default: true
     },
     subjectCredits: {
-        type: Boolean,
-        default: true
+        type: String
     },
-    courseDuration: {
+    duration: {
         type: Number
     },
     durationUnit: {
@@ -45,7 +46,8 @@ var schema = new Schema({
         type: String
     },
     noOfTerms: {
-        type: Number
+        type: Number,
+        default: 0
     },
     isActive: {
         type: Boolean,

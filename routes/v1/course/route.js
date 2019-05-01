@@ -15,7 +15,7 @@ var onError = (req, res, errors, statusCode) => {
 };
 
 router.post("/create", (req, res) => {
-    var errors = validator.course(req);
+    var errors = validator.create(req);
 
     if (errors && errors.length) {
         onError(req, res, errors, 400);
@@ -25,14 +25,14 @@ router.post("/create", (req, res) => {
     var course = {
         instituteId: req.body.instituteId,
         departmentId: req.body.departmentId,
-        courseType: req.body.courseType,
-        courseName: req.body.courseName,
+        type: req.body.type,
+        name: req.body.name,
         specialization: req.body.specialization,
         certificateGenerate: req.body.certificateGenerate,
         certificatePrint: req.body.certificatePrint,
         gpaCalculated: req.body.gpaCalculated,
         subjectCredits: req.body.subjectCredits,
-        courseDuration: req.body.courseDuration,
+        duration: req.body.duration,
         durationUnit: req.body.durationUnit,
         termType: req.body.termType,
         noOfTerms: req.body.noOfTerms
@@ -51,7 +51,7 @@ router.post("/create", (req, res) => {
 
 router.get("/list", (req, res) => {
     var skip = req.body.skip === undefined ? 0 : req.query.skip;
-    var limit = req.query.limit === undefined ? 0 : req.query.limit;
+    var limit = req.query.limit === undefined ? 10 : req.query.limit;
     var instituteId = req.query.instituteId;
     var departmentId = req.query.departmentId;
 
@@ -88,7 +88,7 @@ router.get("/:id", (req, res) => {
 
 router.put("/:id", (req, res) => {
 
-    var errors = validator.course(req);
+    var errors = validator.update(req);
 
     if (errors && errors.length) {
         onError(req, res, errors, 400);
@@ -102,16 +102,13 @@ router.put("/:id", (req, res) => {
             onError(req, res, result.errors, 500);
         } else {
             var course = result.course;
-            course.departmentId = req.body.departmentId;
-            course.courseType = req.body.courseType;
-            course.code = req.body.code;
-            course.courseName = req.body.courseName;
+            course.name = req.body.name;
             course.specialization = req.body.specialization;
             course.certificateGenerate = req.body.certificateGenerate;
             course.certificatePrint = req.body.certificatePrint;
             course.gpaCalculated = req.body.gpaCalculated;
             course.subjectCredits = req.body.subjectCredits;
-            course.courseDuration = req.body.courseDuration;
+            course.duration = req.body.duration;
             course.durationUnit = req.body.durationUnit;
             course.termType = req.body.termType;
             course.noOfTerms = req.body.noOfTerms;

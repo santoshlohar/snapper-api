@@ -45,11 +45,12 @@ var schema = new Schema({
         default: false
     },
     instituteId: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: 'institute'
     }
 }, {
     timestamps: true
 });
 
 
-module.exports = mongoose.model('users', schema);
+module.exports = mongoose.model('user', schema);
