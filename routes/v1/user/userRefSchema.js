@@ -5,21 +5,21 @@ var defaultId = new mongoose.mongo.ObjectId('111111111111111111111111');
 
 var schema = new Schema({
 	userId: {
-		type: Schema.Types.ObjectId,
+		type: Schema.ObjectId,
 		ref: "user"
 	},
 	instituteId: {
-		type: Schema.Types.ObjectId,
+		type: Schema.ObjectId,
 		ref: "institute",
 		default: defaultId
 	},
 	departmentId: {
-		type: Schema.Types.ObjectId,
+		type: Schema.ObjectId,
 		ref: "department",
 		default: defaultId
 	},
 	affiliateId: {
-		type: Schema.Types.ObjectId,
+		type: Schema.ObjectId,
 		ref: "affiliate",
 		default: defaultId
 	},

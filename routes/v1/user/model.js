@@ -72,35 +72,43 @@ var findByEmail = (email) => {
 
     var promise = new Promise((resolve, reject) => {
 
-        // var filter = [];
+        var filter = [];
 
-        // var matchQuery = {
-        //     email: email,
-        //     isActive: true
-        // };
+        var matchQuery = {
+            email: email,
+            isActive: true
+        };
 
-        // filter.push({ $match: matchQuery});
+        filter.push({ $match: matchQuery});
+
+        filter.push({
+            "$lookup": {
+                from: "userreferences",
+                localField: "_id",
+                foreignField: "userId",
+                as: "reference"
+            }
+        });
+
+        filter.push({
+            $unwind: "$reference"
+        });
 
         // filter.push({
-        //     $lookup: {
-        //         from: "userReference",
-        //         localField: "userId",
-        //         foreignField: "_id",
-        //         as: "reference"
+        //     "$project": {
+        //         "refrence.instituteId" : 1,
+        //         "reference.role": 1,
         //     }
-        // });
+        // })
 
-        // filter.push({
-        //     $unwind: "$refrence"
-        // });
+        var query = schema.aggregate(filter);
 
-        //var query = schema.aggregate(filter);
-
-        var query = schema.findOne({email: email});
+        //var query = schema.findOne({email: email});
         
-        query.exec((err, user) => {
-            if (!err) {
-                var response = { isError: false, user: user };
+        query.exec((err, users) => {
+            console.log(users);
+            if (!err || users.length) {
+                var response = { isError: false, user: users[0] };
                 resolve(response);
             } else {
                 var response = { isError: true, user: {} };
