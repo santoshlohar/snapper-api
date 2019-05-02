@@ -206,6 +206,7 @@ router.post("/create", (req, res) => {
     user.lastName = req.body.lastName;
     user.phoneNumber = req.body.phoneNumber;
     user.role = req.body.role;
+    user.entity = req.body.entity;
     user.instituteId = req.body.instituteId;
     user.departmentId = req.body.departmentId;
     user.affiliateId = req.body.affiliateId;
