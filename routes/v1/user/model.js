@@ -180,9 +180,9 @@ var generateToken = (user, sessionId) => {
     var expire = Date.now() + (1 * 60 * 60 * 1000);
     var payload = { 
         userId: user._id, 
-        role: user.role,
-        entity: user.entity,
-        instituteId: user.instituteId, 
+        role: user.reference.role,
+        entity: user.reference.entity,
+        instituteId: user.reference.instituteId, 
         sessionId: sessionId, 
         expire: expire 
     };
