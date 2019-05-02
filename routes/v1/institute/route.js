@@ -26,7 +26,8 @@ router.post('/register', function (req, res) {
 
     var createAdmin = (user, institute) => {
         user.instituteId = institute._id;
-        user.role = 'institute_admin';
+        user.entity = "institute";
+        user.role = 'admin';
         user.firstName = user.name;
 
         userModel.create(user).then((data) => {

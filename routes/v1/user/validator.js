@@ -52,8 +52,42 @@ var resetPassword = (req) => {
     return errors;
 };
 
+var create = (req) => {
+    try {
+
+        req.checkBody("email", "Email ID is required.").notEmpty();
+        req.checkBody("email", "Email ID is invalid.").isEmail().normalizeEmail();
+        req.checkBody("firstName", "First name is required.").notEmpty();
+        req.checkBody("lastName", "Last name is required.").notEmpty();
+        req.checkBody("phoneNumber", "Phone number is required.").notEmpty();
+        req.checkBody("role", "User role is required.").notEmpty();
+        req.checkBody("entity", "User entity is required.").notEmpty();
+        req.checkBody("instituteId", "Institute ID is required.").notEmpty();
+
+        var role = req.body.role;
+        var entity = req.body.entity;
+
+        if(entity == 'affiliate') {
+            req.checkBody("role", "User role is invalid.").isIn(['manager', 'reviewer', 'approver']);
+            req.checkBody("departmentId", "Department ID is required!").notEmpty();
+            req.checkBody("affiliateId", "Affiliate Institute ID is required!").notEmpty();
+        }
+
+        if(entity == 'institute') {
+            req.checkBody("role", "User role is invalid.").isIn(['manager', 'reviewer', 'certifier']);
+            req.checkBody("departmentId", "Department ID is required!").notEmpty();
+        }
+        
+        var errors = req.validationErrors();
+
+    } catch(e) {
+        var errors = [{msg: "Something went wrong!"}];
+    }
+    return errors;
+};
 
 module.exports = {
     forgotPassword,
-    resetPassword
+    resetPassword,
+    create
 }
