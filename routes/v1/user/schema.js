@@ -33,9 +33,6 @@ var schema = new Schema({
     phoneNumber: {
         type: String
     },
-    role: {
-        type: String
-    },
     isActive: {
         type: Boolean,
         default: true
@@ -43,10 +40,6 @@ var schema = new Schema({
     isVerified: {
         type: Boolean,
         default: false
-    },
-    instituteId: {
-        type: mongoose.Types.ObjectId,
-        ref: 'institute'
     }
 }, {
     timestamps: true

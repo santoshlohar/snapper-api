@@ -12,6 +12,7 @@ var onError = (req, res, errors, statusCode) => {
     req.app.responseHelper.send(res, false, {}, errors, statusCode);
 };
 
+
 router.get('/:id', function (req, res) {
 
     req.checkQuery("id", "Not Integer").toInt();
@@ -44,7 +45,7 @@ router.post("/signin", (req, res) => {
 
     var signin = (data) => {
         model.createSession(data).then((result) => {
-            if(result.isError || !(result && result.user && result.user.id)) {
+            if(result.isError || !(result && result.user && result.user._id)) {
                 onError(req, res, errors, 200);
             } else {
                 req.app.responseHelper.send(res, true, result.user, [], 200);
@@ -189,4 +190,34 @@ router.post("/token", (req, res) => {
     });
 
 });
+
+router.post("/create", (req, res) => {
+    var errors = validator.create(req);
+
+    if(errors && errors.length) {
+        onError(req, res, errors, 400);
+        return false;
+    }
+
+    var user = {};
+    user.name = req.body.name;
+    user.email = req.body.email;
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    user.phoneNumber = req.body.phoneNumber;
+    user.role = req.body.role;
+    user.entity = req.body.entity;
+    user.instituteId = req.body.instituteId;
+    user.departmentId = req.body.departmentId;
+    user.affiliateId = req.body.affiliateId;
+
+    model.create(user).then((result) => {
+        if(result.isError || !(result.user && result.user._id)) {
+            onError(req, res, [], 500);
+        } else {
+            req.app.responseHelper.send(res, true, result.user, [], 200);
+        }
+    });
+});
+
 module.exports = router;
