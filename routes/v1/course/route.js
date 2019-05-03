@@ -26,6 +26,7 @@ router.post("/create", (req, res) => {
         instituteId: req.body.instituteId,
         departmentId: req.body.departmentId,
         type: req.body.type,
+        code: req.body.code,
         name: req.body.name,
         specialization: req.body.specialization,
         certificateGenerate: req.body.certificateGenerate,
