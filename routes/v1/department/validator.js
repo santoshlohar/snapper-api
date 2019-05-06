@@ -3,6 +3,7 @@ var create = req => {
     try {
         req.checkBody("name", "Department name cannot be blank").notEmpty();
         req.checkBody("instituteId", "instituteId cannot be blank").notEmpty();
+        req.checkBody("code", "Department ID cannot be blank").notEmpty();
         // req
         //     .checkBody("code")
         //     .optional()

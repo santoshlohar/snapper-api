@@ -21,6 +21,7 @@ var create = (req) => {
         req.checkBody("departmentId", "Department ID is required!").notEmpty();
         req.checkBody("type", "Course Type is required!").notEmpty().isIn(types);
         req.checkBody("name", "Course Name is required!").notEmpty();
+        req.checkBody("code", "Course ID is required!").notEmpty();        
         req.checkBody("certificateGenerate", "Certificate Generate is invalid!").optional().isIn(certificateGenerate);
         req.checkBody("certificatePrint", "Certificate Print is required!").notEmpty();
         req.checkBody("gpaCalculated", "GPA is required!").notEmpty();
