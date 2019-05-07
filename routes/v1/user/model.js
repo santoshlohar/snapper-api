@@ -148,7 +148,6 @@ var findOtp = (params) => {
     return promise;
 };
 
-
 var checkOtpExpiry = (expiry) => {
     if(moment() > moment(expiry)) {
         
@@ -335,6 +334,31 @@ var saveUserReferences = (user) => {
     return promise;
 }; 
 
+var list = (reference) => {
+    var promise = new Promise((resolve, reject) => {
+
+        var obj = {
+            instituteId: reference.instituteId
+        }
+
+        if(reference.departmentId) {
+            obj.departmentId = reference.departmentId;
+        } 
+    
+        if(reference.affiliateId) {
+            obj.affiliateId = reference.affiliateId;
+        }
+        userRefSchema.find(obj).then((result) => {
+            var response = {isError: false, users: result, errors: [] };
+			resolve(response);
+        }).catch((err) => {
+			var response = { isError: true, users: {}, errors: [] };
+			resolve(response);
+		});
+    });
+    return promise;
+};
+
 module.exports = {
     create,
     findByEmail,
@@ -344,5 +368,6 @@ module.exports = {
     updateOtp,
     createSession,
     verifyPassword,
-    updateSession
+    updateSession,
+    list
 };

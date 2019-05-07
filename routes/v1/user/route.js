@@ -12,6 +12,29 @@ var onError = (req, res, errors, statusCode) => {
     req.app.responseHelper.send(res, false, {}, errors, statusCode);
 };
 
+router.get('/list', (req, res) => {
+    
+    var reference = {
+        instituteId: req.query.instituteId,
+        role: req.body.role,
+        entity: req.body.entity
+    }
+
+    if(req.query.departmentId) {
+        reference.departmentId = req.query.departmentId;
+    } 
+
+    if(req.query.affiliateId) {
+        reference.affiliateId = req.query.affiliateId;
+    }
+    model.list(reference).then((result) => {
+        if(result.isError || !(result.users && result.users.length)) {
+			onError(req, res, [], 500);
+		} else {
+			req.app.responseHelper.send(res, true, result.users, [], 200);
+		}
+    });
+});
 
 router.get('/:id', function (req, res) {
 
