@@ -34,7 +34,8 @@ var register = (req) => {
         req.checkBody("type", "Institute type cannot be blank").notEmpty();
         req.checkBody("type", "Institute type is not valid").isIn(types);
         req.checkBody("name", "Institute name cannot be blank").notEmpty();
-        req.checkBody("doe", "Date is not valid").notEmpty().custom(isValidDate); 
+        req.checkBody("doe", "Date is not valid").notEmpty().custom(isValidDate);
+        req.checkBody("code", "Institute ID cannot be blank").notEmpty(); 
         //address
         var errors = req.validationErrors();
 

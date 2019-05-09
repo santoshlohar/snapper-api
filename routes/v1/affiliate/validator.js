@@ -6,6 +6,7 @@ var affiliate = (req) => {
 		req.checkBody("instituteId", "Institute ID is required!").notEmpty();
 		req.checkBody("departmentId", "Department ID is required!").notEmpty();
 		req.checkBody("address", "Address is required!").notEmpty();
+		req.checkBody("code", "Affiliated Institute ID is required!").notEmpty();		
 
 		var errors = req.validationErrors();
 
