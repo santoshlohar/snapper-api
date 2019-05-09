@@ -73,7 +73,18 @@ router.get("/list", (req, res) => {
 });
 
 router.get("/affiliateCourses", (req, res) => {
-    
+    var reference = {
+        instituteId: req.query.instituteId,
+        departmentId: req.query.departmentId,
+        affiliateId: req.query.affiliateId
+    }
+    model.affiliateList(reference).then((result) => {
+        if(result.isError || !(result.courses && result.courses.length)) {
+			onError(req, res, [], 500);
+		} else {
+			req.app.responseHelper.send(res, true, result.courses, [], 200);
+		}
+    });
 });
 
 router.get("/:id", (req, res) => {

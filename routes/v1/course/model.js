@@ -30,6 +30,30 @@ var list = (data) => {
     return promise;
 }
 
+var affiliateList = (data) => {
+    var promise = new Promise((resolve, reject) => {
+
+        var reqObj = {
+            instituteId: data.instituteId,
+            departmentId: data.departmentId
+        };
+
+        if(data.affiliateId) {
+            reqObj.affiliateId = data.affiliateId;
+        }
+
+        affiliateCourses.find(reqObj).then((result) => {
+            var response = {isError: false, courses: result, errors: [] };
+            resolve(response);
+        }).catch((error) => {
+            var response = { isError: true, courses: {}, errors: [] };
+            resolve(response);
+        });
+    });
+
+    return promise;
+}
+
 var findById = (id) => {
     var promise = new Promise((resolve, reject) => {
         var data = {
@@ -99,5 +123,6 @@ module.exports = {
     findById,
     list,
     update,
-    saveAffiliateCourse
+    saveAffiliateCourse,
+    affiliateList
 }
