@@ -1,4 +1,5 @@
 var schema = require('./schema');
+var affiliateCourses = require('./affiliateSchema');
 
 var create = (course) => {
     var promise = new Promise((resolve, reject) => {
@@ -63,9 +64,40 @@ var update = (course) => {
     return promise;
 }
 
+var saveAffiliateCourse = (courses,affiliateId) => {
+    var promise = new Promise((resolve, reject) => {
+
+        var saveCourse = (course) => {
+            var document = new affiliateCourses(course);
+            document.save().then((result) => {
+                console.log(result);
+                var response = { isError: false, courses: result, errors: [] };
+                resolve(response);
+            }).catch((error) => {
+                var response = { isError: true, course: {}, errors: [] };
+                resolve(response);
+            });
+        };
+
+        for(var i=0;i<courses.length;i++) {
+            var course = courses[i];
+
+            var data = {
+                courseId : course._id,
+                instituteId: course.instituteId,
+                departmentId: course.departmentId,
+                affiliateId: affiliateId
+            };
+            saveCourse(data);
+        }
+    });
+    return promise;
+}
+
 module.exports = {
     create,
     findById,
     list,
-    update
+    update,
+    saveAffiliateCourse
 }

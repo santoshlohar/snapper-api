@@ -72,6 +72,10 @@ router.get("/list", (req, res) => {
     });
 });
 
+router.get("/affiliateCourses", (req, res) => {
+    
+});
+
 router.get("/:id", (req, res) => {
 
     var id = req.params.id;
@@ -147,5 +151,20 @@ router.put("/:id/changeStatus", (req, res) => {
         }
     });
 });
+
+router.post("/:affiliateId/courses", (req, res) => {
+    var courses = req.body;
+    var affiliateId = req.params.affiliateId;
+    
+    model.saveAffiliateCourse(courses,affiliateId).then((result) => {
+        if(result.isError) {
+            onError(req, res, [], 500);
+        } else {
+            req.app.responseHelper.send(res, true, result.courses, [], 200);
+        }
+    });
+});
+
+
 
 module.exports = router;
