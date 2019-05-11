@@ -6,10 +6,12 @@ var schema = new Schema({
         type: String,
     },
     instituteId: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: "institute"
     },
     departmentId: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: "department"
     },
     code: {
         type: String,
