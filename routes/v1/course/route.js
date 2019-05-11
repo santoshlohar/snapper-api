@@ -164,7 +164,7 @@ router.put("/:id/changeStatus", (req, res) => {
 });
 
 router.post("/link/affiliates", (req, res) => {
-    var courses = req.body;
+    var courses = req.body.courses;
     var affiliateId = req.body.affiliateId;
     
     model.linkAffiliates(courses, affiliateId).then((result) => {
