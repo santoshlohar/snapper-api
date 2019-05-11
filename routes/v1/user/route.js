@@ -30,9 +30,9 @@ router.get('/list', (req, res) => {
             obj.entity = ['institute', 'affiliate'];
         }
     } else if(currentUser.entity === 'affiliate') {
-        if(currentUser.role = 'manager') {
+        if(currentUser.role === 'manager') {
             obj.roles = ['reviewer', 'approver'];
-            obj.entity = ['institute', 'affiliate'];
+            obj.entity = ['affiliate'];
         }
     }
 
