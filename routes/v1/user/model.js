@@ -407,7 +407,7 @@ var list = (obj) => {
 
         filter.push({
             $lookup: {
-                from: "affiliate",
+                from: "affiliates",
                 localField: "affiliateId",
                 foreignField: "_id",
                 as: "affiliate"
