@@ -397,9 +397,13 @@ var list = (obj) => {
                     as: "department"
                 }
             });
-            // filter.push({
-            //     $unwind: "$department"
-            // });
+
+            filter.push({
+                $unwind: {
+                    "path": "$department",
+                    "preserveNullAndEmptyArrays": true
+                }
+            });
         }
 
         if(!obj.affiliateId) {
@@ -412,9 +416,12 @@ var list = (obj) => {
                 }
             });
 
-            // filter.push({
-            //     $unwind: "$affiliate"
-            // });
+            filter.push({
+                $unwind: {
+                    "path": "$affiliate",
+                    "preserveNullAndEmptyArrays": true
+                }
+            });
         }
 
         var query = userRefSchema.aggregate(filter);
@@ -427,12 +434,12 @@ var list = (obj) => {
                     if(reference.user) {
                         var user = reference.user[0];
 
-                        if(reference.department && reference.department.length) {
-                            user.department = reference.department[0];
+                        if(reference.department) {
+                            user.department = reference.department;
                         }
 
-                        if(reference.affiliate && reference.affiliate.length) {
-                            user.affiliate = reference.affiliate[0];
+                        if(reference.affiliate) {
+                            user.affiliate = reference.affiliate;
                         }
                         users.push(user);
                     }
