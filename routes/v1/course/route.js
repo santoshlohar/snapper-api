@@ -163,7 +163,7 @@ router.put("/:id/changeStatus", (req, res) => {
     });
 });
 
-router.post("/:link/affiliates", (req, res) => {
+router.post("/link/affiliates", (req, res) => {
     var courses = req.body;
     var affiliateId = req.body.affiliateId;
     
