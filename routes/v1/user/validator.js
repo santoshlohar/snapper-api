@@ -4,7 +4,7 @@ var signin = (req) => {
     try {
 
         req.checkBody('email', 'Email is required.').notEmpty();
-        req.checkBody('email', 'Email is invalid.').isEmail().normalizeEmail();
+        req.checkBody('email', 'Email is invalid.').isEmail();
         req.checkBody('password', 'Password is required.').notEmpty();
         req.checkBody('password', 'Password length should be minimum 4 characters.').isLength({ min: 4 });
         
@@ -20,7 +20,7 @@ var forgotPassword = (req) => {
     try {
 
         req.checkBody('email', 'Email is required.').notEmpty();
-        req.checkBody('email', 'Email is invalid.').isEmail().normalizeEmail();
+        req.checkBody('email', 'Email is invalid.').isEmail();
         
         var errors = req.validationErrors();
 
@@ -33,7 +33,7 @@ var forgotPassword = (req) => {
 var resetPassword = (req) => {
     try {
         req.checkBody('email', 'Email is required.').notEmpty();
-        req.checkBody('email', 'Email is invalid.').isEmail().normalizeEmail();
+        req.checkBody('email', 'Email is invalid.').isEmail();
         req.checkBody('password', 'Password is required.').notEmpty();
         req.checkBody('password', 'Password length should be minimum 4 characters.').isLength({ min: 4 });
         req.checkBody('confirmPassword', "password and confirm password should be equal").custom( password => {
@@ -56,7 +56,7 @@ var create = (req) => {
     try {
 
         req.checkBody("email", "Email ID is required.").notEmpty();
-        req.checkBody("email", "Email ID is invalid.").isEmail().normalizeEmail();
+        req.checkBody("email", "Email ID is invalid.").isEmail();
         req.checkBody("firstName", "First name is required.").notEmpty();
         req.checkBody("lastName", "Last name is required.").notEmpty();
         req.checkBody("phoneNumber", "Phone number is required.").notEmpty();

@@ -22,12 +22,12 @@ var register = (req) => {
 
         // Institute Admin validato
         req.checkBody("instituteAdmin.name", "instituteAdmin name cannot be blank").notEmpty();
-        req.checkBody("instituteAdmin.email", "instituteAdmin email cannot be blank").isEmail().normalizeEmail();
+        req.checkBody("instituteAdmin.email", "instituteAdmin email cannot be blank").isEmail();
         req.checkBody('instituteAdmin.phoneNumber', 'instituteAdmin Phone Number is required').notEmpty();
 
         //Requester Details
         req.checkBody("requester.name", "Requester name cannot be blank").notEmpty();
-        req.checkBody("requester.email", "Requester emailID cannot be blank").isEmail().normalizeEmail();
+        req.checkBody("requester.email", "Requester emailID cannot be blank").isEmail();
         req.checkBody('requester.phoneNumber', 'Requester Phone Number is required').notEmpty();
 
         //Insititute Details
