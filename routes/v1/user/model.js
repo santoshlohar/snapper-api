@@ -381,6 +381,22 @@ var list = (obj) => {
 
         filter.push({
             "$lookup": {
+                from: "institute",
+                localField: "instituteId",
+                foreignField: "_id",
+                as: "institute"
+            }
+        });
+
+        filter.push({
+            $unwind: {
+                "path": "$institute",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
+        filter.push({
+            "$lookup": {
                 from: "users",
                 localField: "userId",
                 foreignField: "_id",
@@ -433,6 +449,10 @@ var list = (obj) => {
                     var reference = references[i];
                     if(reference.user) {
                         var user = reference.user[0];
+                        delete user.password;
+                        user.institute = reference.institute;
+                        user.department = {};
+                        user.affiliate = {};
 
                         if(reference.department) {
                             user.department = reference.department;
@@ -441,6 +461,15 @@ var list = (obj) => {
                         if(reference.affiliate) {
                             user.affiliate = reference.affiliate;
                         }
+
+                        user.reference = {
+                            role: reference.role,
+                            entity: reference.entity,
+                            affiliateId: reference.affiliateId,
+                            departmentId: reference.departmentId,
+                            instituteId: reference.instituteId
+                        };
+
                         users.push(user);
                     }
                 }
@@ -448,6 +477,7 @@ var list = (obj) => {
                 var response = { isError: false, users: users };
                 resolve(response);
             } else {
+                console.log(err);
                 var response = { isError: true, users: [] };
                 resolve(response);
             }
