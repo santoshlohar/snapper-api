@@ -361,42 +361,26 @@ var list = (obj) => {
             instituteId: mongoose.Types.ObjectId(obj.instituteId)
         };
 
-        if(obj.departmentId) {
-            matchQuery.departmentId = mongoose.Types.ObjectId(obj.departmentId);
-        } 
+        // if(obj.departmentId) {
+        //     matchQuery.departmentId = mongoose.Types.ObjectId(obj.departmentId);
+        // } 
     
-        if(obj.affiliateId) {
-            matchQuery.affiliateId = mongoose.Types.ObjectId(obj.affiliateId);
-        }
+        // if(obj.affiliateId) {
+        //     matchQuery.affiliateId = mongoose.Types.ObjectId(obj.affiliateId);
+        // }
 
-        if(obj.entity && obj.entity.length) {
-            matchQuery.entity = {"$in" : obj.entity};
-        }
+        // if(obj.entity && obj.entity.length) {
+        //     matchQuery.entity = {"$in" : obj.entity};
+        // }
 
-        if(obj.roles && obj.roles.length) {
-            matchQuery.role = {"$in" : obj.roles};
-        }
-        
+        // if(obj.roles && obj.roles.length) {
+        //     matchQuery.role = {"$in" : obj.roles};
+        // }
+        console.log(matchQuery);
         filter.push({ $match: matchQuery });
 
         filter.push({
-            "$lookup": {
-                from: "institute",
-                localField: "instituteId",
-                foreignField: "_id",
-                as: "institute"
-            }
-        });
-
-        filter.push({
-            $unwind: {
-                "path": "$institute",
-                "preserveNullAndEmptyArrays": true
-            }
-        });
-
-        filter.push({
-            "$lookup": {
+            $lookup: {
                 from: "users",
                 localField: "userId",
                 foreignField: "_id",
@@ -405,7 +389,7 @@ var list = (obj) => {
         });
 
         filter.push({
-            "$lookup": {
+            $lookup: {
                 from: "departments",
                 localField: "departmentId",
                 foreignField: "_id",
@@ -422,7 +406,7 @@ var list = (obj) => {
        
 
         filter.push({
-            "$lookup": {
+            $lookup: {
                 from: "affiliate",
                 localField: "affiliateId",
                 foreignField: "_id",
@@ -437,6 +421,23 @@ var list = (obj) => {
             }
         });
 
+        filter.push({
+            $lookup: {
+                from: "institutes",
+                localField: "instituteId",
+                foreignField: "_id",
+                as: "institute"
+            }
+        });
+
+        filter.push({
+            $unwind: {
+                "path": "$institute",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
+        console.log(filter);
         var query = userRefSchema.aggregate(filter);
 
         query.exec((err, references) => {

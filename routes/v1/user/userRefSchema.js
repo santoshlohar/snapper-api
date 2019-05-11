@@ -1,25 +1,25 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var defaultId = new mongoose.mongo.ObjectId('111111111111111111111111');
+var defaultId = new mongoose.Types.ObjectId('111111111111111111111111');
 
 var schema = new Schema({
 	userId: {
-		type: Schema.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: "user"
 	},
 	instituteId: {
-		type: Schema.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: "institute",
 		default: defaultId
 	},
 	departmentId: {
-		type: Schema.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: "department",
 		default: defaultId
 	},
 	affiliateId: {
-		type: Schema.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: "affiliate",
 		default: defaultId
 	},

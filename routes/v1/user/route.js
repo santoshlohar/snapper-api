@@ -24,6 +24,7 @@ router.get('/list', (req, res) => {
     if(currentUser.entity === 'institute') {
         if(currentUser.role === 'admin') {
             obj.roles.push('manager');
+            obj.roles.push('admin');
             obj.entity.push('institute');
         } else if(currentUser.role === 'manager') {
             obj.roles = ['reviewer', 'certifier', 'manager'];
