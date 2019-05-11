@@ -90,17 +90,13 @@ var update = (course) => {
 
 var linkAffiliates = (courses,affiliateId) => {
 
-    var saveCourse = (course) => {
+    var saveCourse = (link) => {
+
         var promise = new Promise((resolve, reject) => {
-        var document = new affiliateCourses(course);
-        document.save().then((result) => {
-            console.log(result);
-            var response = { isError: false, courses: result, errors: [] };
-            resolve(response);
-        }).catch((error) => {
-            var response = { isError: true, course: {}, errors: [] };
-            resolve(response);
-        });
+            var document = new affiliateCourses(link);
+            document.save().then((result) => {
+                resolve(result);
+            });
         });
 
         return promise;
@@ -108,9 +104,8 @@ var linkAffiliates = (courses,affiliateId) => {
 
     var promise = new Promise((resolve, reject) => {
 
-        
-
-        for(var i=0;i<courses.length;i++) {
+        var promises = [];
+        for(var i=0; i < courses.length; i++) {
             var course = courses[i];
 
             var data = {
@@ -119,8 +114,18 @@ var linkAffiliates = (courses,affiliateId) => {
                 departmentId: course.departmentId,
                 affiliateId: affiliateId
             };
-            saveCourse(data);
+            promises.push(saveCourse(data));
         }
+
+        Promise.all(promises).then((results) => {
+            if(results.length == courses.length) {
+                var response = { isError: false, courses: courses };
+                resolve(response);
+            }
+        }).catch((error) => {
+            var response = { isError: true, courses: [] };
+            resolve(response);
+        });
     });
     return promise;
 }

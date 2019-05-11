@@ -165,9 +165,9 @@ router.put("/:id/changeStatus", (req, res) => {
 
 router.post("/:link/affiliates", (req, res) => {
     var courses = req.body;
-    var affiliateId = req.query.affiliateId;
+    var affiliateId = req.body.affiliateId;
     
-    model.linkAffiliates(courses,affiliateId).then((result) => {
+    model.linkAffiliates(courses, affiliateId).then((result) => {
         if(result.isError) {
             onError(req, res, [], 500);
         } else {
