@@ -12,6 +12,46 @@ var onError = (req, res, errors, statusCode) => {
     req.app.responseHelper.send(res, false, {}, errors, statusCode);
 };
 
+router.get('/list', (req, res) => {
+    var currentUser = req.user;
+
+    var obj = {
+        instituteId: req.query.instituteId,
+        roles: [],
+        entity: []
+    };
+
+    if(currentUser.entity === 'institute') {
+        if(currentUser.role = 'admin') {
+            obj.roles.push('manager');
+            obj.entity.push('institute');
+        } else if(currentUser.role === 'manager') {
+            obj.roles = ['reviewer', 'certifier', 'manager'];
+            obj.entity = ['institute', 'affiliate'];
+        }
+    } else if(currentUser.entity === 'affiliate') {
+        if(currentUser.role = 'manager') {
+            obj.roles = ['reviewer', 'approver'];
+            obj.entity = ['institute', 'affiliate'];
+        }
+    }
+
+    if(req.query.departmentId) {
+        obj.departmentId = req.query.departmentId;
+    }
+
+    if(req.query.affiliateId) {
+        obj.affiliateId = req.query.affiliateId;
+    }
+
+    model.list(obj).then((result) => {
+        if(result.isError || !(result.users)) {
+			onError(req, res, [], 500);
+		} else {
+			req.app.responseHelper.send(res, true, {users: result.users}, [], 200);
+		}
+    });
+});
 
 router.get('/:id', function (req, res) {
 
