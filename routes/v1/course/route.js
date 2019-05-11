@@ -73,12 +73,13 @@ router.get("/list", (req, res) => {
 });
 
 router.get("/affiliateCourses", (req, res) => {
-    var reference = {
+    var data = {
         instituteId: req.query.instituteId,
         departmentId: req.query.departmentId,
         affiliateId: req.query.affiliateId
-    }
-    model.affiliateList(reference).then((result) => {
+    };
+
+    model.getAffiliateCourses(data).then((result) => {
         if(result.isError || !(result.courses && result.courses.length)) {
 			onError(req, res, [], 500);
 		} else {
