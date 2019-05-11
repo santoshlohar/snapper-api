@@ -69,7 +69,7 @@ var getAffiliateCourses = (data) => {
 
         filter.push({
             "$lookup": {
-                from: "institute",
+                from: "institutes",
                 localField: "instituteId",
                 foreignField: "_id",
                 as: "institute"
@@ -102,7 +102,7 @@ var getAffiliateCourses = (data) => {
         if(data.affiliateId) {
             filter.push({
                 "$lookup": {
-                    from: "affiliate",
+                    from: "affiliates",
                     localField: "affiliateId",
                     foreignField: "_id",
                     as: "affiliate"
