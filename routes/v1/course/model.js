@@ -88,20 +88,27 @@ var update = (course) => {
     return promise;
 }
 
-var saveAffiliateCourse = (courses,affiliateId) => {
+var linkAffiliates = (courses,affiliateId) => {
+
+    var saveCourse = (course) => {
+        var promise = new Promise((resolve, reject) => {
+        var document = new affiliateCourses(course);
+        document.save().then((result) => {
+            console.log(result);
+            var response = { isError: false, courses: result, errors: [] };
+            resolve(response);
+        }).catch((error) => {
+            var response = { isError: true, course: {}, errors: [] };
+            resolve(response);
+        });
+        });
+
+        return promise;
+    };
+
     var promise = new Promise((resolve, reject) => {
 
-        var saveCourse = (course) => {
-            var document = new affiliateCourses(course);
-            document.save().then((result) => {
-                console.log(result);
-                var response = { isError: false, courses: result, errors: [] };
-                resolve(response);
-            }).catch((error) => {
-                var response = { isError: true, course: {}, errors: [] };
-                resolve(response);
-            });
-        };
+        
 
         for(var i=0;i<courses.length;i++) {
             var course = courses[i];
@@ -123,6 +130,6 @@ module.exports = {
     findById,
     list,
     update,
-    saveAffiliateCourse,
+    linkAffiliates,
     affiliateList
 }
