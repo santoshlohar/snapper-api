@@ -22,7 +22,7 @@ router.get('/list', (req, res) => {
     };
 
     if(currentUser.entity === 'institute') {
-        if(currentUser.role = 'admin') {
+        if(currentUser.role === 'admin') {
             obj.roles.push('manager');
             obj.entity.push('institute');
         } else if(currentUser.role === 'manager') {

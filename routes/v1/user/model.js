@@ -376,7 +376,7 @@ var list = (obj) => {
         if(obj.roles && obj.roles.length) {
             matchQuery.role = {"$in" : obj.roles};
         }
-
+        
         filter.push({ $match: matchQuery });
 
         filter.push({
@@ -404,47 +404,45 @@ var list = (obj) => {
             }
         });
 
-        if(!obj.departmentId) {
-            filter.push({
-                "$lookup": {
-                    from: "departments",
-                    localField: "departmentId",
-                    foreignField: "_id",
-                    as: "department"
-                }
-            });
+        filter.push({
+            "$lookup": {
+                from: "departments",
+                localField: "departmentId",
+                foreignField: "_id",
+                as: "department"
+            }
+        });
 
-            filter.push({
-                $unwind: {
-                    "path": "$department",
-                    "preserveNullAndEmptyArrays": true
-                }
-            });
-        }
+        filter.push({
+            $unwind: {
+                "path": "$department",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+       
 
-        if(!obj.affiliateId) {
-            filter.push({
-                "$lookup": {
-                    from: "affiliate",
-                    localField: "affiliateId",
-                    foreignField: "_id",
-                    as: "affiliate"
-                }
-            });
+        filter.push({
+            "$lookup": {
+                from: "affiliate",
+                localField: "affiliateId",
+                foreignField: "_id",
+                as: "affiliate"
+            }
+        });
 
-            filter.push({
-                $unwind: {
-                    "path": "$affiliate",
-                    "preserveNullAndEmptyArrays": true
-                }
-            });
-        }
+        filter.push({
+            $unwind: {
+                "path": "$affiliate",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
 
         var query = userRefSchema.aggregate(filter);
 
         query.exec((err, references) => {
             if (!err || references) {
                 var users = [];
+                
                 for(var i=0; i < references.length; i++) {
                     var reference = references[i];
                     if(reference.user) {
