@@ -1,5 +1,7 @@
 var schema = require('./schema');
 var affiliateCourses = require('./affiliateSchema');
+var mongoose = require('mongoose');
+
 
 var create = (course) => {
     var promise = new Promise((resolve, reject) => {
