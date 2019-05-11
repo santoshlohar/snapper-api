@@ -9,6 +9,8 @@ var otpGenerator = require('otp-generator');
 var sendMail = require('node-email-sender');
 var mongoose = require('mongoose');
 var moment = require('moment');
+var departmentSchema = require('./../department/schema');
+var affiliateSchema = require('./../affiliate/schema');
 
 var generatePassword = (text) => {
     var promise = new Promise((resolve, reject) => {
@@ -147,7 +149,6 @@ var findOtp = (params) => {
 
     return promise;
 };
-
 
 var checkOtpExpiry = (expiry) => {
     if(moment() > moment(expiry)) {
@@ -335,6 +336,131 @@ var saveUserReferences = (user) => {
     return promise;
 }; 
 
+var getUserRefrences = (obj) => {
+    var promise = new Promise((resolve, reject) => {
+        userRefSchema.find(obj).then((result) => {
+            console.log(result);
+            var response = {isError: false, references: result, errors: [] };
+            resolve(response);
+        }).catch((err) => {
+            console.log(err);
+            var response = { isError: true, references: {}, errors: [] };
+            resolve(response);
+        });
+    });
+    return promise;
+};
+
+var list = (obj) => {
+    var promise = new Promise((resolve, reject) => {
+
+
+        var filter = [];
+
+        var matchQuery = {
+            instituteId: mongoose.Types.ObjectId(obj.instituteId)
+        };
+
+        if(obj.departmentId) {
+            matchQuery.departmentId = mongoose.Types.ObjectId(obj.departmentId);
+        } 
+    
+        if(obj.affiliateId) {
+            matchQuery.affiliateId = mongoose.Types.ObjectId(obj.affiliateId);
+        }
+
+        if(obj.entity && obj.entity.length) {
+            matchQuery.entity = {"$in" : obj.entity};
+        }
+
+        if(obj.roles && obj.roles.length) {
+            matchQuery.role = {"$in" : obj.roles};
+        }
+
+        filter.push({ $match: matchQuery });
+
+        filter.push({
+            "$lookup": {
+                from: "users",
+                localField: "userId",
+                foreignField: "_id",
+                as: "user"
+            }
+        });
+
+        if(!obj.departmentId) {
+            filter.push({
+                "$lookup": {
+                    from: "departments",
+                    localField: "departmentId",
+                    foreignField: "_id",
+                    as: "department"
+                }
+            });
+
+            filter.push({
+                $unwind: {
+                    "path": "$department",
+                    "preserveNullAndEmptyArrays": true
+                }
+            });
+        }
+
+        if(!obj.affiliateId) {
+            filter.push({
+                "$lookup": {
+                    from: "affiliate",
+                    localField: "affiliateId",
+                    foreignField: "_id",
+                    as: "affiliate"
+                }
+            });
+
+            filter.push({
+                $unwind: {
+                    "path": "$affiliate",
+                    "preserveNullAndEmptyArrays": true
+                }
+            });
+        }
+
+        var query = userRefSchema.aggregate(filter);
+
+        query.exec((err, references) => {
+            if (!err || references) {
+                var users = [];
+                for(var i=0; i < references.length; i++) {
+                    var reference = references[i];
+                    if(reference.user) {
+                        var user = reference.user[0];
+
+                        if(reference.department) {
+                            user.department = reference.department;
+                        }
+
+                        if(reference.affiliate) {
+                            user.affiliate = reference.affiliate;
+                        }
+                        users.push(user);
+                    }
+                }
+
+                var response = { isError: false, users: users };
+                resolve(response);
+            } else {
+                var response = { isError: true, users: [] };
+                resolve(response);
+            }
+        });
+
+
+
+
+    });
+
+    return promise;
+};
+
 module.exports = {
     create,
     findByEmail,
@@ -344,5 +470,6 @@ module.exports = {
     updateOtp,
     createSession,
     verifyPassword,
-    updateSession
+    updateSession,
+    list
 };
