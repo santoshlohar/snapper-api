@@ -441,6 +441,15 @@ var list = (obj) => {
                         if(reference.affiliate) {
                             user.affiliate = reference.affiliate;
                         }
+
+                        user.reference = {
+                            role: reference.role,
+                            entity: reference.entity,
+                            affiliateId: reference.affiliateId,
+                            departmentId: reference.departmentId,
+                            instituteId: reference.instituteId
+                        };
+
                         users.push(user);
                     }
                 }
