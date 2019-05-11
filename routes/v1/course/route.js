@@ -72,6 +72,22 @@ router.get("/list", (req, res) => {
     });
 });
 
+router.get("/affiliateCourses", (req, res) => {
+    var data = {
+        instituteId: req.query.instituteId,
+        departmentId: req.query.departmentId,
+        affiliateId: req.query.affiliateId
+    };
+
+    model.getAffiliateCourses(data).then((result) => {
+        if(result.isError || !(result.courses && result.courses.length)) {
+			onError(req, res, [], 500);
+		} else {
+			req.app.responseHelper.send(res, true, result.courses, [], 200);
+		}
+    });
+});
+
 router.get("/:id", (req, res) => {
 
     var id = req.params.id;
@@ -147,5 +163,20 @@ router.put("/:id/changeStatus", (req, res) => {
         }
     });
 });
+
+router.post("/link/affiliates", (req, res) => {
+    var courses = req.body.courses;
+    var affiliateId = req.body.affiliateId;
+    
+    model.linkAffiliates(courses, affiliateId).then((result) => {
+        if(result.isError) {
+            onError(req, res, [], 500);
+        } else {
+            req.app.responseHelper.send(res, true, result.courses, [], 200);
+        }
+    });
+});
+
+
 
 module.exports = router;

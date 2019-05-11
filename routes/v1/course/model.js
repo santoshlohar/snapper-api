@@ -1,4 +1,7 @@
 var schema = require('./schema');
+var affiliateCourses = require('./affiliateSchema');
+var mongoose = require('mongoose');
+
 
 var create = (course) => {
     var promise = new Promise((resolve, reject) => {
@@ -24,6 +27,126 @@ var list = (data) => {
             var response = { isError: true, courses: {}, errors: [] };
             resolve(response);
         });
+    });
+
+    return promise;
+};
+
+
+var getAffiliateCourses = (data) => {
+
+    var promise = new Promise((resolve, reject) => {
+
+        var filter = [];
+
+        var matchQuery = {
+            instituteId: mongoose.Types.ObjectId(data.instituteId),
+            departmentId: mongoose.Types.ObjectId(data.departmentId)
+        };
+    
+        if(data.affiliateId) {
+            matchQuery.affiliateId = mongoose.Types.ObjectId(data.affiliateId);
+        }
+
+
+        filter.push({ $match: matchQuery });
+
+        filter.push({
+            "$lookup": {
+                from: "courses",
+                localField: "courseId",
+                foreignField: "_id",
+                as: "course"
+            }
+        });
+
+        filter.push({
+            $unwind: {
+                "path": "$course",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
+        filter.push({
+            "$lookup": {
+                from: "institutes",
+                localField: "instituteId",
+                foreignField: "_id",
+                as: "institute"
+            }
+        });
+
+        filter.push({
+            $unwind: {
+                "path": "$institute",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
+        filter.push({
+            "$lookup": {
+                from: "departments",
+                localField: "departmentId",
+                foreignField: "_id",
+                as: "department"
+            }
+        });
+
+        filter.push({
+            $unwind: {
+                "path": "$department",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
+        if(data.affiliateId) {
+            filter.push({
+                "$lookup": {
+                    from: "affiliates",
+                    localField: "affiliateId",
+                    foreignField: "_id",
+                    as: "affiliate"
+                }
+            });
+
+            filter.push({
+                $unwind: {
+                    "path": "$affiliate",
+                    "preserveNullAndEmptyArrays": true
+                }
+            });
+        }
+
+        var query = affiliateCourses.aggregate(filter);
+
+        query.exec((err, records) => {
+            if (!err || records) {
+                var courses = [];
+                for(var i=0; i < records.length; i++) {
+                    var record = records[i];
+                    if(record.course) {
+                        var course = record.course;
+                        course.institute = record.institute;
+                        course.department = record.department;
+                        course.affiliate = {};
+
+                        if(record.affiliate) {
+                            course.affiliate = record.affiliate;
+                        }
+
+                        courses.push(course);
+                    }
+                }
+
+                var response = { isError: false, courses: courses };
+                resolve(response);
+            } else {
+                console.log(err);
+                var response = { isError: true, courses: [] };
+                resolve(response);
+            }
+        });
+
     });
 
     return promise;
@@ -63,9 +186,53 @@ var update = (course) => {
     return promise;
 }
 
+var linkAffiliates = (courses,affiliateId) => {
+
+    var saveCourse = (link) => {
+
+        var promise = new Promise((resolve, reject) => {
+            var document = new affiliateCourses(link);
+            document.save().then((result) => {
+                resolve(result);
+            });
+        });
+
+        return promise;
+    };
+
+    var promise = new Promise((resolve, reject) => {
+
+        var promises = [];
+        for(var i=0; i < courses.length; i++) {
+            var course = courses[i];
+
+            var data = {
+                courseId : course._id,
+                instituteId: course.instituteId,
+                departmentId: course.departmentId,
+                affiliateId: affiliateId
+            };
+            promises.push(saveCourse(data));
+        }
+
+        Promise.all(promises).then((results) => {
+            if(results.length == courses.length) {
+                var response = { isError: false, courses: courses };
+                resolve(response);
+            }
+        }).catch((error) => {
+            var response = { isError: true, courses: [] };
+            resolve(response);
+        });
+    });
+    return promise;
+}
+
 module.exports = {
     create,
     findById,
     list,
-    update
+    update,
+    linkAffiliates,
+    getAffiliateCourses
 }
