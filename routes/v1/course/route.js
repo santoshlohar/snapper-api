@@ -64,8 +64,9 @@ router.get("/list", (req, res) => {
     }
 
     model.list(obj).then((result) => {
+        console.log(" abc",result);
         if(result.isError || !(result.courses && result.courses.length)) {
-			onError([], 500);
+			onError(req, res, [], 500);
 		} else {
 			req.app.responseHelper.send(res, true, result.courses, [], 200);
 		}
@@ -176,7 +177,5 @@ router.post("/link/affiliates", (req, res) => {
         }
     });
 });
-
-
 
 module.exports = router;

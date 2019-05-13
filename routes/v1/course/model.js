@@ -20,12 +20,69 @@ var create = (course) => {
 
 var list = (data) => {
     var promise = new Promise((resolve, reject) => {
-        schema.find({ instituteId: data.instituteId, departmentId: data.departmentId }).then((result) => {
-            var response = {isError: false, courses: result, errors: [] };
-            resolve(response);
-        }).catch((error) => {
-            var response = { isError: true, courses: {}, errors: [] };
-            resolve(response);
+
+        var filter = [];
+
+        var matchQuery = {
+            instituteId: mongoose.Types.ObjectId(data.instituteId),
+            departmentId: mongoose.Types.ObjectId(data.departmentId)
+        };
+
+        filter.push({ $match: matchQuery });
+
+        filter.push({
+            "$lookup": {
+                from: "institutes",
+                localField: "instituteId",
+                foreignField: "_id",
+                as: "institute"
+            }
+        });
+
+        filter.push({
+            $unwind: {
+                "path": "$institute",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
+        filter.push({
+            "$lookup": {
+                from: "departments",
+                localField: "departmentId",
+                foreignField: "_id",
+                as: "department"
+            }
+        });
+
+        filter.push({
+            $unwind: {
+                "path": "$department",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
+        var query = schema.aggregate(filter);
+
+        query.exec((err, records) => {
+            if (!err || records) {
+                var courses = [];
+                for(var i=0; i < records.length; i++) {
+                    var record = records[i];
+                    if(record) {
+                        var course = record;
+                        course.institute = record.institute;
+                        course.department = record.department;
+
+                        courses.push(course);
+                    }
+                }
+                var response = { isError: false, courses: courses };
+                resolve(response);
+            } else {
+                var response = { isError: true, courses: [] };
+                resolve(response);
+            }
         });
     });
 
