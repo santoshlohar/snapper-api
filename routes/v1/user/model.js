@@ -361,22 +361,22 @@ var list = (obj) => {
             instituteId: mongoose.Types.ObjectId(obj.instituteId)
         };
 
-        // if(obj.departmentId) {
-        //     matchQuery.departmentId = mongoose.Types.ObjectId(obj.departmentId);
-        // } 
+        if(obj.departmentId) {
+            matchQuery.departmentId = mongoose.Types.ObjectId(obj.departmentId);
+        } 
     
-        // if(obj.affiliateId) {
-        //     matchQuery.affiliateId = mongoose.Types.ObjectId(obj.affiliateId);
-        // }
+        if(obj.affiliateId) {
+            matchQuery.affiliateId = mongoose.Types.ObjectId(obj.affiliateId);
+        }
 
-        // if(obj.entity && obj.entity.length) {
-        //     matchQuery.entity = {"$in" : obj.entity};
-        // }
+        if(obj.entity && obj.entity.length) {
+            matchQuery.entity = {"$in" : obj.entity};
+        }
 
-        // if(obj.roles && obj.roles.length) {
-        //     matchQuery.role = {"$in" : obj.roles};
-        // }
-        console.log(matchQuery);
+        if(obj.roles && obj.roles.length) {
+            matchQuery.role = {"$in" : obj.roles};
+        }
+        console.log(matchQuery)
         filter.push({ $match: matchQuery });
 
         filter.push({

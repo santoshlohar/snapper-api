@@ -23,15 +23,15 @@ router.get('/list', (req, res) => {
 
     if(currentUser.entity === 'institute') {
         if(currentUser.role === 'admin') {
-            obj.roles.push('manager');
-            obj.entity.push('institute');
+            obj.roles.push('manager', 'admin');
+            obj.entity.push('institute', 'affiliate');
         } else if(currentUser.role === 'manager') {
             obj.roles = ['reviewer', 'certifier', 'manager'];
-            obj.entity = ['institute', 'affiliate'];
+            obj.entity = ['institute'];
         }
     } else if(currentUser.entity === 'affiliate') {
         if(currentUser.role === 'manager') {
-            obj.roles = ['reviewer', 'approver'];
+            obj.roles = ['reviewer', 'approver', 'manager'];
             obj.entity = ['affiliate'];
         }
     }
@@ -45,6 +45,7 @@ router.get('/list', (req, res) => {
     }
 
     model.list(obj).then((result) => {
+        console.log(obj);
         if(result.isError || !(result.users)) {
 			onError(req, res, [], 500);
 		} else {
