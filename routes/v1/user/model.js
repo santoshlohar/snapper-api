@@ -490,6 +490,40 @@ var list = (obj) => {
     return promise;
 };
 
+var findById = (id) => {
+    var promise = new Promise((resolve, reject) => {
+        var data = {
+            _id: id
+        };
+        schema.findOne(data, (err, user) => {
+            if(!err && (user && user._id) ){
+                var response = {isError: false, user: user, errors: []};
+                resolve(response);
+            } else {
+                var response = {isError: true, user: {}, errors: [{msg: "Invalid User ID"}]};
+                resolve(response);
+            }
+        });
+    });
+
+    return promise;
+};
+
+var update = (user) => {
+
+    var promise = new Promise((resolve, reject) => {
+        user.save().then((result) => {
+            var response = { error: null, user: result };
+            resolve(response);
+        }).catch((error) => {
+            var response = { error: error, user: {} };
+            resolve(response);
+        });
+    });
+
+    return promise;
+}
+
 module.exports = {
     create,
     findByEmail,
@@ -500,5 +534,7 @@ module.exports = {
     createSession,
     verifyPassword,
     updateSession,
-    list
+    list,
+    findById,
+    update
 };
