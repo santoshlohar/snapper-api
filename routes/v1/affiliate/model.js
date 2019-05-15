@@ -36,8 +36,14 @@ var findById = (id) => {
 }
 
 var list = (data) => {
-	var promise = new Promise((resolve, reject) => {		
-		schema.find({instituteId: data.instituteId}).then((result) => {
+	var promise = new Promise((resolve, reject) => {	
+		var obj = {
+			instituteId: data.instituteId
+		};
+		if(data.departmentId) {
+			obj.departmentId = data.departmentId
+		}
+		schema.find(obj).then((result) => {
 			var response = {isError: false, affiliates: result, errors: [] };
 			resolve(response);
 		}).catch((err) => {
