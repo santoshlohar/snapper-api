@@ -123,6 +123,10 @@ var findByEmail = (email) => {
     return promise;
 };
 
+var findById = (id) => {
+
+};
+
 var findOtp = (params) => {
 
     var promise = new Promise((resolve, reject) => {
@@ -233,11 +237,16 @@ var createSession = (user) => {
     return promise;
 };
 
-var updateSession = (user) => {
+var updateSession = (session) => {
+    var promise = new Promise((resolve, reject) => {
+
+    });
+
+    return promise;
 };
 
 var verifyPassword = (user, password) => {
-    console.log(password);
+
     var promise = new Promise((resolve, reject) => {
 
         bcrypt.compare(password, user.password, function(isError, result) {
@@ -522,7 +531,21 @@ var update = (user) => {
     });
 
     return promise;
-}
+};
+
+var findSessionByToken = (token) => {
+    var promise = new Promise((resolve, reject) => {
+        sessionSchema.findOne({ refreshToken: token}).then((result) => {
+            var response = { isError: false, session: result };
+            resolve(response);
+        }).catch((error) => {
+            var response = { isError: error, session: {} };
+            resolve(response);
+        });
+    });
+
+    return promise;
+};
 
 module.exports = {
     create,
@@ -536,5 +559,6 @@ module.exports = {
     updateSession,
     list,
     findById,
-    update
+    update,
+    findSessionByToken
 };

@@ -8,6 +8,8 @@ var excluedRoutes = [
     '/api/v1/institute/register',
 ];
 
+var userModel = require('./../routes/v1/user/model');
+
 var isTokenExpired = (user) => {
     if(user.expire && Date.now() <= user.expire ) {
         return false;
@@ -45,13 +47,19 @@ var verfifyAccessToken = (req, res, next) => {
 var verifyRefreshToken = (req, res, next) => {
     var refreshToken = req.headers['refreshtoken'];
 
-
-    //find user session using refreshToken
-    // data = session.data;
-    // user = JSON.parse(data);
-    // req.user = user;
-
-    next();
+    userModel.findSessionByToken(refreshToken).then((result) => {
+        console.log(result);
+        if(result.isError || !result.session) {
+            req.app.responseHelper.send(res, false, {}, errors, 401);
+        } else {
+            data = result.session.data;
+            data = JSON.parse(data);
+            result.session.data = data;
+            req.user = data;
+            req.session = result.session;
+            next();
+        }
+    });
 };
 
 var verify = (req, res, next) => {

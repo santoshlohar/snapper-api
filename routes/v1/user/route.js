@@ -221,8 +221,9 @@ router.post("/resetpassword", (req, res) => {
 router.post("/token", (req, res) => {
 
     var user = req.user;
+    var session = req.session;
 
-    model.updateSession(user).then((result) => {
+    model.updateSession(session).then((result) => {
         if(result.isError) {
             //req.app.responseHelper();
         } else {
