@@ -17,6 +17,10 @@ var schema = new Schema({
 	affiliateId: {
 		type: mongoose.Types.ObjectId,
         ref: 'affiliate'
+	},
+	isActive: {
+		type: Boolean,
+		default: true
 	}
 },{
     timestamps: true

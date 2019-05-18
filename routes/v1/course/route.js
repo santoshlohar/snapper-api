@@ -178,4 +178,21 @@ router.post("/link/affiliates", (req, res) => {
     });
 });
 
+router.put("/affiliate/:id/changeStatus", (req, res) => {
+    var id = req.params.id;
+
+    var course = {
+        isActive: req.body.isActive
+    }
+
+    model.affiliateCourseUpdate(id, course).then((result) => {
+        if (result.isError) {
+            onError(req, res, result.errors, 500);
+        } else {
+            var course = result.course;
+            req.app.responseHelper.send(res, true, course, [], 200);
+        }
+    });
+});
+
 module.exports = router;

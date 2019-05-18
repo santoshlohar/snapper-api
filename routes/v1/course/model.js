@@ -181,17 +181,8 @@ var getAffiliateCourses = (data) => {
                 var courses = [];
                 for(var i=0; i < records.length; i++) {
                     var record = records[i];
-                    if(record.course) {
-                        var course = record.course;
-                        course.institute = record.institute;
-                        course.department = record.department;
-                        course.affiliate = {};
-
-                        if(record.affiliate) {
-                            course.affiliate = record.affiliate;
-                        }
-
-                        courses.push(course);
+                    if(record) {
+                        courses.push(record);
                     }
                 }
 
@@ -285,11 +276,27 @@ var linkAffiliates = (courses,affiliateId) => {
     return promise;
 }
 
+var affiliateCourseUpdate = (id, course) => {
+    var promise = new Promise((resolve, reject) => {
+		affiliateCourses.findOneAndUpdate({ '_id': id }, { $set : course }, { new : true }, (error, result) =>{
+			if(error) {
+				var response = { isError: false, course: {}, errors: [{"msg": "Failed to update course status!"}] };
+            	resolve(response);
+			} else {
+				var response = { isError: false, course: result, errors: [] };
+            	resolve(response);
+			}
+		})
+	});
+	return promise;
+}
+
 module.exports = {
     create,
     findById,
     list,
     update,
     linkAffiliates,
-    getAffiliateCourses
+    getAffiliateCourses,
+    affiliateCourseUpdate
 }
