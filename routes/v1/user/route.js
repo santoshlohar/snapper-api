@@ -109,7 +109,7 @@ router.post("/signin", (req, res) => {
     var findUserByEmail = () => {
         var email = req.body.email;
         model.findByEmail(email).then((result) => {
-            if (result.isError) {
+            if (result.isError || !(result.user && result.user._id)) {
                 onError(req, res, errors, 200);
             } else {
                 var user = result.user;
