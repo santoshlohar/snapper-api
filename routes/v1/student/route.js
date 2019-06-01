@@ -78,6 +78,7 @@ router.put('/:id/changeStatus', (req, res) => {
             var reviewersObj = (obj.student.reviewers) ? obj.student.reviewers : {};
             
             if(!reviewersObj[userId]) {
+                console.log("===== "+userId);
                 reviewersObj[userId] = {userId: userId, date: Date.now()};
             }
 
@@ -144,8 +145,21 @@ router.put('/:id/changeStatus', (req, res) => {
                 onError(req, res, result.errors, 500);
             } else {
                 var reviewers = result.reviewers;
+                var isValidReviewer = false;
+                for(var i=0; i > reviewers.length; i++) {
+                    if(reviewers[i].userId == userId) {
+                        isValidReviewer = true;
+                        break;
+                    }
+                }
+
+                if(isValidReviewer) {
+                    findStudent(reviewers);
+                } else {
+                    onError(req, res, [{msg: "You are not authorized to perform this action"}], 403);
+                }
                 
-                findStudent(reviewers);
+                
             }
         });
     };
