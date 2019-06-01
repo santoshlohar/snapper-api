@@ -1,4 +1,5 @@
 var schema = require('./schema');
+var mongoose = require('mongoose');
 
 var create = (affiliate) => {
 	var promise = new Promise((resolve, reject) => {
@@ -35,19 +36,92 @@ var findById = (id) => {
 	return promise;
 }
 
-var list = (data) => {
-	var promise = new Promise((resolve, reject) => {		
-		schema.find({instituteId: data.instituteId}).then((result) => {
-			var response = {isError: false, affiliates: result, errors: [] };
-			resolve(response);
-		}).catch((err) => {
-			var response = { isError: true, affiliates: {}, errors: [] };
-			resolve(response);
-		});
+var list1 = (data) => {
+	var promise = new Promise((resolve, reject) => {	
+		
+		var queryParams = {
+			instituteId: data.instituteId
+		};
+		
+		if(data.departmentId) {
+			queryParams.departmentId = data.departmentId
+		}
+        
+        var options = {
+            skip: parseInt(data.skip),
+            limit: parseInt(data.limit)
+        };
+
+        schema.find(queryParams, null, options, (err, affiliates) => {
+            if(err) {
+                var response = { isError: true, affiliates: [], errors: [] };
+                resolve(response);
+            } else {
+                var response = { isError: false, affiliates: affiliates, errors: [] };
+                resolve(response);
+            }
+        });
 	});
 
 	return promise;
 }
+
+var list = (obj) => {
+	var promise = new Promise((resolve, reject) => {
+        var filter = [];
+
+        var matchQuery = {
+			instituteId: mongoose.Types.ObjectId(obj.instituteId),
+		};
+		
+		if(obj.departmentId) {
+			matchQuery.departmentId = mongoose.Types.ObjectId(obj.departmentId)
+		}
+
+        filter.push({ $match: matchQuery });
+
+        filter.push({
+            $lookup: {
+                from: "departments",
+                localField: "departmentId",
+                foreignField: "_id",
+                as: "department"
+            }
+        });
+
+        
+        filter.push({
+            $unwind: {
+                "path": "$department",
+                "preserveNullAndEmptyArrays": true
+            }
+		});
+
+        var query = schema.aggregate(filter);
+
+        query.exec((err, records) => {
+
+            if (!err || records) {
+                var affiliates = [];
+                for(var i=0; i < records.length; i++) {
+                    var record = records[i];
+                    if(record) {
+                        var affiliate = record;
+                        affiliate.department = record.department;
+                        affiliates.push(affiliate);
+                    }
+                }
+                var response = { isError: false, affiliates: affiliates };
+                resolve(response);
+            } else {
+                var response = { isError: true, affiliates: [] };
+                resolve(response);
+            }
+        })
+    });
+
+    return promise;
+};
 
 var update = (affiliate) => {
 

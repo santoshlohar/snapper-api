@@ -29,7 +29,7 @@ router.get("/list", (req, res) => {
 
     model.list(data).then((result) => {
         if (result.isError) {
-            onError(req, res, [], 500);
+            onError(req, res, result.errors, 500);
         } else {
             req.app.responseHelper.send(res, true, result.departments, [], 200);
         }

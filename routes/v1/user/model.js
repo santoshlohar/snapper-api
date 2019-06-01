@@ -169,6 +169,7 @@ var updatePassword = (user) => {
                 });
             } else {
                 var response = {isError: true, user: {}, errors: [{param: 'password', msg :'Password update failed'}]};
+                resolve(response);
             }
         });
     });
@@ -184,7 +185,8 @@ var generateToken = (user, sessionId) => {
         role: user.reference.role,
         entity: user.reference.entity,
         instituteId: user.reference.instituteId, 
-        sessionId: sessionId, 
+        sessionId: sessionId,
+        reference: user.reference, 
         expire: expire 
     };
 
@@ -522,7 +524,31 @@ var update = (user) => {
     });
 
     return promise;
-}
+};
+
+var getAffiliateReviewers = (affiliateId) => {
+
+    var promise = new Promise((resolve, reject) => {
+        var data = {
+            affiliateId: affiliateId,
+            entity: "affiliate",
+            role: 'reviewer'
+        };
+
+        userRefSchema.find(data, (err, references) => {
+            if(!err && references && references.length) {
+                var response = {isError: false, references: references, errors: []};
+                resolve(response);
+            } else {
+                var response = {isError: true, references: [], errors: [{msg: "No Reviewers are present in this Affiliate"}]};
+                resolve(response);
+            }
+        });
+
+    });
+
+    return promise;
+};
 
 module.exports = {
     create,
@@ -536,5 +562,6 @@ module.exports = {
     updateSession,
     list,
     findById,
-    update
+    update,
+    getAffiliateReviewers
 };

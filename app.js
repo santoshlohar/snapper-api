@@ -9,6 +9,8 @@ var responseHelper = require('./helper/response');
 var mongoose = require('mongoose');
 var config = require('./config/dev');
 var auth = require('./common/auth');
+var multer = require('multer');
+var fs = require('fs');
 
 var generateErrorObject = (param, msg, value, location) => {
   return {
@@ -41,6 +43,7 @@ app.use(validator());
 app.use(auth.verify);
 
 app.use(require("./routes"));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

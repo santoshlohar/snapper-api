@@ -48,16 +48,19 @@ router.get("/list", (req, res) => {
 	var skip = req.query.skip === undefined ? 0 : req.query.skip;
 	var limit = req.query.limit === undefined ? 0 : req.query.limit;
 	var instituteId = req.query.instituteId;
+	var departmentId = req.query.departmentId;
 
 	var obj = {
 		skip: skip,
 		limit: limit,
-		instituteId: instituteId
+		instituteId: instituteId,
+		departmentId: departmentId
 	};
 
 	model.list(obj).then((result) => {
 		if(result.isError || !(result.affiliates && result.affiliates.length)) {
-			onError([], 500);
+			console.log("error" , result.errors);
+			onError(req, res, result.errors, 500);
 		} else {
 			req.app.responseHelper.send(res, true, result.affiliates, [], 200);
 		}
