@@ -46,8 +46,7 @@ router.get('/:id', (req, res) => {
 
 router.put('/:id/changeStatus', (req, res) => {
     var id = req.params.id;
-    var user = req.user;
-    var userId = req.user._id;
+    var userId = req.user.userId;
     var instituteId = req.user.reference.instituteId;
     var affiliateId = req.user.reference.affiliateId;
     var status = req.body.status;
@@ -57,6 +56,7 @@ router.put('/:id/changeStatus', (req, res) => {
             if(result.isError) {
                 onError(req, res, result.errors, 500);
             } else {
+                student = JSON.parse(JSON.stringify(student));
                 student.status = data.student;
                 req.app.responseHelper.send(res, true, {student: student}, [], 200);
             }
@@ -65,17 +65,17 @@ router.put('/:id/changeStatus', (req, res) => {
 
     var processStatus = (obj) => {
 
-        if (obj.student.status = 'rejected') {
+        if (obj.student.status == 'rejected') {
             onError(req, res, [{msg: "Action not Allowed, Student is already rejected"}], 500);
-        } if (obj.student.status = 'reviewed') {
+        } if (obj.student.status == 'reviewed') {
             onError(req, res, [{msg: "Action not Allowed, Student is already reviewed"}], 500);
         } else {
 
             var data = {
-                studentId: data.student._id
+                studentId: obj.student._id
             };
 
-            var reviewersObj = (student.reviewers) ? student.reviewers : {};
+            var reviewersObj = (obj.student.reviewers) ? obj.student.reviewers : {};
             
             if(!reviewersObj[userId]) {
                 reviewersObj[userId] = {userId: userId, date: Date.now()};
@@ -103,7 +103,7 @@ router.put('/:id/changeStatus', (req, res) => {
                 } else {
                     var reviewedCount = 0;
                     for(var i in reviewersObj) {
-                        if(reviewerObj[i].status == 'reviewed' ) {
+                        if(reviewersObj[i].status == 'reviewed' ) {
                             reviewedCount++;
                         }
                     }
@@ -128,6 +128,7 @@ router.put('/:id/changeStatus', (req, res) => {
             } else {
 
                 var student = result.student;
+
                 var obj = {
                     student: student,
                     reviewers: reviewers
@@ -143,6 +144,7 @@ router.put('/:id/changeStatus', (req, res) => {
                 onError(req, res, result.errors, 500);
             } else {
                 var reviewers = result.reviewers;
+                
                 findStudent(reviewers);
             }
         });
