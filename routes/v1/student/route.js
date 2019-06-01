@@ -88,6 +88,7 @@ router.put('/:id/changeStatus', (req, res) => {
                     data.status = 'rejected';
                     reviewersObj[userId].status = 'rejected';
                 } else {
+
                     data.status = 'reviewed';
                     if(obj.reviewers.length > 1) {
                         data.status = 'under review';
@@ -100,18 +101,32 @@ router.put('/:id/changeStatus', (req, res) => {
                 if (status == 'rejected') {
                     data.status = 'rejected';
                     reviewersObj[userId].status = 'rejected';
-                } else {
+                }  else {
                     var reviewedCount = 0;
+                    var isUserAlreadyReviewed = false;
                     for(var i in reviewersObj) {
+
+                        if(i == userId && reviewersObj.status) {
+                            isUserAlreadyReviewed = true;
+                            break;
+                        }
+
                         if(reviewersObj[i].status == 'reviewed' ) {
                             reviewedCount++;
                         }
                     }
 
+                    if(isUserAlreadyReviewed) {
+                        onError(req, res, [{msg: "Action not Allowed, Student is already reviewed by Current Reviewer"}], 500);
+                        return true;
+                    }
+                    
+                    data.status = 'under review';
                     if(reviewedCount+1 == obj.reviewers.length) {
                         data.status = 'reviewed';
                     }
                     reviewersObj[userId].status = 'reviewed';
+                    
                 }
                 
             }
