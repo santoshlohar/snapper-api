@@ -78,7 +78,6 @@ router.put('/:id/changeStatus', (req, res) => {
             var reviewersObj = (obj.student.reviewers) ? obj.student.reviewers : {};
             
             if(!reviewersObj[userId]) {
-                console.log("===== "+userId);
                 reviewersObj[userId] = {userId: userId, date: Date.now()};
             }
 
@@ -146,7 +145,7 @@ router.put('/:id/changeStatus', (req, res) => {
             } else {
                 var reviewers = result.reviewers;
                 var isValidReviewer = false;
-                for(var i=0; i > reviewers.length; i++) {
+                for(var i=0; i < reviewers.length; i++) {
                     if(reviewers[i].userId == userId) {
                         isValidReviewer = true;
                         break;
