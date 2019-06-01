@@ -526,10 +526,11 @@ var update = (user) => {
     return promise;
 };
 
-var getAffiliateReviewers = (affiliateId) => {
+var getAffiliateReviewers = (instituteId, affiliateId) => {
 
     var promise = new Promise((resolve, reject) => {
         var data = {
+            instituteId: instituteId,
             affiliateId: affiliateId,
             entity: "affiliate",
             role: 'reviewer'

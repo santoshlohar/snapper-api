@@ -219,7 +219,7 @@ router.put('/:id', isAffiliateDataManager, (req, res) => {
                 onError(req, res, result.errors, 500);
             } else {
                 var draft = result.draft;
-                if((draft.batchId == inputDraft.batchId) && (draft.affiliateId == inputDraft.affiliateId)) {
+                if((draft.instituteId == inputDraft.instituteId) && (draft.batchId == inputDraft.batchId) && (draft.affiliateId == inputDraft.affiliateId)) {
                     draft.code = inputDraft.code;
                     draft.name = inputDraft.name;
                     draft.father = inputDraft.father;

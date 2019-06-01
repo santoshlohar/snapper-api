@@ -94,10 +94,26 @@ var update = (id, student) => {
 	return promise;
 };
 
+var changeStatus = (data) => {
+	var promise = new Promise((resolve, reject) => {
+		schema.updateMany({ _id: data.studentId}, { $set : { status : data.status, reviewers: data.reviewers}}, (err, result) => {
+			if(!err) {
+				var response = { isError: false, errors: [] };
+            	resolve(response);
+			}else {
+				var response = { isError: true, errors: [{msg: "failed to update the draft status"}] };
+            	resolve(response);
+			}
+		});
+	});
+	return promise;
+};
+
 module.exports = {
 	create,
 	insertMany,
 	list,
 	update,
-	findById
+	findById,
+	changeStatus
 };

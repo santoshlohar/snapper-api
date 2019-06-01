@@ -12,6 +12,7 @@ var buildData = (req, records) => {
 
     var batchId = req.body.batchId;
     var affiliateId = req.body.affiliateId;
+    var instituteId = req.body.instituteId;
 
     for(var i=1; i < records.length; i++) {
         records[i].code = (records[i].code) ? records[i].code : "";
@@ -26,6 +27,7 @@ var buildData = (req, records) => {
 
         student.batchId = batchId;
         student.affiliateId = affiliateId;
+        student.instituteId = instituteId;
         student.code = { value: records[i].code, error: true };
         student.name = { value: records[i].name, error: true };
         student.father = { value: records[i].father, error: true };
@@ -136,6 +138,7 @@ var updateDraft = (req) => {
     draft._id = req.body._id;
     draft.batchId = req.body.batchId;
     draft.affiliateId = req.body.affiliateId;
+    draft.instituteId = req.body.instituteId;
     draft.code = {value : req.body.code.value, error: true };
     draft.name = {value : req.body.name.value, error: true };
     draft.father = {value : req.body.father.value, error: true };

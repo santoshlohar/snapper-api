@@ -10,6 +10,10 @@ var schema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'affiliates'
 	},
+	instituteId: {
+		type: Schema.Types.ObjectId,
+		ref: 'institutes'
+	},
 	code: {
 		type: Object
 	},

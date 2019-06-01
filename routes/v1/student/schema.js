@@ -10,6 +10,10 @@ var schema = new Schema({
 		type: mongoose.Types.ObjectId,
 		ref: 'affiliates'
 	},
+	instituteId: {
+		type: Schema.Types.ObjectId,
+		ref: 'institutes'
+	},
 	code: {
 		type: String
 	},
@@ -42,6 +46,10 @@ var schema = new Schema({
 	date: {
 		type : String, 
 		default : Date.now
+	},
+	reviewers: {
+		type: Schema.Types.Mixed,
+		default: {}
 	}	
 },{
     timestamps: true
