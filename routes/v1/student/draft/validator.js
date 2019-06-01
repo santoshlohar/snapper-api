@@ -117,6 +117,7 @@ var process = (req) => {
                 student.email = draft.email.value;
                 student.batchId = draft.batchId;
                 student.affiliateId = draft.affiliateId;
+                student.instituteId = draft.instituteId;
                 data.students.push(student);
             } else {
                 data.isDataInvalid = true;
