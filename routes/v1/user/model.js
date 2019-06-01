@@ -537,11 +537,12 @@ var getAffiliateReviewers = (instituteId, affiliateId) => {
         };
 
         userRefSchema.find(data, (err, references) => {
+            
             if(!err && references && references.length) {
-                var response = {isError: false, references: references, errors: []};
+                var response = {isError: false, reviewers: references, errors: []};
                 resolve(response);
             } else {
-                var response = {isError: true, references: [], errors: [{msg: "No Reviewers are present in this Affiliate"}]};
+                var response = {isError: true, reviewers: [], errors: [{msg: "No Reviewers are present in this Affiliate"}]};
                 resolve(response);
             }
         });
