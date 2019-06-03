@@ -6,6 +6,10 @@ var schema = new Schema({
 		type: mongoose.Types.ObjectId,
         ref: 'institute'
 	},
+	departmentId: {
+		type: mongoose.Types.ObjectId,
+		ref: 'department'
+	},
 	affiliateId: {
 		type: mongoose.Types.ObjectId,
 		ref: 'affiliate'

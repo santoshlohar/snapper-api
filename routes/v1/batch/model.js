@@ -88,6 +88,22 @@ var list = (obj) => {
 
         filter.push({
             $lookup: {
+                from: "departments",
+                localField: "departmentId",
+                foreignField: "_id",
+                as: "department"
+            }
+        });
+
+        filter.push({
+            $unwind: {
+                "path": "$department",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
+        filter.push({
+            $lookup: {
                 from: "courses",
                 localField: "courseId",
                 foreignField: "_id",
@@ -113,6 +129,7 @@ var list = (obj) => {
                     if(record) {
                         var batch = record;
                         batch.institute = record.institute;
+                        batch.department = record.department;
                         batch.affiliate = record.affiliate;
                         batch.course = record.course;
                         batches.push(batch);

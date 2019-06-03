@@ -24,6 +24,7 @@ router.post('/create', (req, res) => {
 	
 	var batch = {
 		instituteId: req.body.instituteId,
+		departmentId: req.body.departmentId,
 		affiliateId: req.body.affiliateId,
 		courseId: req.body.courseId,
 		code: req.body.code,
@@ -59,6 +60,7 @@ router.put('/:id', (req, res) => {
 
 	var batch = {
 		instituteId: req.body.instituteId,
+		departmentId: req.body.departmentId,
 		affiliateId: req.body.affiliateId,
 		courseId: req.body.courseId,
 		code: req.body.code,
