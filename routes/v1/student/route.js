@@ -106,7 +106,7 @@ router.put('/:id/changeStatus', (req, res) => {
                     var isUserAlreadyReviewed = false;
                     for(var i in reviewersObj) {
 
-                        if(i == userId && reviewersObj.status) {
+                        if(i == userId && reviewersObj[i].status) {
                             isUserAlreadyReviewed = true;
                             break;
                         }
