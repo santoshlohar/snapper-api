@@ -344,7 +344,9 @@ router.post("/:id/comment", (req, res) => {
 		user: {
 			id: userId,
 			entity: entity,
-			role: role
+			role: role,
+			firstName: "",
+			lastName: ""
 		}
 	};
 
