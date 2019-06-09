@@ -182,15 +182,23 @@ var getAffiliateCourses = (data) => {
                 for(var i=0; i < records.length; i++) {
                     var record = records[i];
                     if(record) {
-                        courses.push(record);
+                        var course = record.course;
+                        course.institute = record.institute;
+                        course.department = record.department;
+                        if(data.affiliateId) {
+                            course.affiliate = record.affiliate;
+                        }
+                        course.affiliateReferenceId = record._id;
+                        course.affiliateReferenceIsActive = record.isActive;
+                        courses.push(course);
                     }
                 }
 
-                var response = { isError: false, courses: courses };
+                var response = { isError: false, courses: courses, errors: [] };
                 resolve(response);
             } else {
                 console.log(err);
-                var response = { isError: true, courses: [] };
+                var response = { isError: true, courses: [], errors: [{msg: "No Courses found!"}] };
                 resolve(response);
             }
         });

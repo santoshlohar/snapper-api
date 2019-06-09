@@ -1,5 +1,10 @@
 var jwt = require('jsonwebtoken');
 var config = require('../config/dev');
+var moment = require("moment");
+
+const REFRESH_TOKEN_EXPIRE_TIME = 24 * 60 * 60 * 1000;
+
+//const REFRESH_TOKEN_EXPIRE_TIME = 500;
 
 var excluedRoutes = [
     '/api/v1/user/signin',
@@ -7,6 +12,8 @@ var excluedRoutes = [
     '/api/v1/user/resetpassword',
     '/api/v1/institute/register',
 ];
+
+var userModel = require('./../routes/v1/user/model');
 
 var isTokenExpired = (user) => {
     if(user.expire && Date.now() <= user.expire ) {
@@ -44,14 +51,24 @@ var verfifyAccessToken = (req, res, next) => {
 
 var verifyRefreshToken = (req, res, next) => {
     var refreshToken = req.headers['refreshtoken'];
-
-
-    //find user session using refreshToken
-    // data = session.data;
-    // user = JSON.parse(data);
-    // req.user = user;
-
-    next();
+    userModel.findUserByRefreshToken(refreshToken).then((result) => {
+        if(result.isError || !(result.session && result.session._id)) {
+            req.app.responseHelper.send(res, false, {}, result.errors, 401);
+        } else {
+            req.session = result.session;
+            var sessionCreationDate = req.session.createdAt;
+            var isSessionExpired = ((moment() - moment(sessionCreationDate)) >= REFRESH_TOKEN_EXPIRE_TIME) ? true : false;
+            if(isSessionExpired) {
+                console.log("session expired");
+                userModel.destorySession(req.session._id).then((result) => {
+                    req.app.responseHelper.send(res, false, {}, [{msg: "Unauthorized Access!"}], 401);
+                });
+            } else {
+                next();
+            }
+            
+        }
+    });
 };
 
 var verify = (req, res, next) => {

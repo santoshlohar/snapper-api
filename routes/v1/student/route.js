@@ -57,7 +57,7 @@ router.put('/:id/changeStatus', (req, res) => {
                 onError(req, res, result.errors, 500);
             } else {
                 student = JSON.parse(JSON.stringify(student));
-                student.status = data.student;
+                student.status = data.status;
                 req.app.responseHelper.send(res, true, {student: student}, [], 200);
             }
         });

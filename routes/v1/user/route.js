@@ -220,15 +220,33 @@ router.post("/resetpassword", (req, res) => {
 
 router.post("/token", (req, res) => {
 
-    var user = req.user;
+    var session = req.session;
+    var userId = session.userId;
+    var sessionId = session._id;
 
-    model.updateSession(user).then((result) => {
-        if(result.isError) {
-            //req.app.responseHelper();
-        } else {
-            
-        }
-    });
+    var updateSession = (user) => {
+        model.updateSession(user, sessionId).then((result) => {
+            if(result.isError || !(result && result.user && result.user._id)) {
+                var errors = (result.errors && result.errors.length) ? result.errors : [];
+                onError(req, res, errors, 401);
+            } else {
+                req.app.responseHelper.send(res, true, result.user, [], 200);
+            }
+        });
+    };
+
+    var findUserById = (id) => {
+        model.findById(id).then((result) => {
+            if(result.isError || !(result && result.user && result.user._id)) {
+                var errors = (result.errors && result.errors.length) ? result.errors : [];
+                onError(req, res, errors, 500);
+            } else {
+                var user = result.user;
+                updateSession(user);
+            }
+        });
+    };
+    findUserById(userId);
 
 });
 

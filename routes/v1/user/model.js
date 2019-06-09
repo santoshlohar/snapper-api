@@ -123,6 +123,49 @@ var findByEmail = (email) => {
     return promise;
 };
 
+var findById = (id) => {
+
+    var promise = new Promise((resolve, reject) => {
+
+        var filter = [];
+
+        var matchQuery = {
+            _id: mongoose.Types.ObjectId(id),
+            isActive: true
+        };
+
+        filter.push({ $match: matchQuery});
+
+        filter.push({
+            "$lookup": {
+                from: "userreferences",
+                localField: "_id",
+                foreignField: "userId",
+                as: "reference"
+            }
+        });
+
+        filter.push({
+            $unwind: "$reference"
+        });
+
+        var query = schema.aggregate(filter);
+        
+        query.exec((err, users) => {
+            if (!err || users.length) {
+                var response = { isError: false, user: users[0], errors: [] };
+                resolve(response);
+            } else {
+                var response = { isError: true, user: {}, errors: [{msg: "Invalid User ID"}] };
+                resolve(response);
+            }
+        });
+
+    });
+
+    return promise;
+};
+
 var findOtp = (params) => {
 
     var promise = new Promise((resolve, reject) => {
@@ -180,6 +223,7 @@ var updatePassword = (user) => {
 var generateToken = (user, sessionId) => {
     var jwtSecret = 'gadiaagebadikinahi';
     var expire = Date.now() + (1 * 60 * 60 * 1000);
+    expire = Date.now() + 1000;
     var payload = { 
         userId: user._id, 
         role: user.reference.role,
@@ -211,12 +255,10 @@ var createSession = (user) => {
         user = JSON.parse(JSON.stringify(user));
         delete user.password;
         user.refreshToken = uuid4();
-        var data = JSON.stringify(user);
 
         var document = new sessionSchema({
             userId: user._id,
             refreshToken: user.refreshToken,
-            data: data
         });
         document.save(function(err, session) {
             if(err || !(session && session._id)) {
@@ -235,7 +277,47 @@ var createSession = (user) => {
     return promise;
 };
 
-var updateSession = (user) => {
+var updateSession = (user, sessionId) => {
+    var promise = new Promise((resolve, reject) => {
+        var token = generateToken(user, sessionId);
+        user = JSON.parse(JSON.stringify(user));
+        user.accessToken = token;
+        user.refreshToken = uuid4();
+        delete user.password;
+
+        var data = {
+            refreshToken: user.refreshToken
+        };
+
+        sessionSchema.findOneAndUpdate({"_id": sessionId}, {$set : data}, { new : true }, (error, result) =>{
+            if(error) {
+                var response = { isError: true, user: {}, errors: [{"msg": "Unauthorized access!"}] };
+            	resolve(response);
+            } else {
+                var response = { isError: false, user: user, errors: [] };
+            	resolve(response);
+            }
+        });
+    });
+
+    return promise;
+};
+
+var destorySession = (sessionId) => {
+    var promise = new Promise((resolve, reject) => {
+        sessionSchema.findOneAndUpdate({_id: sessionId}, {$set: {isActive: false}}, {new: true}, (error, result) => {
+            if(error) {
+                var response = { isError: true, session: {}, errors: [{"msg": "Unauthorized access!"}] };
+            	resolve(response);
+            } else {
+                var response = { isError: false, session: {}, errors: [] };
+            	resolve(response);
+            }
+        });
+    });
+
+    return promise;
+
 };
 
 var verifyPassword = (user, password) => {
@@ -492,25 +574,6 @@ var list = (obj) => {
     return promise;
 };
 
-var findById = (id) => {
-    var promise = new Promise((resolve, reject) => {
-        var data = {
-            _id: id
-        };
-        schema.findOne(data, (err, user) => {
-            if(!err && (user && user._id) ){
-                var response = {isError: false, user: user, errors: []};
-                resolve(response);
-            } else {
-                var response = {isError: true, user: {}, errors: [{msg: "Invalid User ID"}]};
-                resolve(response);
-            }
-        });
-    });
-
-    return promise;
-};
-
 var update = (user) => {
 
     var promise = new Promise((resolve, reject) => {
@@ -552,6 +615,69 @@ var getAffiliateReviewers = (instituteId, affiliateId) => {
     return promise;
 };
 
+var getInstituteReviewers = (instituteId, departmentId) => {
+    var promise = new Promise((resolve, reject) => {
+        var data = {
+            instituteId: instituteId,
+            departmentId: departmentId,
+            entity: "institute",
+            role: 'reviewer'
+        };
+
+        userRefSchema.find(data, (err, references) => {
+            
+            if(!err && references && references.length) {
+                var response = {isError: false, reviewers: references, errors: []};
+                resolve(response);
+            } else {
+                var response = {isError: true, reviewers: [], errors: [{msg: "No Reviewers are present in this Institute"}]};
+                resolve(response);
+            }
+        });
+
+    });
+
+    return promise;
+};
+
+var getInstituteCertifiers = (instituteId, departmentId) => {
+    var promise = new Promise((resolve, reject) => {
+        var data = {
+            instituteId: instituteId,
+            departmentId: departmentId,
+            entity: "institute",
+            role: 'certifier'
+        };
+
+        userRefSchema.find(data, (err, references) => {
+            if(!err && references && references.length) {
+                var response = {isError: false, certifiers: references, errors: []};
+                resolve(response);
+            } else {
+                var response = {isError: true, certifiers: [], errors: [{msg: "No Certifiers are present in this Affiliate"}]};
+                resolve(response);
+            }
+        });
+
+    });
+
+    return promise;
+};
+
+var findUserByRefreshToken = (token) => {
+    var promise = new Promise((resolve, reject) => {
+        sessionSchema.findOne({ refreshToken: token}).select('_id userId createdAt').then((result) => {
+            var response = { isError: false, session: result, errors: [] };
+            resolve(response);
+        }).catch((error) => {
+            var response = { isError: error, session: {}, errors: [{msg: "Unauthorized Access!"}] };
+            resolve(response);
+        });
+    });
+
+    return promise;
+};
+
 module.exports = {
     create,
     findByEmail,
@@ -562,8 +688,12 @@ module.exports = {
     createSession,
     verifyPassword,
     updateSession,
+    destorySession,
     list,
     findById,
     update,
-    getAffiliateReviewers
+    getAffiliateReviewers,
+    getInstituteReviewers,
+    getInstituteCertifiers,
+    findUserByRefreshToken
 };

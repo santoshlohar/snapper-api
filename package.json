@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^3.0.6",
     "capitalize": "^2.0.0",
     "convert-excel-to-json": "^1.6.1",
     "cookie-parser": "~1.4.3",

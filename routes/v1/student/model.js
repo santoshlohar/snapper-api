@@ -64,6 +64,23 @@ var list = (obj) => {
 
 		filter.push({ $match: matchQuery });
 
+		filter.push({
+            $lookup: {
+                from: "batches",
+                localField: "batchId",
+                foreignField: "_id",
+                as: "batch"
+            }
+        });
+
+        
+        filter.push({
+            $unwind: {
+                "path": "$batch",
+                "preserveNullAndEmptyArrays": true
+            }
+        });
+
 		var query = schema.aggregate(filter);
 		
 		query.exec((err, students) => {
@@ -96,7 +113,7 @@ var update = (id, student) => {
 
 var changeStatus = (data) => {
 	var promise = new Promise((resolve, reject) => {
-		schema.updateMany({ _id: data.studentId}, { $set : { status : data.status, reviewers: data.reviewers}}, (err, result) => {
+		schema.updateMany({ _id: data._id}, { $set : { status : data.status, reviewers: data.reviewers}}, (err, result) => {
 			if(!err) {
 				var response = { isError: false, errors: [] };
             	resolve(response);
@@ -109,11 +126,27 @@ var changeStatus = (data) => {
 	return promise;
 };
 
+var findByCodes = (codes) => {
+	var promise = new Promise((resolve, reject) => {
+		schema.find({ 'code': { $in: codes }}, (err, result) => {
+			if(!err && result && result.length) {
+				var response = { isError: false, students: result, errors: []};
+            	resolve(response);
+			} else {
+				var response = { isError: false, errors: [{msg: "Invalid Students"}], students: [] };
+            	resolve(response);
+			}
+		})
+	})
+	return promise;
+};
+
 module.exports = {
 	create,
 	insertMany,
 	list,
 	update,
 	findById,
-	changeStatus
+	changeStatus,
+	findByCodes
 };
