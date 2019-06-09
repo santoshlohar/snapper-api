@@ -3,6 +3,7 @@ var router = express.Router();
 var model = require('./model');
 var validator = require('./validator');
 var userModel = require('./../user/model');
+var uuid = require('uuid');
 
 var onError = (req, res, errors, statusCode) => {
     if (!(Array.isArray(errors) && errors.length)) {
@@ -326,6 +327,69 @@ router.put('/:id/certifier/status', (req, res) => {
     };
 
     getCertifiers();
+
+});
+
+router.post("/:id/comment", (req, res) => {
+	var id = req.params.id;
+	var text = req.body.text;
+	var commentId = (req.body.commentId) ? req.body.commentId : 0;
+	var userId = req.user.userId;
+	var entity = req.user.reference.entity;
+	var role = req.user.reference.role;
+	var comment = {
+		id: uuid(),
+		text: text,
+		date: Date.now(),
+		user: {
+			id: userId,
+			entity: entity,
+			role: role
+		}
+	};
+
+	if(commentId) {
+		comment.id = commentId;
+	}
+	
+
+	var update = (certificateId, comments) => {
+		var data = {
+			comments: comments
+		};
+		model.update(certificateId, data).then((result) => {
+			if(result.isError) {
+                onError(req, res, result.errors, 500);
+            } else {
+                req.app.responseHelper.send(res, true, {comment: comment}, [], 200);
+            }
+		});
+	};
+
+	var findCertificateById = () => {
+		model.findById(id, false).then((result) => {
+            if(result.isError || !(result.certificate && result.certificate._id)) {
+                onError(req, res, result.errors, 500);
+            } else {
+
+				var certificate = result.certificate;
+				var comments = (certificate.comments) ? certificate.comments : [];
+				if(comments.length && commentId) {
+					for(var i=0; i < comments.length; i++) {
+						if (comments[i].id == commentId) {
+							comments[i] = comment;
+						}
+					}
+				} else {
+					comments.push(comment);
+				}
+
+                update(certificate._id, comments);
+            }
+        });
+	};
+
+	findCertificateById();
 
 });
 

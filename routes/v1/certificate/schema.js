@@ -60,7 +60,11 @@ var schema = new Schema({
     certifiers: {
 		type: Schema.Types.Mixed,
 		default: {}
-	}	
+    },
+    comments: {
+        type: Schema.Types.Mixed,
+        default: []
+    }	
 },{
     timestamps: true
 })

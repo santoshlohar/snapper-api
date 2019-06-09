@@ -376,6 +376,22 @@ var changeStatus = (obj, action) => {
 	return promise;
 };
 
+var update = (id, data) => {
+    var promise = new Promise((resolve, reject) => {
+
+		schema.update({ _id: id}, { $set : data}, (err, result) => {
+            if(!err) {
+				var response = { isError: false, errors: [] };
+            	resolve(response);
+			}else {
+				var response = { isError: true, errors: [{msg: "failed to update the certificate status"}] };
+            	resolve(response);
+			}
+		});
+	});
+	return promise;
+};
+
 module.exports = {
     insertMany,
     findByMultipleIds,
@@ -383,4 +399,5 @@ module.exports = {
     list,
     findByHashIds,
     changeStatus,
+    update
 }
