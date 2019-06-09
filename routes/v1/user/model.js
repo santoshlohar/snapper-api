@@ -223,7 +223,7 @@ var updatePassword = (user) => {
 var generateToken = (user, sessionId) => {
     var jwtSecret = 'gadiaagebadikinahi';
     var expire = Date.now() + (1 * 60 * 60 * 1000);
-    expire = Date.now() + 1000;
+    //expire = Date.now() + 1000;
     var payload = { 
         userId: user._id, 
         role: user.reference.role,
