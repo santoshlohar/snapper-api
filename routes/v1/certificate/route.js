@@ -336,7 +336,9 @@ router.post("/:id/comment", (req, res) => {
 	var commentId = (req.body.commentId) ? req.body.commentId : 0;
 	var userId = req.user.userId;
 	var entity = req.user.reference.entity;
-	var role = req.user.reference.role;
+    var role = req.user.reference.role;
+    var firstName = '';
+    var lastName = '';
 	var comment = {
 		id: uuid(),
 		text: text,
@@ -375,7 +377,9 @@ router.post("/:id/comment", (req, res) => {
             } else {
 
 				var certificate = result.certificate;
-				var comments = (certificate.comments) ? certificate.comments : [];
+                var comments = (certificate.comments) ? certificate.comments : [];
+                comment.firstName = firstName;
+                comment.lastName = lastName;
 				if(comments.length && commentId) {
 					for(var i=0; i < comments.length; i++) {
 						if (comments[i].id == commentId) {
@@ -391,8 +395,16 @@ router.post("/:id/comment", (req, res) => {
         });
 	};
 
-	findCertificateById();
-
+    userModel.findById(userId).then((result) => {
+        if(result.isError || !(result.user && result.user._id)) {
+            onError(req, res, result.errors, 500);
+        } else {
+            firstName = result.user.firstName;
+            lastName = result.user.lastName;
+            findCertificateById();
+        }
+    });
+	
 });
 
 module.exports = router;
