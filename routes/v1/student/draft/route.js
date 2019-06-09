@@ -166,7 +166,7 @@ router.put('/process', isAffiliateDataManager, (req, res) => {
     };
 
     var checkDuplicates = (codes) => {
-        studentModel.findByCodes(codes).then((result) => {
+        studentModel.findByCodes(codes, data.batchId).then((result) => {
             if(result.isError || (result.students && result.students.length)) {
                 updateDrafts(data.draftIds, 'new');
             } else {

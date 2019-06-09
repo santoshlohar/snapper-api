@@ -77,6 +77,7 @@ var process = (req) => {
     var data = {
         students : [],
         draftIds : [],
+        batchId: 0,
         isAffiliateCheckFailed: false,
         affiliateId: 0,
         isDataInvalid: false
@@ -98,9 +99,10 @@ var process = (req) => {
                     break;
                 }
 
-                if(!data.affiliateId) {
+                if(!data.affiliateId && !data.batchId) {
                     data.affiliateId = draft.affiliateId;
-                } else if(data.affiliateId && (data.affiliateId != draft.affiliateId)) {
+                    data.batchId = draft.batchId;
+                } else if(data.affiliateId && (data.affiliateId != draft.affiliateId) && (data.batchId != draft.batchId)) {
                     data.isAffiliateCheckFailed = true;
                     break;
                 }  
