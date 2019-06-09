@@ -378,8 +378,8 @@ router.post("/:id/comment", (req, res) => {
 
 				var certificate = result.certificate;
                 var comments = (certificate.comments) ? certificate.comments : [];
-                comment.firstName = firstName;
-                comment.lastName = lastName;
+                comment.user.firstName = firstName;
+                comment.user.lastName = lastName;
 				if(comments.length && commentId) {
 					for(var i=0; i < comments.length; i++) {
 						if (comments[i].id == commentId) {
