@@ -113,7 +113,7 @@ var update = (id, student) => {
 
 var changeStatus = (data) => {
 	var promise = new Promise((resolve, reject) => {
-		schema.updateMany({ _id: data._id}, { $set : { status : data.status, reviewers: data.reviewers}}, (err, result) => {
+		schema.updateMany({ _id: data.studentId}, { $set : { status : data.status, reviewers: data.reviewers}}, (err, result) => {
 			if(!err) {
 				var response = { isError: false, errors: [] };
             	resolve(response);
