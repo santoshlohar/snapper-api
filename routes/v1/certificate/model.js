@@ -337,7 +337,7 @@ var list = (obj) => {
 
 var findByHashIds = (hashIds) => {
     var promise = new Promise((resolve, reject) => {
-		schema.find({ 'hash': { $in: hashIds }}, (err, result) => {
+		schema.find({ 'hash': { $in: hashIds }, 'status': { $ne: 'rejected'}}, (err, result) => {
 			if(!err && result) {
 				var response = { isError: false, certificates: result, errors: []};
             	resolve(response);

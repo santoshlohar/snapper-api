@@ -128,7 +128,7 @@ var changeStatus = (data) => {
 
 var findByCodes = (codes) => {
 	var promise = new Promise((resolve, reject) => {
-		schema.find({ 'code': { $in: codes }}, (err, result) => {
+		schema.find({ 'code': { $in: codes }, 'status': { $ne: 'rejected'}}, (err, result) => {
 			if(!err && result && result.length) {
 				var response = { isError: false, students: result, errors: []};
             	resolve(response);
