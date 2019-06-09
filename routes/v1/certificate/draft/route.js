@@ -193,7 +193,7 @@ router.put('/process', isInstituteDataManager, (req, res) => {
     };
 
     var checkDuplicateCertificates = () => {
-        certificateModel.findByHashIds(hashIds ).then((result) => {
+        certificateModel.findByHashIds(hashIds, data.batchId).then((result) => {
             if(result.isError || (result.certificates && result.certificates.length)) {
                 updateDrafts(data.draftIds, 'new');
             } else {
@@ -203,7 +203,7 @@ router.put('/process', isInstituteDataManager, (req, res) => {
     };
 
     var findStudentsByCode = (codes) => {
-        studentModel.findByCodes(codes).then((result) => {
+        studentModel.findByCodes(codes, data.batchId).then((result) => {
             if(result.isError || !(result && result.students.length && result.students.length == codes.length)) {
                 updateDrafts(data.draftIds, 'new');
             } else {

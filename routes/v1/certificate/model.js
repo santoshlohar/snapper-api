@@ -335,9 +335,16 @@ var list = (obj) => {
     return promise;
 };
 
-var findByHashIds = (hashIds) => {
+var findByHashIds = (hashIds, batchId) => {
     var promise = new Promise((resolve, reject) => {
-		schema.find({ 'hash': { $in: hashIds }, 'status': { $ne: 'rejected'}}, (err, result) => {
+        var filter = {};
+		if(batchId) {
+			filter.batchId = mongoose.Types.ObjectId(batchId);
+		}
+		filter.hash = { $in: hashIds };
+        filter.status = { $ne: 'rejected'};
+        
+		schema.find(filter, (err, result) => {
 			if(!err && result) {
 				var response = { isError: false, certificates: result, errors: []};
             	resolve(response);

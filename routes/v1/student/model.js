@@ -126,9 +126,17 @@ var changeStatus = (data) => {
 	return promise;
 };
 
-var findByCodes = (codes) => {
+var findByCodes = (codes, batchId) => {
 	var promise = new Promise((resolve, reject) => {
-		schema.find({ 'code': { $in: codes }, 'status': { $ne: 'rejected'}}, (err, result) => {
+
+		var filter = {};
+		if(batchId) {
+			filter.batchId = mongoose.Types.ObjectId(batchId);
+		}
+		filter.code = { $in: codes };
+		filter.status = { $ne: 'rejected'};
+
+		schema.find(filter, (err, result) => {
 			if(!err && result && result.length) {
 				var response = { isError: false, students: result, errors: []};
             	resolve(response);
