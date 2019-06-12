@@ -46,7 +46,7 @@ router.post("/create", (req, res) => {
 
     var checkDuplicate = (findObj) => {
         model.findByCode(findObj).then((result) => {
-            if(result.isError || result.courses.length) {
+            if(result.isError && (result.courses && result.courses.length)) {
                 onError(req, res, result.errors, 500);
             } else {
                 addCourse(course);

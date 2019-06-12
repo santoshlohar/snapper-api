@@ -311,7 +311,7 @@ var findByCode = (obj) => {
 				var response = { isError: false, errors: [{msg: "Course ID already available!"}], courses: result};
             	resolve(response);
 			} else {
-				var response = { isError: false, errors: [{msg: "Course code not available"}], courses: [] };
+				var response = { isError: true, errors: [{msg: "Course code not available"}], courses: [] };
             	resolve(response);
 			}
 		});
