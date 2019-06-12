@@ -32,15 +32,33 @@ router.post("/create", (req, res) => {
 		code: req.body.code
 	};
 
-	model.create(affiliate).then((result) => {
-		if(result.isError || !(result.affiliate && result.affiliate._id) ) {
-            onError(req, res, [], 500);
-        } else {
-            req.app.responseHelper.send(res, true, result.affiliate, [], 200);
-        }
-	}).catch((err) => {
-		onError([], 500);
-	});
+	var findObj = {
+		instituteId: affiliate.instituteId,
+		departmentId: affiliate.departmentId,
+		code: affiliate.code		
+	};
+	
+	var checkDuplicate = (findObj) => {
+		model.findByCode(findObj).then((result) => {
+            if(result.isError || (result.affiliates && result.affiliates.length)) {
+                onError(req, res, result.errors, 500);
+            } else {
+                addAffiliate(affiliate);
+            }
+        });
+	};
+
+	var addAffiliate = (affiliate) => {
+		model.create(affiliate).then((result) => {
+			if(result.isError || !(result.affiliate && result.affiliate._id) ) {
+				onError(req, res, [], 500);
+			} else {
+				req.app.responseHelper.send(res, true, result.affiliate, [], 200);
+			}
+		});
+    };
+
+	checkDuplicate(findObj);
 });
 
 // List affiliate

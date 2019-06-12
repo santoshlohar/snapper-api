@@ -40,6 +40,7 @@ router.post("/create", (req, res) => {
     };
 
     var findObj = {
+        instituteId: course.instituteId,
         departmentId: course.departmentId,
         code: course.code
     }

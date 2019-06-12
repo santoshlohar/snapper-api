@@ -306,6 +306,7 @@ var affiliateCourseUpdate = (id, course) => {
 var findByCode = (obj) => {
     var promise = new Promise((resolve, reject) => {
         var data = {
+            instituteId: obj.instituteId,
             departmentId: obj.departmentId,
             code: obj.code
         };

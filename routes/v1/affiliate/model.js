@@ -5,7 +5,6 @@ var create = (affiliate) => {
 	var promise = new Promise((resolve, reject) => {
         var document = new schema(affiliate);
         document.save().then(function (result) {
-			console.log("create",result)
             var response = { isError: false, affiliate: result, errors: [] };
             resolve(response);
         }).catch((err) => {
@@ -137,11 +136,33 @@ var update = (affiliate) => {
 	});
 
 	return promise;
-}
+};
+
+var findByCode = (obj) => {
+    var promise = new Promise((resolve, reject) => {
+        var data = {
+            instituteId: obj.instituteId,
+            departmentId: obj.departmentId,
+            code: obj.code
+        };
+
+        schema.find(data, (err, result) => {
+			if(!err && result && result.length) {
+				var response = { isError: false, errors: [{msg: "Affiliate ID already available!"}], affiliates: result};
+            	resolve(response);
+			} else {
+				var response = { isError: false, errors: [{msg: "Affiliate ID not available"}], affiliates: [] };
+            	resolve(response);
+			}
+		});
+    });
+    return promise; 
+};
 
 module.exports = {
 	create,
 	findById,
 	list,
-	update
+    update,
+    findByCode
 }
