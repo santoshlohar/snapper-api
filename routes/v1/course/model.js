@@ -24,9 +24,13 @@ var list = (data) => {
         var filter = [];
 
         var matchQuery = {
-            instituteId: mongoose.Types.ObjectId(data.instituteId),
-            departmentId: mongoose.Types.ObjectId(data.departmentId)
+            instituteId: mongoose.Types.ObjectId(data.instituteId)
+            
         };
+
+        if(data.departmentId) {
+            matchQuery.departmentId = mongoose.Types.ObjectId(data.departmentId);
+        }
 
         filter.push({ $match: matchQuery });
 
@@ -311,7 +315,7 @@ var findByCode = (obj) => {
 				var response = { isError: false, errors: [{msg: "Course ID already available!"}], courses: result};
             	resolve(response);
 			} else {
-				var response = { isError: true, errors: [{msg: "Course code not available"}], courses: [] };
+				var response = { isError: false, errors: [{msg: "Course code not available"}], courses: [] };
             	resolve(response);
 			}
 		});

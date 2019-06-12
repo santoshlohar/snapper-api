@@ -46,7 +46,7 @@ router.post("/create", (req, res) => {
 
     var checkDuplicate = (findObj) => {
         model.findByCode(findObj).then((result) => {
-            if(result.isError && (result.courses && result.courses.length)) {
+            if(result.isError || (result.courses && result.courses.length)) {
                 onError(req, res, result.errors, 500);
             } else {
                 addCourse(course);
@@ -61,8 +61,6 @@ router.post("/create", (req, res) => {
             } else {
                 req.app.responseHelper.send(res, true, result.course, [], 200);
             }
-        }).catch((err) => {
-            onError([], 500);
         });
     };
 
@@ -83,7 +81,6 @@ router.get("/list", (req, res) => {
     }
 
     model.list(obj).then((result) => {
-        console.log(" abc",result);
         if(result.isError || !(result.courses && result.courses.length)) {
 			onError(req, res, [], 500);
 		} else {
