@@ -39,15 +39,34 @@ router.post("/create", (req, res) => {
         noOfTerms: req.body.noOfTerms
     };
 
-    model.create(course).then((result) => {
-        if(result.isError || !(result.course && result.course._id) ) {
-            onError(req, res, [], 500);
-        } else {
-            req.app.responseHelper.send(res, true, result.course, [], 200);
-        }
-    }).catch((err) => {
-        onError([], 500);
-    });
+    var findObj = {
+        departmentId: course.departmentId,
+        code: course.code
+    }
+
+    var checkDuplicate = (findObj) => {
+        model.findByCode(findObj).then((result) => {
+            if(result.isError || result.courses.length) {
+                onError(req, res, result.errors, 500);
+            } else {
+                addCourse(course);
+            }
+        })
+    };
+
+    var addCourse = (course) => {
+        model.create(course).then((result) => {
+            if(result.isError || !(result.course && result.course._id) ) {
+                onError(req, res, [], 500);
+            } else {
+                req.app.responseHelper.send(res, true, result.course, [], 200);
+            }
+        }).catch((err) => {
+            onError([], 500);
+        });
+    };
+
+    checkDuplicate(findObj);
 });
 
 router.get("/list", (req, res) => {

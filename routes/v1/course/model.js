@@ -299,6 +299,26 @@ var affiliateCourseUpdate = (id, course) => {
 	return promise;
 }
 
+var findByCode = (obj) => {
+    var promise = new Promise((resolve, reject) => {
+        var data = {
+            departmentId: obj.departmentId,
+            code: obj.code
+        };
+
+        schema.find(data, (err, result) => {
+			if(!err && result && result.length) {
+				var response = { isError: false, errors: [{msg: "Course ID already available!"}], courses: result};
+            	resolve(response);
+			} else {
+				var response = { isError: false, errors: [{msg: "Course code not available"}], courses: [] };
+            	resolve(response);
+			}
+		});
+    });
+    return promise; 
+}
+
 module.exports = {
     create,
     findById,
@@ -306,5 +326,6 @@ module.exports = {
     update,
     linkAffiliates,
     getAffiliateCourses,
-    affiliateCourseUpdate
+    affiliateCourseUpdate,
+    findByCode
 }
