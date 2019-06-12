@@ -76,9 +76,30 @@ var update = (department) => {
     return promise;
 };
 
+var findByCode = (obj) => {
+    var promise = new Promise((resolve, reject) => {
+        var data = {
+            instituteId: obj.instituteId,
+            code: obj.code
+        };
+
+        schema.find(data, (err, result) => {
+			if(!err && result && result.length) {
+				var response = { isError: false, errors: [{msg: "Department ID already available!"}], departments: result};
+            	resolve(response);
+			} else {
+				var response = { isError: false, errors: [{msg: "Department ID not available"}], departments: [] };
+            	resolve(response);
+			}
+		});
+    });
+    return promise; 
+};
+
 module.exports = {
     create,
     list,
     findById,
-    update
+    update,
+    findByCode
 };

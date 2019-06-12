@@ -47,16 +47,38 @@ router.post("/create", (req, res) => {
         return true;
     }
 
-    var data = req.body;
+    var department = {
+		instituteId: req.body.instituteId,
+		name: req.body.name,
+		code: req.body.code
+    };
+    
+    var findObj = {
+        instituteId: department.instituteId,
+		code: department.code
+    };
 
-    model.create(data).then((result) => {
-        if(result.isError || !(result.department && result.department._id) ) {
-            onError(req, res, [], 500);
-        } else {
-            req.app.responseHelper.send(res, true, result.department, [], 200);
-        }
-    });
+    var checkDuplicate = (findObj) => {
+		model.findByCode(findObj).then((result) => {
+            if(result.isError || (result.departments && result.departments.length)) {
+                onError(req, res, result.errors, 500);
+            } else {
+                addDepartment();
+            }
+        });
+	};
 
+	var addDepartment = () => {
+		model.create(department).then((result) => {
+			if(result.isError || !(result.department && result.department._id) ) {
+				onError(req, res, [], 500);
+			} else {
+				req.app.responseHelper.send(res, true, result.department, [], 200);
+			}
+		});
+    };
+
+	checkDuplicate(findObj);
 
 });
 
