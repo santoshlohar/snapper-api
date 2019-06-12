@@ -36,16 +36,38 @@ router.post('/create', (req, res) => {
 		totalCgpa: req.body.totalCgpa,
 		minScore: req.body.minScore,
 		totalScore: req.body.totalScore,
+	};
+
+	var findObj = {
+		instituteId: req.body.instituteId,
+		departmentId: req.body.departmentId,
+		affiliateId: req.body.affiliateId,
+		code: req.body.code
 	}
 
-	model.create(batch).then((result) => {
-		if(result.isError  || !(result.batch && result.batch._id)) {
-			onError(req, res, result.errors, 500);
-		} else {
-			var batch = result.batch;
-			req.app.responseHelper.send(res, true, batch, [], 200);
-		}
-	})
+	var checkDuplicate = (findObj) => {
+		model.findByCode(findObj).then((result) => {
+            if(result.isError || (result.batches && result.batches.length)) {
+                onError(req, res, result.errors, 500);
+            } else {
+                addBatch();
+            }
+        });
+	};
+
+	var addBatch = () => {
+		model.create(batch).then((result) => {
+			if(result.isError  || !(result.batch && result.batch._id)) {
+				onError(req, res, result.errors, 500);
+			} else {
+				var batch = result.batch;
+				req.app.responseHelper.send(res, true, batch, [], 200);
+			}
+		})
+    };
+
+	checkDuplicate(findObj);
+
 });
 
 router.put('/:id', (req, res) => {

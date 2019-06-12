@@ -166,10 +166,33 @@ var findById = (id) => {
 	return promise;
 };
 
+var findByCode = (obj) => {
+    var promise = new Promise((resolve, reject) => {
+        var data = {
+            instituteId: obj.instituteId,
+            departmentId: obj.departmentId,
+            affiliateId: obj.affiliateId,
+            code: obj.code
+        };
+
+        schema.find(data, (err, result) => {
+			if(!err && result && result.length) {
+				var response = { isError: false, errors: [{msg: "Batch ID already available!"}], batches: result};
+            	resolve(response);
+			} else {
+				var response = { isError: false, errors: [{msg: "Batch ID not available"}], batches: [] };
+            	resolve(response);
+			}
+		});
+    });
+    return promise; 
+};
+
 module.exports = {
 	create,
 	update,
 	deleteMany,
 	list,
-	findById
+    findById,
+    findByCode
 }
