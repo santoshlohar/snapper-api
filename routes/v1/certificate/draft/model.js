@@ -24,7 +24,6 @@ var list = (obj) => {
         var matchQuery = {
             instituteId: mongoose.Types.ObjectId(obj.instituteId),
             affiliateId: mongoose.Types.ObjectId(obj.affiliateId),
-            //courseId: mongoose.Types.ObjectId(obj.courseId),
             batchId: mongoose.Types.ObjectId(obj.batchId),
             status: obj.status
         };

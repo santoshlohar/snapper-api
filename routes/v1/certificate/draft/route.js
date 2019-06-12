@@ -134,7 +134,6 @@ router.get('/list', isInstituteDataManager, (req, res) => {
 	var obj = {
         instituteId: req.query.instituteId,
         affiliateId: req.query.affiliateId,
-        courseId: req.query.courseId,
         batchId: req.query.batchId,
         status: "new"
     };

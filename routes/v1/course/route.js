@@ -182,7 +182,7 @@ router.put("/affiliate/:id/changeStatus", (req, res) => {
     var id = req.params.id;
 
     var course = {
-        isActive: req.body.isActive
+        isActive: req.body.affiliateReferenceIsActive
     }
 
     model.affiliateCourseUpdate(id, course).then((result) => {
