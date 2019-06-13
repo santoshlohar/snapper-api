@@ -24,13 +24,9 @@ var list = (data) => {
         var filter = [];
 
         var matchQuery = {
-            instituteId: mongoose.Types.ObjectId(data.instituteId)
-            
+            instituteId: mongoose.Types.ObjectId(data.instituteId),
+            departmentId: mongoose.Types.ObjectId(data.departmentId)            
         };
-
-        if(data.departmentId) {
-            matchQuery.departmentId = mongoose.Types.ObjectId(data.departmentId);
-        }
 
         filter.push({ $match: matchQuery });
 
