@@ -73,6 +73,28 @@ router.get('/:id', function (req, res) {
     });
 });
 
+router.put("/:id/changeStatus", (req, res) => {
+    var id = req.params.id;
+
+    model.findById(id).then((result) => {
+        if (result.isError) {
+            var errors = result.errors;
+			onError(req, res, errors, 500);
+        } else {
+            var user = result.user;
+            user.isActive = req.body.isActive;
+            model.update(user).then((result) => {
+                if (result.isError) {
+                    onError(req, res, result.errors, 500);
+                } else {
+                    var user = result.user;
+                    req.app.responseHelper.send(res, true, user, [], 200);
+                }
+            });
+        }
+    });
+});
+
 router.post("/signin", (req, res) => {
     
     var errors = validator.forgotPassword(req);
@@ -279,26 +301,6 @@ router.post("/create", (req, res) => {
     });
 });
 
-router.put("/:id/changeStatus", (req, res) => {
-    var id = req.params.id;
 
-    model.findById(id).then((result) => {
-        if (result.isError) {
-            var errors = result.errors;
-			onError(req, res, errors, 500);
-        } else {
-            var user = result.user;
-            user.isActive = req.body.isActive;
-            model.update(user).then((result) => {
-                if (result.isError) {
-                    onError(req, res, result.errors, 500);
-                } else {
-                    var user = result.user;
-                    req.app.responseHelper.send(res, true, user, [], 200);
-                }
-            });
-        }
-    });
-});
 
 module.exports = router;

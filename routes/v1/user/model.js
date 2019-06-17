@@ -70,6 +70,21 @@ var create = (user) => {
     return promise;
 };
 
+var update = (user) => {
+
+    var promise = new Promise((resolve, reject) => {
+        user.save().then((result) => {
+            var response = { isError: false, user: result, errors: [] };
+            resolve(response);
+        }).catch((error) => {
+            var response = { isError: false, user: {}, errors: [{"msg": "Failed to update user!"}] };
+            resolve(response);
+        });
+    });
+
+    return promise;
+};
+
 var findByEmail = (email) => {
 
     var promise = new Promise((resolve, reject) => {
@@ -569,21 +584,6 @@ var list = (obj) => {
 
 
 
-    });
-
-    return promise;
-};
-
-var update = (user) => {
-
-    var promise = new Promise((resolve, reject) => {
-        user.save().then((result) => {
-            var response = { error: null, user: result };
-            resolve(response);
-        }).catch((error) => {
-            var response = { error: error, user: {} };
-            resolve(response);
-        });
     });
 
     return promise;
