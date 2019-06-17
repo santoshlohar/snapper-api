@@ -3,6 +3,7 @@ var router = express.Router();
 var model = require('./model');
 var validator = require('./validator');
 var userModel = require('./../user/model');
+var uuid = require('uuid');
 
 var onError = (req, res, errors, statusCode) => {
     if (!(Array.isArray(errors) && errors.length)) {
@@ -180,6 +181,80 @@ router.put('/:id/changeStatus', (req, res) => {
 
     getReviewers();
 
+});
+
+router.post('/:id/comment', (req, res) => {
+    var id = req.params.id;
+	var text = req.body.text;
+	var commentId = (req.body.commentId) ? req.body.commentId : 0;
+	var userId = req.user.userId;
+	var entity = req.user.reference.entity;
+    var role = req.user.reference.role;
+    var firstName = '';
+    var lastName = '';
+	var comment = {
+		id: uuid(),
+		text: text,
+		date: Date.now(),
+		user: {
+			id: userId,
+			entity: entity,
+			role: role,
+			firstName: "",
+			lastName: ""
+		}
+    };
+    
+    if(commentId) {
+		comment.id = commentId;
+    }
+
+    var update = (studentId, comments) => {
+        var data = {
+			comments: comments
+        };
+        model.update(studentId, data).then((result) => {
+            if(result.isError) {
+                onError(req, res, result.errors, 500);
+            } else {
+                req.app.responseHelper.send(res, true, {comment: comment}, [], 200);
+            }
+        });
+    };
+
+    var findStudentById = () => {
+        model.findById(id).then((result) => {
+            if(result.isError || !(result.student && result.student._id)) {
+                onError(req, res, result.errors, 500);
+            } else {
+                var student = result.student;
+                var comments = (student.comments) ? student.comments : [];
+                comment.user.firstName = firstName;
+                comment.user.lastName = lastName;
+				if(comments.length && commentId) {
+					for(var i=0; i < comments.length; i++) {
+						if (comments[i].id == commentId) {
+							comments[i] = comment;
+						}
+					}
+				} else {
+					comments.push(comment);
+				}
+                console.log("ID", student._id)
+                update(student._id, comments);
+            }
+        });
+    };
+    
+    userModel.findById(userId).then((result) => {
+        if(result.isError || !(result.user && result.user._id)) {
+            onError(req, res, result.errors, 500);
+        } else {
+            firstName = result.user.firstName;
+            lastName = result.user.lastName;
+            findStudentById();
+        }
+    });
 });
 
 module.exports = router;

@@ -96,7 +96,7 @@ var list = (obj) => {
 	return promise;
 };
 
-var update = (id, student) => {
+var update1 = (id, student) => {
 	var promise = new Promise((resolve, reject) => {
 		draftSchema.findOneAndUpdate({ '_id': id }, { $set : student }, { new : true }, (error, result) =>{
 			if(error) {
@@ -168,7 +168,23 @@ var findByStatus = (data) => {
 		});
 	});
 	return promise;
-}
+};
+
+var update = (id, data) => {
+	var promise = new Promise((resolve, reject) => {
+		schema.update({ _id: id}, { $set : data}, (err, result) => {
+            if(!err) {
+				var response = { isError: false, errors: [] };
+            	resolve(response);
+			}else {
+				console.log("error", err);
+				var response = { isError: true, errors: [{msg: "failed to update the student status"}] };
+            	resolve(response);
+			}
+		});
+	});
+	return promise;
+};
 
 module.exports = {
 	create,

@@ -50,7 +50,11 @@ var schema = new Schema({
 	reviewers: {
 		type: Schema.Types.Mixed,
 		default: {}
-	}	
+	},
+    comments: {
+        type: Schema.Types.Mixed,
+        default: []
+    }		
 },{
     timestamps: true
 });
