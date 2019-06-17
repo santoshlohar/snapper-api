@@ -149,6 +149,27 @@ var findByCodes = (codes, batchId) => {
 	return promise;
 };
 
+var findByStatus = (data) => {
+	var promise = new Promise((resolve, reject) => {
+		var filter = {};
+
+		filter.affiliateId = data.affiliateId;
+		filter.batchId = data.batchId;
+		filter.status = 'reviewed';
+
+		schema.find(filter, (err, result) => {
+			if(!err && result && result.length) {
+				var response = { isError: false, errors: [], students: result};
+            	resolve(response);
+			} else {
+				var response = { isError: false, errors: [{msg: "Can't update batch data!"}], students: [] };
+            	resolve(response);
+			}
+		});
+	});
+	return promise;
+}
+
 module.exports = {
 	create,
 	insertMany,
@@ -156,5 +177,6 @@ module.exports = {
 	update,
 	findById,
 	changeStatus,
-	findByCodes
+	findByCodes,
+	findByStatus
 };

@@ -1,6 +1,5 @@
 var batch = (req) => {
 	try {
-		console.log(req);
 		req.checkBody("instituteId", "Institute ID is required!").notEmpty();
 		req.checkBody("affiliateId", "Affiliate ID is required!").notEmpty();
 		req.checkBody("courseId", "Course ID is required!").notEmpty();

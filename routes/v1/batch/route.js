@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var schema = require('./schema');
 var model = require('./model');
+var studentModel = require('../student/model');
 var validator = require('./validator');
 
 // On Error
@@ -94,16 +95,36 @@ router.put('/:id', (req, res) => {
 		totalCgpa: req.body.totalCgpa,
 		minScore: req.body.minScore,
 		totalScore: req.body.totalScore
+	};
+
+	var findObj = {
+		affiliateId: req.body.affiliateId,
+		batchId: req.params.id
 	}
 
-	model.update(id, batch).then((result) => {
-		if(result.isError  || !(result.batch && result.batch._id)) {
-			onError(req, res, result.errors, 500);
-		} else {
-			var batch = result.batch;
-			req.app.responseHelper.send(res, true, batch, [], 200);
-		}
-	});
+	var update = () => {
+		model.update(id, batch).then((result) => {
+			if(result.isError  || !(result.batch && result.batch._id)) {
+				onError(req, res, result.errors, 500);
+			} else {
+				var batch = result.batch;
+				req.app.responseHelper.send(res, true, batch, [], 200);
+			}
+		});
+	}
+
+	var checkReviewedStudent = (findObj) => {
+		studentModel.findByStatus(findObj).then((result) => {
+			console.log("result", result);
+			if(result.isError || (result.students && result.students.length)) {
+				onError(req, res, [{msg: "Students reviewed, You can't update batch now!"}], 500);
+			} else {
+                update();
+            }
+		});
+	}
+
+	checkReviewedStudent(findObj);
 	
 });
 
