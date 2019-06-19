@@ -68,8 +68,10 @@ router.put('/:id/changeStatus', (req, res) => {
 
         if (obj.student.status == 'rejected') {
             onError(req, res, [{msg: "Action not Allowed, Student is already rejected"}], 500);
-        } if (obj.student.status == 'reviewed') {
+            return true;
+        } else if (obj.student.status == 'reviewed') {
             onError(req, res, [{msg: "Action not Allowed, Student is already reviewed"}], 500);
+            return true;
         } else {
 
             var data = {
