@@ -76,7 +76,7 @@ router.get("/list", (req, res) => {
 	};
 
 	model.list(obj).then((result) => {
-		if(result.isError || !(result.affiliates && result.affiliates.length)) {
+		if(result.isError || !(result.affiliates)) {
 			console.log("error" , result.errors);
 			onError(req, res, result.errors, 500);
 		} else {

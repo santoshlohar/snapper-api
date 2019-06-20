@@ -82,7 +82,7 @@ router.get("/list", (req, res) => {
     }
 
     model.list(obj).then((result) => {
-        if(result.isError || !(result.courses && result.courses.length)) {
+        if(result.isError || !(result.courses)) {
 			onError(req, res, [], 500);
 		} else {
 			req.app.responseHelper.send(res, true, result.courses, [], 200);
@@ -98,7 +98,7 @@ router.get("/affiliateCourses", (req, res) => {
     };
 
     model.getAffiliateCourses(data).then((result) => {
-        if(result.isError || !(result.courses && result.courses.length)) {
+        if(result.isError || !(result.courses)) {
 			onError(req, res, [], 500);
 		} else {
 			req.app.responseHelper.send(res, true, result.courses, [], 200);
