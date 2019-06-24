@@ -261,4 +261,31 @@ router.put('/:id', isAffiliateDataManager, (req, res) => {
     
 });
 
+router.get('/download', (req, res) => {
+
+    var fileName = "students.csv";
+    var filepath = "./files/" + fileName;
+    // req.app.responseHelper.send(res, true, data, [], 200);
+
+    res.download(filepath, fileName);
+    //     , function(err) {
+    //     if( err ) {
+    //         console.log('something went wrong');
+    //     }
+    //     //res.status(200).download(filepath, fileName);
+    // });
+
+    // fs.writeFile(filepath, fileName, (err) => {
+    //     if(err) {
+    //         onError(req, res, err, 500);
+    //     } else {
+    //         res.download(filePath, fileName, function(err) {
+    //             if( err ) {
+    //                 console.log('something went wrong');
+    //             }
+    //         });
+    //     }
+    // })
+});
+
 module.exports = router;
