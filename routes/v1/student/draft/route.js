@@ -5,6 +5,8 @@ var validator = require('./validator');
 var fs = require('fs');
 var multer = require('multer');
 var studentModel = require('./../model');
+var download = require('download');
+var stringify = require('csv-stringify');
 
 var excelToJson = require('convert-excel-to-json');
 
@@ -264,28 +266,17 @@ router.put('/:id', isAffiliateDataManager, (req, res) => {
 router.get('/download', (req, res) => {
 
     var fileName = "students.csv";
-    var filepath = "./files/" + fileName;
-    // req.app.responseHelper.send(res, true, data, [], 200);
+    var url = "http://localhost:3000/files/" + fileName;
+    var filepath = "./files/"+ fileName;
 
-    res.download(filepath, fileName);
-    //     , function(err) {
-    //     if( err ) {
-    //         console.log('something went wrong');
-    //     }
-    //     //res.status(200).download(filepath, fileName);
-    // });
+    // res.setHeader('Content-Type', 'text/csv');
+    // res.setHeader('Content-Disposition', 'attachment; filename=\"' + fileName);
+    // res.setHeader('Cache-Control', 'no-cache');
+    // res.setHeader('Pragma', 'no-cache');
 
-    // fs.writeFile(filepath, fileName, (err) => {
-    //     if(err) {
-    //         onError(req, res, err, 500);
-    //     } else {
-    //         res.download(filePath, fileName, function(err) {
-    //             if( err ) {
-    //                 console.log('something went wrong');
-    //             }
-    //         });
-    //     }
-    // })
+    res.setHeader('Content-disposition', 'attachment; filename=\"' + fileName);
+    res.set('Content-Type', 'text/csv');
+
 });
 
 module.exports = router;
